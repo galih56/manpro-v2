@@ -1,11 +1,12 @@
+import { NotificationType } from '@/types';
 import { Transition } from '@headlessui/react';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   XCircleIcon,
   InformationCircleIcon,
-} from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/solid';
+} from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Fragment } from 'react';
 
 const icons = {
@@ -16,12 +17,7 @@ const icons = {
 };
 
 export type NotificationProps = {
-  notification: {
-    id: string;
-    type: keyof typeof icons;
-    title: string;
-    message?: string;
-  };
+  notification: NotificationType;
   onDismiss: (id: string) => void;
 };
 
@@ -53,11 +49,11 @@ export const Notification = ({
                 <button
                   className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   onClick={() => {
-                    onDismiss(id);
+                    onDismiss(id!);
                   }}
                 >
                   <span className="sr-only">Close</span>
-                  <XIcon className="h-5 w-5" aria-hidden="true" />
+                  <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
             </div>

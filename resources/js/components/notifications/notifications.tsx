@@ -1,9 +1,9 @@
-import { useNotificationStore } from '@/stores/notifications';
+import { useNotifications } from '@/stores/notifications';
 
 import { Notification } from './Notification';
 
 export const Notifications = () => {
-  const { notifications, dismissNotification } = useNotificationStore();
+  const { notifications, add, dismiss } = useNotifications();
 
   return (
     <div
@@ -14,7 +14,7 @@ export const Notifications = () => {
         <Notification
           key={notification.id}
           notification={notification}
-          onDismiss={dismissNotification}
+          onDismiss={dismiss}
         />
       ))}
     </div>

@@ -1,38 +1,45 @@
-import React, {ReactNode, createContext ,useReducer,useContext} from 'react';
-
-type NotificationsType = {
-    id? : string,
-    title? : string,
-    message? : string
-}
-const initialState : NotificationsType[] = [];
+import { NotificationType } from '@/types';
+import { nanoid } from 'nanoid';
+import React, {ReactNode, createContext ,useReducer,useContext, ElementType} from 'react';
 
 interface Props {
-    children?: ReactNode
-    // any props that come into the component
+  children?: ReactNode
+  // any props that come into the component
 }
 
+const initialState : NotificationType[] = [];
+
+type NotificationsContextType = {
+  state : NotificationType[],
+  dispatch : React.Dispatch<any>
+}
 
 const notificationsReducer = (state = initialState, action : any) => {
   const { type, payload } = action;
   switch (type) {
-    case 'store': {
-      localStorage.setItem('notifications', JSON.stringify(payload));
-      return {
-        ...state,
-        ...payload
-      };
+    case 'store' : {
+      return state;
     }
-    case 'update': {
-      const newState={
+    case 'add' : {
+      return [
         ...state,
-        ...payload
-      }
-      localStorage.setItem('notifications', JSON.stringify(newState));
-      return newState;
+        {
+          id : nanoid(),
+          title : payload.title,
+          message : payload.message,
+        }
+      ];
     }
-    case 'flush': {
-      localStorage.removeItem('notifications');
+    case 'update' : {
+      return state.map( item => {
+        if(item.id==payload.id) return payload;
+        return item;
+      });
+    }
+    case 'delete' : {
+      return state.filter( item => item.id != payload.id)
+    }
+    case 'flush' : {
       return initialState;
     }
     default:
@@ -40,16 +47,12 @@ const notificationsReducer = (state = initialState, action : any) => {
   }
 };
 
-
-const NotificationsContext = createContext<{
-    state: NotificationsType[];
-    dispatch: React.Dispatch<any>;
-  }>({
+const NotificationsContext = createContext<NotificationsContextType>({
     state: initialState,
     dispatch: () => null
   });;
 
-const withNotifications = (Child : ReactNode) => (props : Props) => (
+const withNotifications = (Child : ElementType) => (props : Props) => (
   <NotificationsContext.Consumer>
     {(context) => <Child {...props} {...context} />}
   </NotificationsContext.Consumer>
@@ -64,15 +67,17 @@ const NotificationsProvider=({ children } : Props )=>{
   )
 }
 
-function useNotifications() {
+
+function useNotifications<NotificationsContextType>() {
   const context = useContext(NotificationsContext)
   if (context === undefined) {
     throw new Error('useNotifications must be used within a NotificationsProvider')
   }
   return {
     notifications : context.state,
-    notificationsDispatch : context.dispatch
-  }
+    add : (notification : NotificationType) => context.dispatch({ type : 'add', payload : notification}),
+    dismiss : (notification : NotificationType) => context.dispatch({ type : 'delete', payload : notification})
+  };
 }
 
 export {

@@ -1,4 +1,4 @@
-const storagePrefix = 'bulletproof_react_';
+const storagePrefix = 'manpro_v2_';
 
 const storage = {
   getToken: () => {

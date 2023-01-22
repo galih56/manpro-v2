@@ -1,4 +1,4 @@
-import React, {createContext ,useReducer,useContext, ReactNode} from 'react';
+import React, {createContext ,useReducer,useContext, ReactNode, ElementType} from 'react';
 
 type AuthType = {
   access_token: "",
@@ -56,7 +56,7 @@ const AuthContext = createContext<{
   dispatch : () => null
 });
 
-const withAuth = (Child : ReactNode) => (props : Props) => (
+const withAuth = (Child : ElementType) => (props : Props) => (
   <AuthContext.Consumer>
     {(context) => <Child {...props} {...context} />}
     {/* Another option is:  {context => <Child {...props} context={context}/>}*/}
