@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/', function () {
+Route::get('/{path}', function () {
     return view("app");
-});
+})->where('path', '.*')
+->name('react');
 
 require __DIR__.'/auth.php';

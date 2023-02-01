@@ -15,14 +15,24 @@ use App\Http\Controllers\MaintenanceRequestController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([ "prefix" => "auth" ], function(){
+    Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+    Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+    });
 });
- 
+
+
+
+
 Route::get('/sync', [MaintenanceRequestController::class, 'synchronize']);
+
+
 
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);
- 
     return ['token' => $token->plainTextToken];
 });
+
