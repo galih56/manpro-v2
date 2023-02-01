@@ -1,20 +1,19 @@
 import * as React from 'react';
 
 import { ErrorBoundary } from 'react-error-boundary';
-import { QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { Button, Spinner } from '@/components/elements';
 import { Notifications } from '@/components/notifications/Notifications';
 import { queryClient } from '@/lib/react-query';
+import { HelmetProvider } from 'react-helmet-async';
+import { AxiosInterceptor } from '@/lib/axios';
+import { Toaster } from 'react-hot-toast';
 
 const ErrorFallback = () => {
   return (
-    <div
-      className="text-red-500 w-screen h-screen flex flex-col justify-center items-center"
-      role="alert"
-    >
+    <div className="text-red-500 w-screen h-screen flex flex-col justify-center items-center" role="alert" >
       <h2 className="text-lg font-semibold">Ooops, something went wrong :( </h2>
       <Button className="mt-4" onClick={() => window.location.assign(window.location.origin)}>
         Refresh
@@ -28,7 +27,6 @@ type AppProviderProps = {
 };
 
 export const AppProvider = ({ children }: AppProviderProps) => {
-  console.log(import.meta.url)
   return (
     <React.Suspense
       fallback={
@@ -38,11 +36,15 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       }
     >
       <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <HelmetProvider>
           <QueryClientProvider client={queryClient}>
-            {import.meta.env.VITE_NODE_ENV !== 'test' && <ReactQueryDevtools />}
-            <Notifications />
-            <Router>{children}</Router>
+            <AxiosInterceptor>
+              <Notifications />
+              <Router>{children}</Router>
+              <Toaster position='bottom-left'/>
+            </AxiosInterceptor>
           </QueryClientProvider>
+        </HelmetProvider>
       </ErrorBoundary>
     </React.Suspense>
   );
