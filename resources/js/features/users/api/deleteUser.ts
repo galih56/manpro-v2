@@ -1,10 +1,11 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
-import { useNotificationStore } from '@/stores/notifications';
+import { useNotifications } from '@/stores/notifications';
 
 import { User } from '../types';
+import { NotificationType } from '@/types';
 
 export type DeleteUserDTO = {
   userId: string;
@@ -19,7 +20,7 @@ type UseDeleteUserOptions = {
 };
 
 export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
-  const { addNotification } = useNotificationStore();
+  const { add } = useNotifications();
 
   return useMutation({
     onMutate: async (deletedUser) => {
@@ -41,10 +42,11 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries('users');
-      addNotification({
+      const notification : NotificationType=  {
         type: 'success',
         title: 'User Deleted',
-      });
+      }
+      add(notification);
     },
     ...config,
     mutationFn: deleteUser,

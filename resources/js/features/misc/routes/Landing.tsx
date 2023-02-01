@@ -7,10 +7,10 @@ import { useAuth } from '@/lib/auth';
 
 export const Landing = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const authenticatedUser = useAuth();
 
   const handleStart = () => {
-    if (user) {
+    if (authenticatedUser.data) {
       navigate('/app');
     } else {
       navigate('/auth/login');
