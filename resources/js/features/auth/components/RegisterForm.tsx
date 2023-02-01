@@ -5,53 +5,38 @@ import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
 import { Form, InputField, SelectField } from '@/components/Form';
-import { useTeams } from '@/features/teams';
-import { useAuth } from '@/lib/auth';
+import { useAuth, useRegister } from '@/lib/auth';
 
 const schema = z
   .object({
-    email: z.string().min(1, 'Required'),
-    firstName: z.string().min(1, 'Required'),
-    lastName: z.string().min(1, 'Required'),
-    password: z.string().min(1, 'Required'),
-  })
-  .and(
-    z
-      .object({
-        teamId: z.string().min(1, 'Required'),
-      })
-      .or(z.object({ teamName: z.string().min(1, 'Required') }))
-  );
+    email: z.string().min(1, 'Email is required'),
+    name: z.string().min(1, 'Name is required'),
+    password: z.string().min(1, 'Password is required'),
+  });
 
 type RegisterValues = {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
-  teamId?: string;
-  teamName?: string;
+  passwordConfirmation: string;
 };
 
 type RegisterFormProps = {
-  onSuccess: () => void;
+  onSuccess? : () => void;
+  onError? : () => void;
 };
 
-export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
-  const { register, isRegistering } = useAuth();
-  const [chooseTeam, setChooseTeam] = React.useState(false);
-
-  const teamsQuery = useTeams({
-    config: {
-      enabled: chooseTeam,
-    },
-  });
+export const RegisterForm = ({ onSuccess, onError }: RegisterFormProps) => {
+  const signUp = useRegister();
 
   return (
     <div>
       <Form<RegisterValues, typeof schema>
         onSubmit={async (values) => {
-          await register(values);
-          onSuccess();
+          signUp.mutate(values, {
+            onSuccess : onSuccess,
+            onError : onError
+          })
         }}
         schema={schema}
         options={{
@@ -62,15 +47,9 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
           <>
             <InputField
               type="text"
-              label="First Name"
-              error={formState.errors['firstName']}
-              registration={register('firstName')}
-            />
-            <InputField
-              type="text"
-              label="Last Name"
-              error={formState.errors['lastName']}
-              registration={register('lastName')}
+              label="Name"
+              error={formState.errors['name']}
+              registration={register('name')}
             />
             <InputField
               type="email"
@@ -84,46 +63,14 @@ export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
               error={formState.errors['password']}
               registration={register('password')}
             />
-
-            <Switch.Group>
-              <div className="flex items-center">
-                <Switch
-                  checked={chooseTeam}
-                  onChange={setChooseTeam}
-                  className={`${
-                    chooseTeam ? 'bg-blue-600' : 'bg-gray-200'
-                  } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                >
-                  <span
-                    className={`${
-                      chooseTeam ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-                  />
-                </Switch>
-                <Switch.Label className="ml-4">Join Existing Team</Switch.Label>
-              </div>
-            </Switch.Group>
-
-            {chooseTeam && teamsQuery.data ? (
-              <SelectField
-                label="Team"
-                error={formState.errors['teamId']}
-                registration={register('teamId')}
-                options={teamsQuery?.data?.map((team) => ({
-                  label: team.name,
-                  value: team.id,
-                }))}
-              />
-            ) : (
-              <InputField
-                type="text"
-                label="Team Name"
-                error={formState.errors['teamName']}
-                registration={register('teamName')}
-              />
-            )}
+            <InputField
+              type="password"
+              label="Password Confirmation"
+              error={formState.errors['passwordConfirmation']}
+              registration={register('passwordConfirmation')}
+            />
             <div>
-              <Button isLoading={isRegistering} type="submit" className="w-full">
+              <Button isLoading={signUp.isLoading} type="submit" className="w-full">
                 Register
               </Button>
             </div>
