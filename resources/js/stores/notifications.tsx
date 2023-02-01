@@ -37,7 +37,7 @@ const notificationsReducer = (state = initialState, action : any) => {
       });
     }
     case 'delete' : {
-      return state.filter( item => item.id != payload.id)
+      return state.filter( item => item.id != payload)
     }
     case 'flush' : {
       return initialState;
@@ -68,7 +68,7 @@ const NotificationsProvider=({ children } : Props )=>{
 }
 
 
-function useNotifications<NotificationsContextType>() {
+function useNotifications() {
   const context = useContext(NotificationsContext)
   if (context === undefined) {
     throw new Error('useNotifications must be used within a NotificationsProvider')
@@ -76,7 +76,7 @@ function useNotifications<NotificationsContextType>() {
   return {
     notifications : context.state,
     add : (notification : NotificationType) => context.dispatch({ type : 'add', payload : notification}),
-    dismiss : (notification : NotificationType) => context.dispatch({ type : 'delete', payload : notification})
+    dismiss : (id : string) => context.dispatch({ type : 'delete', payload : id})
   };
 }
 

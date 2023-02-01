@@ -3,7 +3,7 @@ import { useNotifications } from '@/stores/notifications';
 import { Notification } from './Notification';
 
 export const Notifications = () => {
-  const { notifications, add, dismiss } = useNotifications();
+  const { notifications, dismiss } = useNotifications();
 
   return (
     <div
