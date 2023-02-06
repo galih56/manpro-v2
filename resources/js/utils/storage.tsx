@@ -2,7 +2,11 @@ const storagePrefix = 'manpro_v2_';
 
 const storage = {
   getToken: () => {
-    return JSON.parse(window.localStorage.getItem(`${storagePrefix}token`) as string);
+    var storageItem = window.localStorage.getItem(`${storagePrefix}token`);
+    if(storageItem !== undefined && storageItem !== 'undefined' && storageItem !== null){
+      storageItem = JSON.parse(storageItem);
+    }
+    return storageItem;
   },
   setToken: (token: string) => {
     window.localStorage.setItem(`${storagePrefix}token`, JSON.stringify(token));

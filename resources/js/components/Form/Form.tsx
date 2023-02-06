@@ -1,12 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 import * as React from 'react';
-import { useForm, UseFormReturn, SubmitHandler, UseFormProps } from 'react-hook-form';
+import { useForm, UseFormReturn, UseFormProps } from 'react-hook-form';
 import { ZodType, ZodTypeDef } from 'zod';
 
 type FormProps<TFormValues, Schema> = {
   className?: string;
-  onSubmit: SubmitHandler<TFormValues>;
+  onSubmit: (values : any, methods : UseFormReturn<TFormValues, any>) => {};
   children: (methods: UseFormReturn<TFormValues>) => React.ReactNode;
   options?: UseFormProps<TFormValues>;
   id?: string;
@@ -28,7 +28,7 @@ export const Form = <
   return (
     <form
       className={clsx('space-y-6', className)}
-      onSubmit={methods.handleSubmit(onSubmit)}
+      onSubmit={methods.handleSubmit((values) => onSubmit( values, methods))}
       id={id}
     >
       {children(methods)}

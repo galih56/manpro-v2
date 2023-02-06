@@ -15,6 +15,7 @@
         "clsx": "^1.2.1",
         "dayjs": "^1.11.7",
         "dompurify": "^2.4.3",
+        "humps": "^2.0.1",
         "intersection-observer": "^0.12.2",
         "marked": "^4.2.12",
         "nanoid": "^4.0.0",
@@ -32,6 +33,7 @@
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.3",
         "@types/dompurify": "^2.4.0",
+        "@types/humps": "^2.0.2",
         "@types/marked": "^4.0.8",
         "@types/react": "^18.0.27",
         "@types/react-dom": "^18.0.10",

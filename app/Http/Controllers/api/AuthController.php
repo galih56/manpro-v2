@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Hash;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -14,19 +17,18 @@ class AuthController extends Controller
             'name'=>'required|string',
             'email'=>'required|string|unique:users,email',
             'password' => 'string|required_with:password_confirmation|same:password_confirmation',
-            'roles_id'=>'required',
         ]);
 
         $user=User::create([
             'name'=> $fields['name'],
             'email'=> $fields['email'],
-            'roles_id'=> $fields['roles_id'],
             'password'=> Hash::make($fields['password']),
         ]);
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'data' => $user,
+            'message' => 'Register success',
+            'user' => $user,
             'access_token' => $token,
             'token_type' => 'Bearer'
         ]);
@@ -51,16 +53,22 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login success',
+            'user' => $user,
             'access_token' => $token,
             'token_type' => 'Bearer'
         ]);
+    }
+
+    public function me(Request $request){
+        return response()->json(Auth::user());
+
     }
 
     public function logout()
     {
         Auth::user()->tokens()->delete();
         return response()->json([
-            'message' => 'logout success'
+            'message' => 'Logout success'
         ]);
     }
 }

@@ -11,5 +11,9 @@ export type RegisterCredentialsDTO = {
 export const registerWithEmailAndPassword = (
   data: RegisterCredentialsDTO
 ): Promise<UserResponse> => {
-  return axios.post('/auth/register', data);
+  return axios.post('/auth/register', data)
+                .then(res => ({ 
+                  accessToken : res.data.access_token, 
+                  user : res.data.user
+                }));
 };

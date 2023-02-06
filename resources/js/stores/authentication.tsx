@@ -1,19 +1,20 @@
-import React, {createContext ,useReducer,useContext, ReactNode, ElementType} from 'react';
+import React, {createContext ,useReducer,useContext, ReactNode, ElementType, useEffect} from 'react';
+import { useUserQuery } from '@/lib/auth';
 
 type AuthType = {
-  access_token: "",
-  token_type: "",
   id: null,
   name : "",
   email: "",
+  role : "",
+  loggedIn : Boolean,
 };
 
 const initialState : AuthType= {
-  access_token: "",
-  token_type: "",
   id: null,
   name : "",
   email: "",
+  role : "",
+  loggedIn : false,
 };
 
 interface Props {
@@ -25,7 +26,6 @@ const authReducer = (state = initialState, action : any) => {
   const { type, payload } = action;
   switch (type) {
     case 'store': {
-      localStorage.setItem('auth', JSON.stringify(payload));
       return {
         ...state,
         ...payload
@@ -74,14 +74,24 @@ const AuthProvider=({ children } : Props)=>{
 
 function useAuth() {
   const context = useContext(AuthContext)
+  const userQuery = useUserQuery();
+
   if (context === undefined) {
     throw new Error('useAuth must be used within a AuthProvider')
   }
+  useEffect(()=>{
+    if(userQuery.status === 'success') context.dispatch({
+      type : 'store',
+      payload : userQuery.data
+    })
+  }, [ userQuery.data ]);
   return {
     auth : context.state,
-    authDispatch : context.dispatch
+    authDispatch : context.dispatch,
+    ...userQuery
   }
 }
 
-export {initialState, AuthContext, authReducer, useAuth, withAuth};
-export default AuthProvider;
+
+
+export {initialState, AuthProvider, AuthContext, authReducer, useAuth, withAuth};

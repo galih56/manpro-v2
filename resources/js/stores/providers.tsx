@@ -39,9 +39,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             <AxiosInterceptor>
-              <Notifications />
-              <Router>{children}</Router>
-              <Toaster position='bottom-left'/>
+                <Notifications />
+                <Router>{children}</Router>
+                <Toaster position='bottom-left'/>
             </AxiosInterceptor>
           </QueryClientProvider>
         </HelmetProvider>

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
-import { useNotificationStore } from '@/stores/notifications';
+import { useNotifications } from '@/stores/notifications';
 
 import { Discussion } from '../types';
 
@@ -15,7 +15,7 @@ type UseDeleteDiscussionOptions = {
 };
 
 export const useDeleteDiscussion = ({ config }: UseDeleteDiscussionOptions = {}) => {
-  const { addNotification } = useNotificationStore();
+  const { add } = useNotifications();
 
   return useMutation({
     onMutate: async (deletedDiscussion) => {
@@ -39,7 +39,7 @@ export const useDeleteDiscussion = ({ config }: UseDeleteDiscussionOptions = {})
     },
     onSuccess: () => {
       queryClient.invalidateQueries('discussions');
-      addNotification({
+      add({
         type: 'success',
         title: 'Discussion Deleted',
       });

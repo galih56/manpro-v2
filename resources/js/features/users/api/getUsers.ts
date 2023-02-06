@@ -6,7 +6,7 @@ import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 import { User } from '../types';
 
 export const getUsers = (): Promise<User[]> => {
-  return axios.get(`/users`);
+  return axios.get(`/users`).then(res => res.data);
 };
 
 type QueryFnType = typeof getUsers;
