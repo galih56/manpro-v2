@@ -5,6 +5,7 @@ import { Button } from '@/components/Elements';
 import { Form, InputField } from '@/components/Form';
 import { useRegister } from '@/lib/auth';
 import { AxiosError } from 'axios';
+import { camelizeKeys } from 'humps';
 
 const schema = z
   .object({
@@ -48,10 +49,10 @@ export const RegisterForm = ({ onSuccess , onError }: RegisterFormProps) => {
             onError : (error , variables, context) => {
               const { response } = error as AxiosError;
               const { data } = response as any;
-              const errors = data?.errors;
-              if(errors !== undefined){
+
+              if(data?.errors !== undefined){
+                const errors = camelizeKeys(data?.errors);
                 Object.keys(errors).forEach((key)=>{
-                  console.log(key, errors[key])
                   const messages = errors[key];
                   if(messages.length){ 
                     methods.setError(key, {

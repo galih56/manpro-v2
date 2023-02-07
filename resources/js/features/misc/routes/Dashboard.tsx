@@ -1,9 +1,9 @@
 import { ContentLayout } from '@/components/Layout';
-import { useUserQuery } from '@/lib/auth';
+import { useAuthQuery } from '@/lib/auth';
 import { ROLES } from '@/lib/authorization';
 
 export const Dashboard = () => {
-  const { data : user } = useUserQuery();
+  const { data : user } = useAuthQuery();
   return (
     <ContentLayout title="Dashboard">
       <h1 className="text-xl mt-2">

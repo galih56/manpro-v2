@@ -1,11 +1,10 @@
 import React, {createContext ,useReducer,useContext, ReactNode, ElementType, useEffect} from 'react';
-import { useUserQuery } from '@/lib/auth';
+import { useAuthQuery } from '@/lib/auth';
 
 type AuthType = {
-  id: null,
-  name : "",
-  email: "",
-  role : "",
+  id: string | null,
+  name : string,
+  email: string,
   loggedIn : Boolean,
 };
 
@@ -13,17 +12,16 @@ const initialState : AuthType= {
   id: null,
   name : "",
   email: "",
-  role : "",
   loggedIn : false,
 };
 
 interface Props {
   children?: ReactNode
-  // any props that come into the component
 }
 
 const authReducer = (state = initialState, action : any) => {
   const { type, payload } = action;
+  
   switch (type) {
     case 'store': {
       return {
@@ -65,6 +63,24 @@ const withAuth = (Child : ElementType) => (props : Props) => (
 
 const AuthProvider=({ children } : Props)=>{
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const userQuery = useAuthQuery();
+  
+  useEffect(()=>{
+    if(userQuery.status === "success" && userQuery.data !== null){ 
+      const { data } = userQuery;
+      const authenticatedUser : AuthType = {
+        id : data.id,
+        name : data.name,
+        email : data.email,
+        loggedIn : true
+      }
+      dispatch({  
+        type : 'store', 
+        payload : authenticatedUser
+      })
+    }
+  }, [ userQuery.data ]);
+
   return(
     <AuthContext.Provider value={{ state, dispatch }}>
       {children}
@@ -74,21 +90,14 @@ const AuthProvider=({ children } : Props)=>{
 
 function useAuth() {
   const context = useContext(AuthContext)
-  const userQuery = useUserQuery();
 
   if (context === undefined) {
     throw new Error('useAuth must be used within a AuthProvider')
   }
-  useEffect(()=>{
-    if(userQuery.status === 'success') context.dispatch({
-      type : 'store',
-      payload : userQuery.data
-    })
-  }, [ userQuery.data ]);
+
   return {
     auth : context.state,
     authDispatch : context.dispatch,
-    ...userQuery
   }
 }
 

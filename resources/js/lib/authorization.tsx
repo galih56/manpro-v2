@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Comment } from '@/features/comments';
 import { User } from '@/features/users';
 
-import { useUserQuery } from '@/lib/auth';
+import { useAuthQuery } from '@/lib/auth';
 
 export enum ROLES {
   ADMIN = 'ADMIN',
@@ -27,7 +27,7 @@ export const POLICIES = {
 };
 
 export const useAuthorization = () => {
-  const { data : user } = useUserQuery();
+  const { data : user } = useAuthQuery();
 
   if (!user) {
     throw Error('User does not exist!');

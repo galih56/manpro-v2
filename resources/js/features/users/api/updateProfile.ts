@@ -1,16 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/stores/authentication';
 import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
+import { useAuthQuery } from '@/lib/auth';
 
 export type UpdateProfileDTO = {
   data: {
     email: string;
-    firstName: string;
-    lastName: string;
-    bio: string;
+    name: string;
   };
 };
 
@@ -23,11 +22,11 @@ type UseUpdateProfileOptions = {
 };
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
-  const { dispatch } = useNotifications();
-  const { refetch : refetchUser } = useAuth();
+  const { add } = useNotifications();
+  const { refetch : refetchUser } = useAuthQuery();
   return useMutation({
     onSuccess: () => {
-      dispatch({
+      add({
         type : 'success',
         title : 'message'
       })

@@ -6,12 +6,11 @@ import storage from '@/utils/storage';
 import { useEffect } from 'react';
 import { HTTPErrorResponse } from '@/types';
 import toast from 'react-hot-toast';
-import { camelizeKeys, decamelizeKeys } from 'humps';
+import { decamelizeKeys } from 'humps';
 
 export const axios = Axios.create({
   baseURL: API_URL,
 });
-
 
 axios.interceptors.request.use( (config: InternalAxiosRequestConfig) => {
   config.headers = config.headers ?? {};
@@ -39,9 +38,7 @@ const AxiosInterceptor = ({ children } : any) => {
   const { add } = useNotifications();
 
   useEffect(() => {
-      const resInterceptor = (response : AxiosResponse) => {
-          return response;
-      }
+      const resInterceptor = (response : AxiosResponse) =>  response;
 
       const errInterceptor = (error : any) => {
         var status : string = "";

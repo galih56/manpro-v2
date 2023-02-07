@@ -12,7 +12,7 @@ import * as React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useUserQuery, useLogout } from '@/lib/auth';
+import { useLogout } from '@/lib/auth';
 import { useAuthorization, ROLES } from '@/lib/authorization';
 
 type SideNavigationItem = {
@@ -26,7 +26,9 @@ const SideNavigation = () => {
   
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HomeIcon },
+    { name: 'Users', to: './users', icon: UsersIcon },
     { name: 'Discussions', to: './discussions', icon: FolderIcon },
+
     // checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
     //   name: 'Users',
     //   to: './users',

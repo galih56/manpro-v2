@@ -57,7 +57,7 @@ const authConfig = {
 };
 
 
-export const { useUser : useUserQuery, useLogin, useLogout, useRegister, AuthLoader } = configureAuth<
+export const { useUser : useAuthQuery, useLogin, useLogout, useRegister, AuthLoader } = configureAuth<
   AuthUser | null,
   unknown,
   LoginCredentialsDTO,
