@@ -1,6 +1,6 @@
 # MANPRO (acronym of Management Project)
 I develop this web app to practice my JS framework skill and sharpen my knowledge for building clean architecture software.
-This project is not limited to reactjs only. Soon i'll build the similar project or working with another idea using svelte svelte. 
+This project is not limited to reactjs only. Soon i'll build the similar project or working with another idea using svelte. 
 
 ## This project follows bulletproof-react github repo
 ### One of the best guideline to build a react app with a great architecture
