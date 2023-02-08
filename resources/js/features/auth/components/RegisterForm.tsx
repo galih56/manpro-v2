@@ -1,17 +1,26 @@
-import { Switch } from '@headlessui/react';
-import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
-import { Form, InputField, SelectField } from '@/components/Form';
-import { useAuth, useRegister } from '@/lib/auth';
+import { Form, InputField } from '@/components/Form';
+import { useRegister } from '@/lib/auth';
+import { AxiosError } from 'axios';
+import { camelizeKeys } from 'humps';
 
 const schema = z
   .object({
-    email: z.string().min(1, 'Email is required'),
+    email: z.string().email("This is not a valid email").min(1, 'Email is required'),
     name: z.string().min(1, 'Name is required'),
     password: z.string().min(1, 'Password is required'),
+    passwordConfirmation: z.string().min(1, 'Password confirmation is required'),
+  }).superRefine(({ password, passwordConfirmation } , ctx)=>{
+    if(password != passwordConfirmation){
+      ctx.addIssue({
+        code : z.ZodIssueCode.custom,
+        path : ['passwordConfirmation'],
+        message : 'Password confirmation did not match'
+      })
+    }
   });
 
 type RegisterValues = {
@@ -26,16 +35,35 @@ type RegisterFormProps = {
   onError? : () => void;
 };
 
-export const RegisterForm = ({ onSuccess, onError }: RegisterFormProps) => {
+export const RegisterForm = ({ onSuccess , onError }: RegisterFormProps) => {
   const signUp = useRegister();
-
+  
   return (
     <div>
       <Form<RegisterValues, typeof schema>
-        onSubmit={async (values) => {
+        onSubmit={async (values, methods) => {
           signUp.mutate(values, {
-            onSuccess : onSuccess,
-            onError : onError
+            onSuccess : (data, variables, context) => {
+              if(onSuccess !== undefined) onSuccess();
+            },
+            onError : (error , variables, context) => {
+              const { response } = error as AxiosError;
+              const { data } = response as any;
+
+              if(data?.errors !== undefined){
+                const errors = camelizeKeys(data?.errors);
+                Object.keys(errors).forEach((key)=>{
+                  const messages = errors[key];
+                  if(messages.length){ 
+                    methods.setError(key, {
+                      type : 'custom',
+                      message : messages[0]
+                    });
+                  }
+                })
+              }
+              if(onError !== undefined) onError()
+            }
           })
         }}
         schema={schema}

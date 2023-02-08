@@ -1,31 +1,29 @@
-import React, {createContext ,useReducer,useContext, ReactNode, ElementType} from 'react';
+import React, {createContext ,useReducer,useContext, ReactNode, ElementType, useEffect} from 'react';
+import { useAuthQuery } from '@/lib/auth';
 
 type AuthType = {
-  access_token: "",
-  token_type: "",
-  id: null,
-  name : "",
-  email: "",
+  id: string | null,
+  name : string,
+  email: string,
+  loggedIn : Boolean,
 };
 
 const initialState : AuthType= {
-  access_token: "",
-  token_type: "",
   id: null,
   name : "",
   email: "",
+  loggedIn : false,
 };
 
 interface Props {
   children?: ReactNode
-  // any props that come into the component
 }
 
 const authReducer = (state = initialState, action : any) => {
   const { type, payload } = action;
+  
   switch (type) {
     case 'store': {
-      localStorage.setItem('auth', JSON.stringify(payload));
       return {
         ...state,
         ...payload
@@ -65,6 +63,24 @@ const withAuth = (Child : ElementType) => (props : Props) => (
 
 const AuthProvider=({ children } : Props)=>{
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const userQuery = useAuthQuery();
+  
+  useEffect(()=>{
+    if(userQuery.status === "success" && userQuery.data !== null){ 
+      const { data } = userQuery;
+      const authenticatedUser : AuthType = {
+        id : data.id,
+        name : data.name,
+        email : data.email,
+        loggedIn : true
+      }
+      dispatch({  
+        type : 'store', 
+        payload : authenticatedUser
+      })
+    }
+  }, [ userQuery.data ]);
+
   return(
     <AuthContext.Provider value={{ state, dispatch }}>
       {children}
@@ -74,14 +90,17 @@ const AuthProvider=({ children } : Props)=>{
 
 function useAuth() {
   const context = useContext(AuthContext)
+
   if (context === undefined) {
     throw new Error('useAuth must be used within a AuthProvider')
   }
+
   return {
     auth : context.state,
-    authDispatch : context.dispatch
+    authDispatch : context.dispatch,
   }
 }
 
-export {initialState, AuthContext, authReducer, useAuth, withAuth};
-export default AuthProvider;
+
+
+export {initialState, AuthProvider, AuthContext, authReducer, useAuth, withAuth};

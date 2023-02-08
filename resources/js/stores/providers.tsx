@@ -10,6 +10,7 @@ import { queryClient } from '@/lib/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { AxiosInterceptor } from '@/lib/axios';
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from './authentication';
 
 const ErrorFallback = () => {
   return (
@@ -39,9 +40,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             <AxiosInterceptor>
-              <Notifications />
-              <Router>{children}</Router>
-              <Toaster position='bottom-left'/>
+              <AuthProvider>
+                <Notifications />
+                <Router>{children}</Router>
+                <Toaster position='bottom-left'/>
+              </AuthProvider>
             </AxiosInterceptor>
           </QueryClientProvider>
         </HelmetProvider>

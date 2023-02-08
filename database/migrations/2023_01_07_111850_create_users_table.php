@@ -17,10 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->string("email");
-            $table->string("username");
-            $table->dateTimeTz("email_verified_at");
+            $table->dateTimeTz("email_verified_at")->nullable();
             $table->string("password");
-            $table->string("remember_token");
+            $table->string("remember_token")->nullable();
             $table->timestampsTz();
         });
     }

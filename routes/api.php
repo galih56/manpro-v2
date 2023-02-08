@@ -20,6 +20,7 @@ Route::group([ "prefix" => "auth" ], function(){
     Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/me', [\App\Http\Controllers\Api\AuthController::class, 'me']);
         Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
     });
 });

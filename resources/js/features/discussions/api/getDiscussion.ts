@@ -6,7 +6,7 @@ import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 import { Discussion } from '../types';
 
 export const getDiscussion = ({ discussionId }: { discussionId: string }): Promise<Discussion> => {
-  return axios.get(`/discussions/${discussionId}`);
+  return axios.get(`/discussions/${discussionId}`).then(res => res.data);
 };
 
 type QueryFnType = typeof getDiscussion;

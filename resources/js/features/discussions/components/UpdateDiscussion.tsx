@@ -1,4 +1,4 @@
-import { PencilIcon } from '@heroicons/react/solid';
+import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';

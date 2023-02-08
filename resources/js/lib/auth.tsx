@@ -3,25 +3,24 @@ import { configureAuth, } from 'react-query-auth';
 import { Spinner } from '@/components/Elements';
 import {
   loginWithEmailAndPassword,
-  getUser,
+  getAuthenticatedUserInfo,
   registerWithEmailAndPassword,
-  UserResponse,
   LoginCredentialsDTO,
   RegisterCredentialsDTO,
   AuthUser,
 } from '@/features/auth';
 import storage from '@/utils/storage';
 
-async function handleUserResponse(data: UserResponse) {
-  const { token, user } = data;
-  storage.setToken(token);
+async function handleUserResponse(data : any) {
+  const { access_token, token_type, user } = data;
+  storage.setToken(`${token_type} ${access_token}`);
   return user;
 }
 
 async function userFn() {
   if (storage.getToken()) {
-    const data = await getUser();
-    return data;
+    const response = await getAuthenticatedUserInfo();
+    return response;
   }
   return null;
 }
@@ -58,7 +57,7 @@ const authConfig = {
 };
 
 
-export const { useUser : useAuth, useLogin, useLogout, useRegister, AuthLoader } = configureAuth<
+export const { useUser : useAuthQuery, useLogin, useLogout, useRegister, AuthLoader } = configureAuth<
   AuthUser | null,
   unknown,
   LoginCredentialsDTO,

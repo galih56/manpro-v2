@@ -12,7 +12,7 @@ import * as React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useAuth } from '@/lib/auth';
+import { useLogout } from '@/lib/auth';
 import { useAuthorization, ROLES } from '@/lib/authorization';
 
 type SideNavigationItem = {
@@ -22,15 +22,18 @@ type SideNavigationItem = {
 };
 
 const SideNavigation = () => {
-  const { checkAccess } = useAuthorization();
+  // const { checkAccess } = useAuthorization();
+  
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HomeIcon },
+    { name: 'Users', to: './users', icon: UsersIcon },
     { name: 'Discussions', to: './discussions', icon: FolderIcon },
-    checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
-      name: 'Users',
-      to: './users',
-      icon: UsersIcon,
-    },
+
+    // checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
+    //   name: 'Users',
+    //   to: './users',
+    //   icon: UsersIcon,
+    // },
   ].filter(Boolean) as SideNavigationItem[];
 
   return (
@@ -42,9 +45,9 @@ const SideNavigation = () => {
           to={item.to}
           className={clsx(
             'text-gray-300 hover:bg-gray-700 hover:text-white',
-            'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+            'group flex items-center px-2 py-2 text-base font-medium rounded-md',
+            ({isActive}) => isActive ? "bg-gray-900 text-white" : ""
           )}
-          activeClassName="bg-gray-900 text-white"
         >
           <item.icon
             className={clsx(
@@ -67,7 +70,7 @@ type UserNavigationItem = {
 };
 
 const UserNavigation = () => {
-  const { logout } = useAuth();
+  const logout = useLogout();
 
   const userNavigation = [
     { name: 'Your Profile', to: './profile' },
@@ -75,7 +78,7 @@ const UserNavigation = () => {
       name: 'Sign out',
       to: '',
       onClick: () => {
-        logout();
+        logout.mutate({});
       },
     },
   ].filter(Boolean) as UserNavigationItem[];

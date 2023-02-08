@@ -80,6 +80,5 @@ function useNotifications() {
   };
 }
 
-export {
-    initialState, NotificationsContext, notificationsReducer, useNotifications, withNotifications};
+export { initialState, NotificationsProvider, NotificationsContext, notificationsReducer, useNotifications, withNotifications};
 export default NotificationsProvider;

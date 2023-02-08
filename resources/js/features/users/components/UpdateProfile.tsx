@@ -1,21 +1,19 @@
-import { PencilIcon } from '@heroicons/react/solid';
+import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/stores/authentication';
 
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
 
 const schema = z.object({
   email: z.string().min(1, 'Required'),
-  firstName: z.string().min(1, 'Required'),
-  lastName: z.string().min(1, 'Required'),
-  bio: z.string(),
+  name: z.string().min(1, 'Required'),
 });
 
 export const UpdateProfile = () => {
-  const { user } = useAuth();
+  const { auth } = useAuth();
   const updateProfileMutation = useUpdateProfile();
 
   return (
@@ -45,10 +43,8 @@ export const UpdateProfile = () => {
         }}
         options={{
           defaultValues: {
-            firstName: user?.firstName,
-            lastName: user?.lastName,
-            email: user?.email,
-            bio: user?.bio,
+            name: auth?.name,
+            email: auth?.email,
           },
         }}
         schema={schema}
@@ -56,26 +52,14 @@ export const UpdateProfile = () => {
         {({ register, formState }) => (
           <>
             <InputField
-              label="First Name"
-              error={formState.errors['firstName']}
-              registration={register('firstName')}
+              label="Name"
+              error={formState.errors['name']}
+              registration={register('name')}
             />
             <InputField
-              label="Last Name"
-              error={formState.errors['lastName']}
-              registration={register('lastName')}
-            />
-            <InputField
-              label="Email Address"
-              type="email"
+              label="Email"
               error={formState.errors['email']}
               registration={register('email')}
-            />
-
-            <TextAreaField
-              label="Bio"
-              error={formState.errors['bio']}
-              registration={register('bio')}
             />
           </>
         )}
