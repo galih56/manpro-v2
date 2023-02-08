@@ -11,3 +11,7 @@ react-task-gantt
 react-big-calendar
 https://github.com/rcdexta/react-trello (nanti aja kalau gantt chart udah fix)
 https://github.com/plouc/nivo (belum pasti, nanti kalau sudah butuh)
+
+
+
+Soon, i'll learn how to develop software with MVVM architecture after i finished this project.
