@@ -1,5 +1,5 @@
 import { ContentLayout } from '@/components/Layout';
-import { useAuthQuery } from '@/lib/auth';
+import { useAuthQuery } from '@/lib/authentication';
 import { ROLES } from '@/lib/authorization';
 
 export const Dashboard = () => {

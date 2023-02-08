@@ -3,8 +3,7 @@ import Axios, { AxiosError, AxiosHeaders, AxiosRequestConfig, AxiosRequestHeader
 import { API_URL } from '@/config';
 import { useNotifications } from '@/stores/notifications';
 import storage from '@/utils/storage';
-import { useEffect } from 'react';
-import { HTTPErrorResponse } from '@/types';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { decamelizeKeys } from 'humps';
 
@@ -12,45 +11,47 @@ export const axios = Axios.create({
   baseURL: API_URL,
 });
 
-axios.interceptors.request.use( (config: InternalAxiosRequestConfig) => {
-  config.headers = config.headers ?? {};
-  config.url = `${config.url}`;
-  
-  const token = storage.getToken();
-  if (token) {
-    config.headers.Authorization = token;
-  }
-
-  if (config.headers['Content-Type'] === 'multipart/form-data')
-    return config;
-
-  if (config.params) {
-    config.params = decamelizeKeys(config.params);
-  }
-  
-  if (config.data) {
-    config.data = decamelizeKeys(config.data);
-  }
-  return config;
-});
 
 const AxiosInterceptor = ({ children } : any) => {
+  // useEffect is asynchronous to children's effect, so request call might be at the same time with interceptor setup and even sooner, in that case the interceptor might not work as we expected.
+  // So the solution is set a state as false initially, and set it to true after interceptor setup complete, then we return the children
+  const [ isSet, setIsSet ] = useState(false);
   const { add } = useNotifications();
 
   useEffect(() => {
-      const resInterceptor = (response : AxiosResponse) =>  response;
+      var requestInterceptor = axios.interceptors.request.use( (config: InternalAxiosRequestConfig) => {
+        config.headers = config.headers ?? {};
+        config.url = `${config.url}`;
+        
+        const token = storage.getToken();
+        if (token) {
+          config.headers.Authorization = token;
+        }
 
-      const errInterceptor = (error : any) => {
+        if (config.headers['Content-Type'] === 'multipart/form-data')
+          return config;
+
+        if (config.params) {
+          config.params = decamelizeKeys(config.params);
+        }
+        
+        if (config.data) {
+          config.data = decamelizeKeys(config.data);
+        }
+        return config;
+      },(error : any) => {
         var status : string = "";
         var message : string = "Ooops, omething went wrong!";
-        if(Axios.isAxiosError(error)){
+
+        if(error.config && error.response){
+          // error.response.status === 401
           status = error.response?.status?.toString() || "";
           message = error.response?.data?.message || error.message;
         }else{
           status = error.response?.status?.toString() || error?.status || "";
           message = error.response?.data?.message || error.message;
         }
-
+        
         add({
           type: 'error',
           title: 'Error',
@@ -58,15 +59,41 @@ const AxiosInterceptor = ({ children } : any) => {
         })
         toast.error(message);
         return Promise.reject(error);
+      });
+      
+
+      var responseInterceptor = axios.interceptors.response.use((response : AxiosResponse) => response, 
+          (error : any) => {
+            var status : string = "";
+            var message : string = "Ooops, omething went wrong!";
+            console.log(error)
+            if(error.config && error.response){
+              // error.response.status === 401
+              status = error.response?.status?.toString() || "";
+              message = error.response?.data?.message || error.message;
+            }else{
+              status = error.response?.status?.toString() || error?.status || "";
+              message = error.response?.data?.message || error.message;
+            }
+            
+            add({
+              type: 'error',
+              title: 'Error',
+              message,
+            })
+            toast.error(message);
+            return Promise.reject(error);
+          });
+      
+      setIsSet(true)
+      return () => {
+        setIsSet(false)
+        axios.interceptors.request.eject(requestInterceptor);
+        axios.interceptors.response.eject(responseInterceptor);
       }
-
-      var interceptor = axios.interceptors.response.use(resInterceptor, errInterceptor);
-
-      return () => axios.interceptors.response.eject(interceptor);
-
   }, [])
 
-  return children;
+  return <>{isSet && children}</>;
 }
 
 

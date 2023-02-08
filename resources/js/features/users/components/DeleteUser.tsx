@@ -1,6 +1,6 @@
 import { Button, ConfirmationDialog } from '@/components/Elements';
 import { useDeleteUser } from '../api/deleteUser';
-import { useAuth } from '@/stores/authentication';
+import { useAuth } from '@/lib/authentication';
 
 type DeleteUserProps = {
   id: string;

@@ -12,7 +12,7 @@ import * as React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useLogout } from '@/lib/auth';
+import { useLogout } from '@/lib/authentication';
 import { useAuthorization, ROLES } from '@/lib/authorization';
 
 type SideNavigationItem = {

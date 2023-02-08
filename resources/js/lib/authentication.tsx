@@ -10,6 +10,7 @@ import {
   AuthUser,
 } from '@/features/auth';
 import storage from '@/utils/storage';
+import { useEffect, useState } from 'react';
 
 async function handleUserResponse(data : any) {
   const { access_token, token_type, user } = data;
@@ -24,6 +25,19 @@ async function userFn() {
   }
   return null;
 }
+
+// async function userFn() {
+//   if (storage.getToken()) {
+//     try {
+//       const response = await getAuthenticatedUserInfo();
+//       return response; 
+//     } catch (error) {
+//       toast.error(error?.message)
+//       return null;
+//     }
+//   }
+//   return null;
+// }
 
 async function loginFn(data: LoginCredentialsDTO) {
   const response = await loginWithEmailAndPassword(data);
@@ -56,10 +70,33 @@ const authConfig = {
   },
 };
 
-
 export const { useUser : useAuthQuery, useLogin, useLogout, useRegister, AuthLoader } = configureAuth<
   AuthUser | null,
   unknown,
   LoginCredentialsDTO,
   RegisterCredentialsDTO
 >(authConfig);
+
+const initialState : AuthUser = {
+  id : "",
+  email : "",
+  name : "",
+  authenticated : false
+} 
+
+export const useAuth = () => {
+  const { data, error, refetch, status, isLoading, fetchStatus, isFetching, isError, isFetched } = useAuthQuery();
+  const [ auth, setAuth ] = useState<AuthUser>(initialState)
+
+  useEffect(()=>{
+    if(status == "success" && data !== null && data !== undefined){
+      setAuth(data)
+    }else{
+      setAuth(initialState);
+    }
+  }, [ data ])
+
+  return {
+    auth, error, refetch, status, isLoading, isFetching, isError, isFetched 
+  }
+}

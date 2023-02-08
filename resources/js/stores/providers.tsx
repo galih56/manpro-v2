@@ -10,7 +10,6 @@ import { queryClient } from '@/lib/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { AxiosInterceptor } from '@/lib/axios';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from './authentication';
 
 const ErrorFallback = () => {
   return (
@@ -38,15 +37,13 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     >
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <HelmetProvider>
-          <QueryClientProvider client={queryClient}>
-            <AxiosInterceptor>
-              <AuthProvider>
+          <AxiosInterceptor>
+            <QueryClientProvider client={queryClient}>
                 <Notifications />
                 <Router>{children}</Router>
                 <Toaster position='bottom-left'/>
-              </AuthProvider>
-            </AxiosInterceptor>
-          </QueryClientProvider>
+            </QueryClientProvider>
+          </AxiosInterceptor>
         </HelmetProvider>
       </ErrorBoundary>
     </React.Suspense>

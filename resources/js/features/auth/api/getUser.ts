@@ -3,5 +3,5 @@ import { axios } from '@/lib/axios';
 import { AuthUser } from '../types';
 
 export const getAuthenticatedUserInfo = (): Promise<AuthUser> => {
-  return axios.post('/auth/me').then(res => res.data);
+  return axios.post('/auth/me');
 };

@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router';
 import logo from '@/assets/logo.svg';
 import { Button } from '@/components/Elements';
 import { Head } from '@/components/Head';
-import { useAuth } from '@/stores/authentication';
+import { useAuth } from '@/lib/authentication';
 
 export const Landing = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
 
   const handleStart = () => {
-    if (auth.loggedIn) {
+    if (auth.authenticated) {
       navigate('/');
     } else {
       navigate('/auth/login');

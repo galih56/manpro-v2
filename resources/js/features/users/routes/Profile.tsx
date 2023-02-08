@@ -1,5 +1,5 @@
 import { ContentLayout } from '@/components/Layout';
-import { useAuth } from '@/stores/authentication';
+import { useAuth } from '@/lib/authentication';
 
 import { UpdateProfile } from '../components/UpdateProfile';
 

@@ -5,10 +5,3 @@ export type NotificationType = {
     type: 'info' | 'warning' | 'success' | 'error',
     message? : string
 }
-
-export interface Props {
-}
-export interface HTTPErrorResponse  {
-    message?: string;
-    status?: string;
-};
