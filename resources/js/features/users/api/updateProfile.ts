@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { useAuth } from '@/stores/authentication';
+import { useAuth } from '@/lib/authentication';
 import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
-import { useAuthQuery } from '@/lib/auth';
+import { useAuthQuery } from '@/lib/authentication';
 
 export type UpdateProfileDTO = {
   data: {

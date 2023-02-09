@@ -1,5 +1,5 @@
 import React, {createContext ,useReducer,useContext, ReactNode, ElementType, useEffect} from 'react';
-import { useAuthQuery } from '@/lib/auth';
+import { useAuthQuery } from '@/lib/authentication';
 
 type AuthType = {
   id: string | null,
