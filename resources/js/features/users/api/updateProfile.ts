@@ -4,7 +4,6 @@ import { useAuth } from '@/lib/authentication';
 import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
-import { useAuthQuery } from '@/lib/authentication';
 
 export type UpdateProfileDTO = {
   data: {
@@ -23,7 +22,7 @@ type UseUpdateProfileOptions = {
 
 export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
   const { add } = useNotifications();
-  const { refetch : refetchUser } = useAuthQuery();
+  const { refetch : refetchUser } = useAuth();
   return useMutation({
     onSuccess: () => {
       add({

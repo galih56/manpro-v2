@@ -1,0 +1,106 @@
+here's what we're doing in our app:
+
+every api call that influences a cached entity in our app is a custom hook which wraps a react-query hook
+
+every api call that does not have an effect on cached entity data is expressed as an 'action'
+
+login is an 'action'.
+
+  export const login = async (email, password) => {
+    const tokenData = await postLogin({ username: email, password })
+    persistToken(tokenData)
+    queryCache.invalidateQueries('user')
+  }
+at the root of our app, we're checking whether we have a user
+
+if we do, show Private app, if not, show Public app
+
+  const Root = () => {
+    const { isLoading, isSuccess, data: user } = useMe()
+    const isLoggedIn = isSuccess && user !== undefined
+  
+    if (isLoading) {
+      return (
+        <Loading />
+      )
+    }
+  
+    return (
+      <Router>{isLoggedIn ? <Private /> : <Public />}</Router>
+    )
+  }
+useMe is configured so that the user will only be refetched after 8 hours, which is about as long as our token lifetime
+
+  const useMe = () =>
+    useQuery('user', getMe, {
+      retry: 0,
+      // should be refetched in the background every 8 hours
+      staleTime: 1000 * 60 * 60 * 8,
+    })
+access and refresh token are used by our api client, for which we use ky
+
+  export const publicClient = ky.extend({
+    prefixUrl: API_URL,
+  })
+  
+  export const privateClient = publicClient.extend({
+    hooks: {
+      beforeRequest: [
+        async () => {
+          const accessToken = getAccessToken()
+  
+          if (accessToken) {
+            const { exp } = decodeToken(accessToken)
+            const isAccessTokenExpired = isBefore(
+              // exp is formatted as seconds
+              new Date(exp * 1000),
+              new Date()
+            )
+  
+            if (isAccessTokenExpired) {
+              const oldRefreshToken = getRefreshToken()
+              const tokenData = await postRefreshToken(oldRefreshToken)
+              persistToken(tokenData)
+            }
+          }
+        },
+        (request) => {
+          const accessToken = getAccessToken()
+          
+          if (accessToken) {
+            request.headers.set('Authorization', `Bearer ${accessToken}`)
+          }
+        },
+      ],
+    },
+  })
+due to the fact that Root will never be unmounted, and we're only rendering the private app when have a user, we can rely on the user being always present inside Private app
+
+should at any case the user be refetched and not receive a fresh token via our ky lifecycle hooks, we get confined to the Public app (which houses our login page)
+
+with this setup, we get to manage the logged-in user via react-query, without having to deal with tokens in our cache or using react-query to manage tokens
+
+to log out, we're clearing the token from localStorage and reloading the page
+
+hope having some code to look at helps, let me know if you'd like to know more
+
+
+
+I do have another question now that I've started updating my code. How are you handling errors in these scenarios, if you don't mind?
+
+Right now I've got an ErrorContext + provider wrapping my app:
+
+const AppProviders = ({ children }) => {
+  return (
+    <ReactQueryConfigProvider config={queryConfig}>
+      <ErrorProvider>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </ErrorProvider>
+    </ReactQueryConfigProvider>
+  );
+};
+And then I have a useError hook provided by the ErrorContext which essentially provides a method to render error message in a dialog from anywhere in the app.
+
+Now, with your API client - how are you handling all the 400 and 500 level errors? ! The way I have it currently is I do a .catch(e) => handleError(e) anywhere I'm using my API client, and then handleError is just a callback function that utilizes the useError hook I mentioned above. But now I'm wondering if that's something I should be handling within the API client itself? Or if it doesn't really matter? Would love to hear your feedback.

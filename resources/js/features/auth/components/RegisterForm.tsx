@@ -3,9 +3,9 @@ import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
 import { Form, InputField } from '@/components/Form';
-import { useRegister } from '@/lib/authentication';
 import { AxiosError } from 'axios';
 import { camelizeKeys } from 'humps';
+import { useRegister } from '../api/register';
 
 const schema = z
   .object({
