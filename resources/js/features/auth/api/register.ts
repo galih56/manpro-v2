@@ -10,21 +10,15 @@ export type RegisterCredentialsDTO = {
   name: string;
 };
 
-export const registerWithEmailAndPassword = (
-  data: RegisterCredentialsDTO
-): Promise<UserResponse> => {
-  return axios.post('/auth/register', data)
+export const register = (data: RegisterCredentialsDTO): Promise<UserResponse> => {
+  return axios.post(`/auth/register`, data)
                 .then(res => ({ 
                   accessToken : res.data.access_token, 
-                  user : res.data.user
+                  user : {
+                    ...res.data.user,
+                    authenticated : true
+                  }
                 }));
-};
-
-
-
-
-export const register = (data: RegisterCredentialsDTO): Promise<UserResponse> => {
-  return axios.post(`/auth/register`, data);
 };
 
 type UseRegisterOption = {

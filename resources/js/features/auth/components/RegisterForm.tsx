@@ -5,7 +5,7 @@ import { Button } from '@/components/Elements';
 import { Form, InputField } from '@/components/Form';
 import { AxiosError } from 'axios';
 import { camelizeKeys } from 'humps';
-import { useRegister } from '../api/register';
+import { useRegister } from '@/lib/authentication';
 
 const schema = z
   .object({

@@ -10,6 +10,8 @@ import { queryClient } from '@/lib/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { AxiosInterceptor } from '@/lib/axios';
 import { Toaster } from 'react-hot-toast';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { NODE_ENV } from '@/config';
 
 const ErrorFallback = () => {
   return (
@@ -42,6 +44,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
                 <Notifications />
                 <Router>{children}</Router>
                 <Toaster position='bottom-left'/>
+              {NODE_ENV == 'dev' && <ReactQueryDevtools />}
             </QueryClientProvider>
           </AxiosInterceptor>
         </HelmetProvider>

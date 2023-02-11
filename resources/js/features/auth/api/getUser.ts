@@ -5,13 +5,10 @@ import { useQuery } from '@tanstack/react-query';
 import { UserResponse } from '../types';
 
 export const getAuthenticatedUserInfo = (): Promise<UserResponse> => {
-  return axios.post('/auth/me');
+  return axios.get('/auth/me').then(res => res.data);
 };
 
-
-
 type QueryFnType = typeof getAuthenticatedUserInfo;
-
 
 export const useUser = ( config : QueryConfig<QueryFnType>) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({

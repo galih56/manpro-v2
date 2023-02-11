@@ -9,9 +9,6 @@ export const Dashboard = () => {
       <h1 className="text-xl mt-2">
         Welcome <b>{`${auth?.name}`}</b>
       </h1>
-      <h4 className="my-3">
-        Your role is : <b>{auth?.role}</b>
-      </h4>
       <p className="font-medium">In this application you can:</p>
       {auth?.role === ROLES.USER && (
         <ul className="my-4 list-inside list-disc">

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
-import { useNotificationStore } from '@/stores/notifications';
+import { useNotifications } from '@/stores/notifications';
 
 import { Discussion } from '../types';
 
@@ -26,7 +26,7 @@ type UseUpdateDiscussionOptions = {
 };
 
 export const useUpdateDiscussion = ({ config }: UseUpdateDiscussionOptions = {}) => {
-  const { addNotification } = useNotificationStore();
+  const { add } = useNotifications();
 
   return useMutation({
     onMutate: async (updatingDiscussion: any) => {
@@ -55,7 +55,7 @@ export const useUpdateDiscussion = ({ config }: UseUpdateDiscussionOptions = {})
     },
     onSuccess: (data) => {
       queryClient.refetchQueries(['discussion', data.id]);
-      addNotification({
+      add({
         type: 'success',
         title: 'Discussion Updated',
       });

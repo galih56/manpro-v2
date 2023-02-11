@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,8 +14,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $fields=$request->validate([
-            'name'=>'required|string',
-            'email'=>'required|string|unique:users,email',
+            'name'=>'required|string|max:255',
+            'email'=>'required|string|unique:users,email|max:255',
             'password' => 'string|required_with:password_confirmation|same:password_confirmation',
         ]);
 
@@ -60,7 +60,10 @@ class AuthController extends Controller
     }
 
     public function me(Request $request){
-        return response()->json(Auth::user());
+        $user = Auth::user()->load(['roles']);
+        return response()->json([
+            "user" => $user,
+        ]);
 
     }
 

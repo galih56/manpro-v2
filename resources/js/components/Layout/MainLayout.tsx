@@ -14,7 +14,7 @@ import { NavLink, Link } from 'react-router-dom';
 import logo from '@/assets/logo.svg';
 
 import { useAuthorization, ROLES } from '@/lib/authorization';
-import { useLogout } from '@/features/auth/api/logout';
+import { useLogout } from '@/lib/authentication';
 
 type SideNavigationItem = {
   name: string;
@@ -74,7 +74,7 @@ const UserNavigation = () => {
   const logout = useLogout();
 
   const userNavigation = [
-    { name: 'Your Profile', to: './profile' },
+    { name: 'Your Profile', to: './users/profile' },
     {
       name: 'Sign out',
       to: '',

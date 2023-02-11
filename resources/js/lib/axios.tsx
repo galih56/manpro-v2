@@ -9,6 +9,7 @@ import { decamelizeKeys } from 'humps';
 
 export const axios = Axios.create({
   baseURL: API_URL,
+  // withCredentials: true,
 });
 
 
@@ -68,7 +69,6 @@ const AxiosInterceptor = ({ children } : any) => {
 
             if(error.config && error.response){
               if(error.response.status === 401){
-                console.log(error.response)
                 return Promise.resolve(error);
               }
               status = error.response?.status?.toString() || "";
