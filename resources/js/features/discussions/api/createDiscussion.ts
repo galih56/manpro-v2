@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
-import { useNotificationStore } from '@/stores/notifications';
+import { useNotifications } from '@/stores/notifications';
 
 import { Discussion } from '../types';
 
@@ -22,7 +22,7 @@ type UseCreateDiscussionOptions = {
 };
 
 export const useCreateDiscussion = ({ config }: UseCreateDiscussionOptions = {}) => {
-  const { addNotification } = useNotificationStore();
+  const { add } = useNotifications();
   return useMutation({
     onMutate: async (newDiscussion) => {
       await queryClient.cancelQueries('discussions');
@@ -40,7 +40,7 @@ export const useCreateDiscussion = ({ config }: UseCreateDiscussionOptions = {})
     },
     onSuccess: () => {
       queryClient.invalidateQueries('discussions');
-      addNotification({
+      add({
         type: 'success',
         title: 'Discussion Created',
       });

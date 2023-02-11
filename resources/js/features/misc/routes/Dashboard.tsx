@@ -1,25 +1,22 @@
 import { ContentLayout } from '@/components/Layout';
-import { useAuthQuery } from '@/lib/authentication';
+import { useAuth } from '@/lib/authentication';
 import { ROLES } from '@/lib/authorization';
 
 export const Dashboard = () => {
-  const { data : user } = useAuthQuery();
+  const { auth } = useAuth();
   return (
     <ContentLayout title="Dashboard">
       <h1 className="text-xl mt-2">
-        Welcome <b>{`${user?.name}`}</b>
+        Welcome <b>{`${auth?.name}`}</b>
       </h1>
-      <h4 className="my-3">
-        Your role is : <b>{user?.role}</b>
-      </h4>
       <p className="font-medium">In this application you can:</p>
-      {user?.role === ROLES.USER && (
+      {auth?.role === ROLES.USER && (
         <ul className="my-4 list-inside list-disc">
           <li>Create comments in discussions</li>
           <li>Delete own comments</li>
         </ul>
       )}
-      {user?.role === ROLES.ADMIN && (
+      {auth?.role === ROLES.ADMIN && (
         <ul className="my-4 list-inside list-disc">
           <li>Create discussions</li>
           <li>Edit discussions</li>

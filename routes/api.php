@@ -15,12 +15,12 @@ use App\Http\Controllers\MaintenanceRequestController;
 |
 */
 
-Route::group([ "prefix" => "auth" ], function(){
+Route::group([ "prefix" => "auth", "as" => "authentication" ], function(){
     Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
     Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/me', [\App\Http\Controllers\Api\AuthController::class, 'me']);
+        Route::get('/me', [\App\Http\Controllers\Api\AuthController::class, 'me']);
         Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
     });
 });

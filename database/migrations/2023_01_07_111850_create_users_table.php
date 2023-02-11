@@ -20,6 +20,7 @@ return new class extends Migration
             $table->dateTimeTz("email_verified_at")->nullable();
             $table->string("password");
             $table->string("remember_token")->nullable();
+            $table->boolean("is_admin")->default(false);
             $table->timestampsTz();
         });
     }

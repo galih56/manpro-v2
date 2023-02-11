@@ -9,6 +9,7 @@ import { decamelizeKeys } from 'humps';
 
 export const axios = Axios.create({
   baseURL: API_URL,
+  // withCredentials: true,
 });
 
 
@@ -44,7 +45,6 @@ const AxiosInterceptor = ({ children } : any) => {
         var message : string = "Ooops, omething went wrong!";
 
         if(error.config && error.response){
-          // error.response.status === 401
           status = error.response?.status?.toString() || "";
           message = error.response?.data?.message || error.message;
         }else{
@@ -66,9 +66,11 @@ const AxiosInterceptor = ({ children } : any) => {
           (error : any) => {
             var status : string = "";
             var message : string = "Ooops, omething went wrong!";
-            console.log(error)
+
             if(error.config && error.response){
-              // error.response.status === 401
+              if(error.response.status === 401){
+                return Promise.resolve(error);
+              }
               status = error.response?.status?.toString() || "";
               message = error.response?.data?.message || error.message;
             }else{
@@ -85,7 +87,7 @@ const AxiosInterceptor = ({ children } : any) => {
             return Promise.reject(error);
           });
       
-      setIsSet(true)
+        setIsSet(true)
       return () => {
         setIsSet(false)
         axios.interceptors.request.eject(requestInterceptor);

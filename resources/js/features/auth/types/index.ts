@@ -1,5 +1,11 @@
-export type AuthUser = {
-  id: string;
+import { ReactNode } from "react";
+
+export interface Props {
+  children?: ReactNode
+}
+
+export interface AuthUser {
+  id? : string;
   email: string;
   name: string;
   authenticated : boolean;

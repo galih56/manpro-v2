@@ -1,7 +1,20 @@
 import { axios } from '@/lib/axios';
+import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import { AuthUser } from '../types';
+import { UserResponse } from '../types';
 
-export const getAuthenticatedUserInfo = (): Promise<AuthUser> => {
-  return axios.post('/auth/me');
+export const getAuthenticatedUserInfo = (): Promise<UserResponse> => {
+  return axios.get('/auth/me').then(res => res.data);
 };
+
+type QueryFnType = typeof getAuthenticatedUserInfo;
+
+export const useUser = ( config : QueryConfig<QueryFnType>) => {
+  return useQuery<ExtractFnReturnType<QueryFnType>>({
+    ...config,
+    queryKey: ['auth'],
+    queryFn: () => getAuthenticatedUserInfo(),
+  });
+};
+

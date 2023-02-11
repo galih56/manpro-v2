@@ -1,52 +1,42 @@
-import { configureAuth, } from 'react-query-auth';
-
 import { Spinner } from '@/components/Elements';
 import {
-  loginWithEmailAndPassword,
+  login,
   getAuthenticatedUserInfo,
-  registerWithEmailAndPassword,
+  register,
+  UserResponse,
   LoginCredentialsDTO,
   RegisterCredentialsDTO,
   AuthUser,
 } from '@/features/auth';
 import storage from '@/utils/storage';
+import { configureAuth } from 'react-query-auth';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-async function handleUserResponse(data : any) {
-  const { access_token, token_type, user } = data;
-  storage.setToken(`${token_type} ${access_token}`);
+async function handleUserResponse(data: UserResponse) {
+  const { accessToken, user } = data;
+  if(accessToken) storage.setToken(accessToken);
+  
   return user;
 }
 
 async function userFn() {
   if (storage.getToken()) {
-    const response = await getAuthenticatedUserInfo();
-    return response;
+    const data = await getAuthenticatedUserInfo();
+    const user = await handleUserResponse(data);
+    return user;
   }
   return null;
 }
 
-// async function userFn() {
-//   if (storage.getToken()) {
-//     try {
-//       const response = await getAuthenticatedUserInfo();
-//       return response; 
-//     } catch (error) {
-//       toast.error(error?.message)
-//       return null;
-//     }
-//   }
-//   return null;
-// }
-
 async function loginFn(data: LoginCredentialsDTO) {
-  const response = await loginWithEmailAndPassword(data);
+  const response = await login(data);
   const user = await handleUserResponse(response);
   return user;
 }
 
 async function registerFn(data: RegisterCredentialsDTO) {
-  const response = await registerWithEmailAndPassword(data);
+  const response = await register(data);
   const user = await handleUserResponse(response);
   return user;
 }
@@ -70,12 +60,13 @@ const authConfig = {
   },
 };
 
-export const { useUser : useAuthQuery, useLogin, useLogout, useRegister, AuthLoader } = configureAuth<
+export const { AuthLoader, useUser, useLogin, useLogout, useRegister } = configureAuth<
   AuthUser | null,
   unknown,
   LoginCredentialsDTO,
   RegisterCredentialsDTO
 >(authConfig);
+
 
 const initialState : AuthUser = {
   id : "",
@@ -85,18 +76,44 @@ const initialState : AuthUser = {
 } 
 
 export const useAuth = () => {
-  const { data, error, refetch, status, isLoading, fetchStatus, isFetching, isError, isFetched } = useAuthQuery();
-  const [ auth, setAuth ] = useState<AuthUser>(initialState)
+  const { data , error, refetch, status, isLoading, fetchStatus, isFetching, isError, isFetched, remove, isStale } = useUser({
+    // I don't use initialData, useQuery always returns initialData on mount and gets the data only on tab focus!
+    useErrorBoundary: true,
+    refetchOnWindowFocus: true,
+    refetchOnMount : true,
+    retry: 1,
+    // should be refetched in the background every 8 hours
+    staleTime: 1000,
+  });
+  const isAuthenticated = data !== null && data !== undefined && data?.email;
 
+  const [ auth, setAuth ] = useState<AuthUser>(initialState)
+  
   useEffect(()=>{
-    if(status == "success" && data !== null && data !== undefined){
-      setAuth(data)
+    if(isAuthenticated){
+      setAuth({
+        id : data.id,
+        email : data.email,
+        name : data.name,
+        authenticated : true
+      })
     }else{
       setAuth(initialState);
     }
   }, [ data ])
 
   return {
-    auth, error, refetch, status, isLoading, isFetching, isError, isFetched 
+    auth, 
+    error, 
+    refetch, 
+    status, 
+    fetchStatus, 
+    isLoading, 
+    isFetching, 
+    isError, 
+    isFetched , 
+    remove,
+    isAuthenticated,
+    isStale
   }
 }
