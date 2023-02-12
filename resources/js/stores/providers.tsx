@@ -39,14 +39,16 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     >
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <HelmetProvider>
-          <AxiosInterceptor>
-            <QueryClientProvider client={queryClient}>
+          <Router>
+            <AxiosInterceptor>
+              <QueryClientProvider client={queryClient}>
                 <Notifications />
-                <Router>{children}</Router>
-                <Toaster position='bottom-left'/>
-              {NODE_ENV == 'dev' && <ReactQueryDevtools />}
-            </QueryClientProvider>
-          </AxiosInterceptor>
+                  {children}
+                <Toaster position='top-center'/>
+                {NODE_ENV == 'dev' && <ReactQueryDevtools />}
+              </QueryClientProvider>
+            </AxiosInterceptor>
+          </Router>
         </HelmetProvider>
       </ErrorBoundary>
     </React.Suspense>

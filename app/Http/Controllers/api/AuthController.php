@@ -60,7 +60,13 @@ class AuthController extends Controller
     }
 
     public function me(Request $request){
-        $user = Auth::user()->load(['roles']);
+        $user = Auth::user();
+
+        if(empty($user)){
+            return response("Unauthenticated",401);
+        }
+
+        $user = $user->load(['roles']);
         return response()->json([
             "user" => $user,
         ]);

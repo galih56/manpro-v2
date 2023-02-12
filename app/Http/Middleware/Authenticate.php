@@ -21,10 +21,10 @@ class Authenticate extends Middleware
     }
 
     public function handle($request, Closure $next, ...$guards){
-        if (!$request->expectsJson()) {
-            if($request->is('api/*')){
-                return response("Unauthenticated",401);
-            }else{
+        if($request->is('api/*') && !$request->header('Authorization')){
+            return response("Unauthenticated",401);
+        }else{
+            if (!$request->expectsJson()) {
                 return route('login');
             }
         }

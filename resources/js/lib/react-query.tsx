@@ -1,12 +1,17 @@
 import { AxiosError } from 'axios';
 import { QueryClient, UseQueryOptions, UseMutationOptions, DefaultOptions } from '@tanstack/react-query';
 import { PromiseValue } from 'type-fest';
+import { toast } from 'react-hot-toast';
 
 const queryConfig: DefaultOptions = {
   queries: {
-    useErrorBoundary: true,
+    useErrorBoundary: false,
     refetchOnWindowFocus: true,
     retry: false,
+    onError : async (error)=>{
+      console.log(error)
+      return Promise.resolve(error);
+    }
   },
 };
 

@@ -6,6 +6,7 @@ import storage from '@/utils/storage';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { decamelizeKeys } from 'humps';
+import { useNavigate } from 'react-router-dom';
 
 export const axios = Axios.create({
   baseURL: API_URL,
@@ -18,6 +19,7 @@ const AxiosInterceptor = ({ children } : any) => {
   // So the solution is set a state as false initially, and set it to true after interceptor setup complete, then we return the children
   const [ isSet, setIsSet ] = useState(false);
   const { add } = useNotifications();
+  const navigate = useNavigate();
 
   useEffect(() => {
       var requestInterceptor = axios.interceptors.request.use( (config: InternalAxiosRequestConfig) => {
@@ -69,7 +71,7 @@ const AxiosInterceptor = ({ children } : any) => {
 
             if(error.config && error.response){
               if(error.response.status === 401){
-                return Promise.resolve(error);
+                navigate("/auth/login");
               }
               status = error.response?.status?.toString() || "";
               message = error.response?.data?.message || error.message;
