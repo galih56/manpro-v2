@@ -1,10 +1,7 @@
 import { BaseEntity } from '@/types';
 
 export type User = {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  role: 'ADMIN' | 'USER';
-  teamId: string;
-  bio: string;
+  is_admin: boolean;
 } & BaseEntity;

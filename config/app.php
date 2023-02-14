@@ -209,7 +209,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-        'Google' => PulkitJalan\Google\Facades\Google::class
+        'Google' => PulkitJalan\Google\Facades\Google::class,
     ])->toArray(),
 
 ];

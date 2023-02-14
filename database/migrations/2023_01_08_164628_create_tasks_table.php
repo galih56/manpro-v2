@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
-            $table->string("name");
+            $table->string("title");
             $table->text("description")->nullable();
             $table->double("progress")->default(0.0);
             $table->dateTimeTz("start_on")->nullable();

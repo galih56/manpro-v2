@@ -28,7 +28,7 @@ const SideNavigation = () => {
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HomeIcon },
     { name: 'Users', to: './users', icon: UsersIcon },
-    { name: 'Discussions', to: './discussions', icon: FolderIcon },
+    { name: 'Tasks', to: './tasks', icon: FolderIcon },
 
     // checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
     //   name: 'Users',
@@ -74,7 +74,7 @@ const UserNavigation = () => {
   const logout = useLogout();
 
   const userNavigation = [
-    { name: 'Your Profile', to: './users/profile' },
+    { name: 'Your Profile', to: './profile' },
     {
       name: 'Sign out',
       to: '',

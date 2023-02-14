@@ -1,15 +1,15 @@
 import { Table, Spinner, Link } from '@/components/Elements';
 import { formatDate } from '@/utils/format';
 
-import { useDiscussions } from '../api/getDiscussions';
-import { Discussion } from '../types';
+import { useTasks } from '../api/getTasks';
+import { Task } from '../types';
 
-import { DeleteDiscussion } from './DeleteDiscussion';
+import { DeleteTask } from './DeleteTask';
 
-export const DiscussionsList = () => {
-  const discussionsQuery = useDiscussions();
-
-  if (discussionsQuery.isLoading) {
+export const TasksList = () => {
+  const tasksQuery = useTasks();
+  
+  if (tasksQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -17,11 +17,11 @@ export const DiscussionsList = () => {
     );
   }
 
-  if (!discussionsQuery.data) return null;
+  if (!tasksQuery.data) return null;
 
   return (
-    <Table<Discussion>
-      data={discussionsQuery.data}
+    <Table<Task>
+      data={tasksQuery.data}
       columns={[
         {
           title: 'Title',
@@ -45,7 +45,7 @@ export const DiscussionsList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <DeleteDiscussion id={id} />;
+            return <DeleteTask id={id} />;
           },
         },
       ]}

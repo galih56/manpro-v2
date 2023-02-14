@@ -6,9 +6,9 @@ import { MainLayout } from '@/components/Layout';
 import { lazyImport } from '@/utils/lazyImport';
 import { useAuth } from '@/lib/authentication';
 
-const { DiscussionsRoutes } = lazyImport(
-  () => import('@/features/discussions'),
-  'DiscussionsRoutes'
+const { TasksRoutes } = lazyImport(
+  () => import('@/features/tasks'),
+  'TasksRoutes'
 );
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
@@ -42,6 +42,8 @@ export const protectedRoutes = [
           { path: '/users/profile', element: <Profile /> }
         ]
       },
+      { path: '/tasks/*', element: <TasksRoutes /> },
+      { path: '/profile', element: <Profile /> },
       { path: '/', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],

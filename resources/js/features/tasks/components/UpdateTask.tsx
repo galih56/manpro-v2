@@ -5,52 +5,52 @@ import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
-import { useDiscussion } from '../api/getDiscussion';
-import { UpdateDiscussionDTO, useUpdateDiscussion } from '../api/updateDiscussion';
+import { useTask } from '../api/getTask';
+import { UpdateTaskDTO, useUpdateTask } from '../api/updateTask';
 
-type UpdateDiscussionProps = {
-  discussionId: string;
+type UpdateTaskProps = {
+  taskId: string;
 };
 
 const schema = z.object({
   title: z.string().min(1, 'Required'),
-  body: z.string().min(1, 'Required'),
+  description: z.string().min(1, 'Required'),
 });
 
-export const UpdateDiscussion = ({ discussionId }: UpdateDiscussionProps) => {
-  const discussionQuery = useDiscussion({ discussionId });
-  const updateDiscussionMutation = useUpdateDiscussion();
+export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
+  const taskQuery = useTask({ taskId });
+  const updateTaskMutation = useUpdateTask();
 
   return (
-    <Authorization allowedRoles={[ROLES.ADMIN]}>
+    // <Authorization allowedRoles={[ROLES.ADMIN]}>
       <FormDrawer
-        isDone={updateDiscussionMutation.isSuccess}
+        isDone={updateTaskMutation.isSuccess}
         triggerButton={
           <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm">
-            Update Discussion
+            Update Task
           </Button>
         }
-        title="Update Discussion"
+        title="Update Task"
         submitButton={
           <Button
-            form="update-discussion"
+            form="update-task"
             type="submit"
             size="sm"
-            isLoading={updateDiscussionMutation.isLoading}
+            isLoading={updateTaskMutation.isLoading}
           >
             Submit
           </Button>
         }
       >
-        <Form<UpdateDiscussionDTO['data'], typeof schema>
-          id="update-discussion"
+        <Form<UpdateTaskDTO['data'], typeof schema>
+          id="update-task"
           onSubmit={async (values) => {
-            await updateDiscussionMutation.mutateAsync({ data: values, discussionId });
+            await updateTaskMutation.mutateAsync({ data: values, taskId });
           }}
           options={{
             defaultValues: {
-              title: discussionQuery.data?.title,
-              body: discussionQuery.data?.body,
+              title: taskQuery.data?.title,
+              description: taskQuery.data?.description,
             },
           }}
           schema={schema}
@@ -63,14 +63,14 @@ export const UpdateDiscussion = ({ discussionId }: UpdateDiscussionProps) => {
                 registration={register('title')}
               />
               <TextAreaField
-                label="Body"
-                error={formState.errors['body']}
-                registration={register('body')}
+                label="Description"
+                error={formState.errors['description']}
+                registration={register('description')}
               />
             </>
           )}
         </Form>
       </FormDrawer>
-    </Authorization>
+    // </Authorization>
   );
 };

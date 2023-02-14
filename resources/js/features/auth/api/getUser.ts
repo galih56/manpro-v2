@@ -6,11 +6,8 @@ import { UserResponse } from '../types';
 
 export const getAuthenticatedUserInfo = (): Promise<UserResponse> => {
   return axios.get('/auth/me')
-    .then(res => {
-      console.log(res)
-        return {
+    .then(res => ({
         accessToken : res.data?.access_token,
         user : res.data?.user
-      }
-    });
+    }));
 };

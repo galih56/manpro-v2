@@ -7,8 +7,8 @@ import { commonRoutes } from './common';
 // import { useAuth } from '@/lib/authentication';
 
 export const AppRoutes = () => {
-  const  auth = useAuth();
-  const routes = auth.isAuthenticated ? protectedRoutes : publicRoutes;
+  const { auth } = useAuth();
+  const routes = auth.authenticated ? protectedRoutes : publicRoutes;
 
   
   const element = useRoutes([

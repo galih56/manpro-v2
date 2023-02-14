@@ -20,4 +20,5 @@ Route::get('/{path}', function () {
 })->where('path', '.*')
 ->name('react');
 
+
 require __DIR__.'/auth.php';

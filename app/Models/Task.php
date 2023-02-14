@@ -11,7 +11,7 @@ class Task extends Model
         'section_id',
         'task_id',
         'issue_id',
-        'name',
+        'title',
         'description',
         'progress',
         'due_on',

@@ -78,16 +78,9 @@ export const useAuth = () => {
   const queryClient = useQueryClient()
   const { data , error, refetch, status, isLoading, fetchStatus, isFetching, isError, isFetched, remove, isStale } = useUser({
     // I don't use initialData, useQuery always returns initialData on mount and gets the data only on tab focus!
-    useErrorBoundary: true,
-    refetchOnWindowFocus: true,
-    retry: false,
-    // should be refetched in the background every 8 hours
-    staleTime: 1000 * 60 * 8 ,
-    onError : (error : any)=>{
-      console.log(error.response,queryClient.getDefaultOptions())
-      return Promise.resolve(error);
-    }
+    ...queryClient.getDefaultOptions().queries
   });
+  
   const isAuthenticated = data !== null && data !== undefined && data?.email;
 
   const [ auth, setAuth ] = useState<AuthUser>(initialState)
@@ -116,7 +109,6 @@ export const useAuth = () => {
     isError, 
     isFetched , 
     remove,
-    isAuthenticated,
     isStale
   }
 }

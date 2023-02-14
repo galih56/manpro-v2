@@ -1,17 +1,16 @@
 import { AxiosError } from 'axios';
 import { QueryClient, UseQueryOptions, UseMutationOptions, DefaultOptions } from '@tanstack/react-query';
 import { PromiseValue } from 'type-fest';
-import { toast } from 'react-hot-toast';
 
 const queryConfig: DefaultOptions = {
   queries: {
     useErrorBoundary: false,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
+    refetchOnMount : true,
     retry: false,
-    onError : async (error)=>{
-      console.log(error)
-      return Promise.resolve(error);
-    }
+
+    // should be refetched in the background every 8 hours
+    staleTime: 1000 * 60 * 8 ,
   },
 };
 

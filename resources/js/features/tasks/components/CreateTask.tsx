@@ -1,45 +1,45 @@
-import { PlusIcon } from '@heroicons/react/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
-import { CreateDiscussionDTO, useCreateDiscussion } from '../api/createDiscussion';
+import { CreateTaskDTO, useCreateTask } from '../api/createTask';
 
 const schema = z.object({
   title: z.string().min(1, 'Required'),
-  body: z.string().min(1, 'Required'),
+  description: z.string().min(1, 'Required'),
 });
 
-export const CreateDiscussion = () => {
-  const createDiscussionMutation = useCreateDiscussion();
+export const CreateTask = () => {
+  const createTaskMutation = useCreateTask();
 
   return (
-    <Authorization allowedRoles={[ROLES.ADMIN]}>
+    // <Authorization allowedRoles={[ROLES.ADMIN]}>
       <FormDrawer
-        isDone={createDiscussionMutation.isSuccess}
+        isDone={createTaskMutation.isSuccess}
         triggerButton={
           <Button size="sm" startIcon={<PlusIcon className="h-4 w-4" />}>
-            Create Discussion
+            Create Task
           </Button>
         }
-        title="Create Discussion"
+        title="Create Task"
         submitButton={
           <Button
-            form="create-discussion"
+            form="create-task"
             type="submit"
             size="sm"
-            isLoading={createDiscussionMutation.isLoading}
+            isLoading={createTaskMutation.isLoading}
           >
             Submit
           </Button>
         }
       >
-        <Form<CreateDiscussionDTO['data'], typeof schema>
-          id="create-discussion"
+        <Form<CreateTaskDTO['data'], typeof schema>
+          id="create-task"
           onSubmit={async (values) => {
-            await createDiscussionMutation.mutateAsync({ data: values });
+            await createTaskMutation.mutateAsync({ data: values });
           }}
           schema={schema}
         >
@@ -52,14 +52,14 @@ export const CreateDiscussion = () => {
               />
 
               <TextAreaField
-                label="Body"
-                error={formState.errors['body']}
-                registration={register('body')}
+                label="Description"
+                error={formState.errors['description']}
+                registration={register('description')}
               />
             </>
           )}
         </Form>
       </FormDrawer>
-    </Authorization>
+    // </Authorization>
   );
 };

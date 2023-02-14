@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Storage;
 use File;
 use App\Services\GoogleSheet;
+use App\Http\Controllers\Controller;
 
 class IssueController extends Controller
 {
