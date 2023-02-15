@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->string("title");
             $table->text("description")->nullable();
             $table->double("progress")->default(0.0);
             $table->dateTimeTz("start_on")->nullable();

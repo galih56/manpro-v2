@@ -1,10 +1,9 @@
 import * as React from 'react';
 
-import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { Button, Spinner } from '@/components/elements';
+import { Spinner } from '@/components/elements';
 import { Notifications } from '@/components/notifications/Notifications';
 import { queryClient } from '@/lib/react-query';
 import { HelmetProvider } from 'react-helmet-async';
@@ -12,22 +11,12 @@ import { AxiosInterceptor } from '@/lib/axios';
 import { Toaster } from 'react-hot-toast';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { NODE_ENV } from '@/config';
+import { AppProviderProps } from '@/types';
+import { ErrorBoundaryWrapper } from '@/lib/error-boundary';
 
-const ErrorFallback = () => {
-  return (
-    <div className="text-red-500 w-screen h-screen flex flex-col justify-center items-center" role="alert" >
-      <h2 className="text-lg font-semibold">Ooops, something went wrong :( </h2>
-      <Button className="mt-4" onClick={() => window.location.assign(window.location.origin)}>
-        Refresh
-      </Button>
-    </div>
-  );
-};
 
-type AppProviderProps = {
-  children: React.ReactNode;
-};
 
+  
 export const AppProvider = ({ children }: AppProviderProps) => {
   return (
     <React.Suspense
@@ -37,18 +26,20 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         </div>
       }
     >
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <ErrorBoundaryWrapper>
         <HelmetProvider>
-          <AxiosInterceptor>
-            <QueryClientProvider client={queryClient}>
+          <Router>
+            <AxiosInterceptor>
+              <QueryClientProvider client={queryClient}>
                 <Notifications />
-                <Router>{children}</Router>
-                <Toaster position='bottom-left'/>
-              {NODE_ENV == 'dev' && <ReactQueryDevtools />}
-            </QueryClientProvider>
-          </AxiosInterceptor>
+                  {children}
+                <Toaster position='top-center'/>
+                {NODE_ENV == 'dev' && <ReactQueryDevtools />}
+              </QueryClientProvider>
+            </AxiosInterceptor>
+          </Router>
         </HelmetProvider>
-      </ErrorBoundary>
+      </ErrorBoundaryWrapper>
     </React.Suspense>
   );
 };

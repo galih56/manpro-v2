@@ -4,9 +4,13 @@ import { PromiseValue } from 'type-fest';
 
 const queryConfig: DefaultOptions = {
   queries: {
-    useErrorBoundary: true,
-    refetchOnWindowFocus: true,
+    useErrorBoundary: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount : true,
     retry: false,
+
+    // should be refetched in the background every 8 hours
+    staleTime: 1000 * 60 * 8 ,
   },
 };
 

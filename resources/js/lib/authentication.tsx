@@ -11,13 +11,12 @@ import {
 import storage from '@/utils/storage';
 import { configureAuth } from 'react-query-auth';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 async function handleUserResponse(data: UserResponse) {
-  const { accessToken, user } = data;
-  if(accessToken) storage.setToken(accessToken);
-  
-  return user;
+  if(data.accessToken) storage.setToken(data.accessToken);
+  return data.user;
 }
 
 async function userFn() {
@@ -76,15 +75,12 @@ const initialState : AuthUser = {
 } 
 
 export const useAuth = () => {
+  const queryClient = useQueryClient()
   const { data , error, refetch, status, isLoading, fetchStatus, isFetching, isError, isFetched, remove, isStale } = useUser({
     // I don't use initialData, useQuery always returns initialData on mount and gets the data only on tab focus!
-    useErrorBoundary: true,
-    refetchOnWindowFocus: true,
-    refetchOnMount : true,
-    retry: 1,
-    // should be refetched in the background every 8 hours
-    staleTime: 1000,
+    ...queryClient.getDefaultOptions().queries
   });
+  
   const isAuthenticated = data !== null && data !== undefined && data?.email;
 
   const [ auth, setAuth ] = useState<AuthUser>(initialState)
@@ -113,7 +109,6 @@ export const useAuth = () => {
     isError, 
     isFetched , 
     remove,
-    isAuthenticated,
     isStale
   }
 }

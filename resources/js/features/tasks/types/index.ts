@@ -1,7 +1,6 @@
 import { BaseEntity } from '@/types';
 
-export type Discussion = {
+export type Task = {
   title: string;
-  body: string;
-  teamId: string;
+  description: string;
 } & BaseEntity;

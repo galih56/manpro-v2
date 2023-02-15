@@ -15,16 +15,44 @@ use App\Http\Controllers\MaintenanceRequestController;
 |
 */
 
-Route::group([ "prefix" => "auth", "as" => "authentication" ], function(){
-    Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
-    Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::group([ 
+        "prefix" => "auth", 
+        "as" => "authentication" 
+    ], 
+    function(){
+        Route::post('/register', [\App\Http\Controllers\api\AuthController::class, 'register']);
+        Route::post('/login', [\App\Http\Controllers\api\AuthController::class, 'login']);
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/me', [\App\Http\Controllers\Api\AuthController::class, 'me']);
-        Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
-    });
-});
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/me', [\App\Http\Controllers\api\AuthController::class, 'me']);
+            Route::post('/logout', [\App\Http\Controllers\api\AuthController::class, 'logout']);
+        });
+    }
+);
 
+Route::group([
+    "prefix" => "users", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\UserController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\UserController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\UserController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\UserController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\UserController::class, 'destroy']);
+}
+);
+
+Route::group([
+        "prefix" => "tasks", 
+        'middleware' => 'auth:sanctum'
+    ],function () {
+        Route::get('/', [\App\Http\Controllers\api\TaskController::class, 'index']);
+        Route::get('/{id}', [\App\Http\Controllers\api\TaskController::class, 'show']);
+        Route::post('/', [\App\Http\Controllers\api\TaskController::class, 'store']);
+        Route::put('/{id}', [\App\Http\Controllers\api\TaskController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\api\TaskController::class, 'destroy']);
+    }
+);
 
 
 

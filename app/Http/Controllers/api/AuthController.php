@@ -32,7 +32,6 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer'
         ]);
-
     }
 
     public function login(Request $request){
@@ -60,7 +59,15 @@ class AuthController extends Controller
     }
 
     public function me(Request $request){
-        $user = Auth::user()->load(['roles']);
+        $user = Auth::user();
+
+        if(empty($user)){
+            return response([
+                'message' => "Unauthenticated"
+            ],401);
+        }
+
+        $user = $user->load(['roles']);
         return response()->json([
             "user" => $user,
         ]);

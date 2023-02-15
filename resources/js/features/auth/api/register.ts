@@ -31,14 +31,6 @@ export const useRegister = ({ config }: UseRegisterOption = {}) => {
       await queryClient.cancelQueries('register');
       return response;
     },
-    onError: (_, __, context: any) => {
-      if (context?.previousDiscussions) {
-        queryClient.setQueryData('register', context.previousDiscussions);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries('register');
-    },
     ...config,
     mutationFn: register,
   });
