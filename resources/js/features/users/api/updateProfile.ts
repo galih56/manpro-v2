@@ -9,6 +9,7 @@ export type UpdateProfileDTO = {
   data: {
     email: string;
     name: string;
+    roles : [];
   };
 };
 

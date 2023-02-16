@@ -1,4 +1,4 @@
-import { Table, Spinner } from '@/components/Elements';
+import { Table, Spinner, Link } from '@/components/Elements';
 import { formatDate } from '@/utils/format';
 
 import { useUsers } from '../api/getUsers';
@@ -36,6 +36,13 @@ export const UsersList = () => {
           field: 'createdAt',
           Cell({ entry: { createdAt } }) {
             return <span>{formatDate(createdAt)}</span>;
+          },
+        },
+        {
+          title: '',
+          field: 'id',
+          Cell({ entry: { id } }) {
+            return <Link to={`./${id}`}>View</Link>;
           },
         },
         {
