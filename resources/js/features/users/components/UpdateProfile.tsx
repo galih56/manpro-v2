@@ -2,7 +2,7 @@ import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
-import { Form, FormDrawer, InputField } from '@/components/Form';
+import { Form, FormDrawer, InputField, SelectField, MultiSelectField } from '@/components/Form';
 import { useAuth } from '@/lib/authentication';
 
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
@@ -60,6 +60,28 @@ export const UpdateProfile = () => {
               label="Email"
               error={formState.errors['email']}
               registration={register('email')}
+            />
+            <SelectField
+              label="Roles"
+              options={[
+                { label : "Admin", value : 0 },
+                { label : "User", value : 0 },
+              ]}
+              error={formState.errors['roles']}
+              registration={register('roles')}
+              placeholder='Roles'
+              multiple={true}
+            />
+            <MultiSelectField 
+              label="Roles"
+              options={[
+                { label : "Admin", value : 0 },
+                { label : "User", value : 0 },
+              ]}
+              error={formState.errors['roles']}
+              registration={register('roles')}
+              placeholder='Roles'
+              multiple={true}
             />
           </>
         )}

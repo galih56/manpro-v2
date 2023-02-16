@@ -5,6 +5,7 @@ import { Spinner } from '@/components/Elements';
 import { MainLayout } from '@/components/Layout';
 import { lazyImport } from '@/utils/lazyImport';
 import { useAuth } from '@/lib/authentication';
+import { UsersRoutes } from '@/features/users/routes';
 
 const { TasksRoutes } = lazyImport(
   () => import('@/features/tasks'),
@@ -35,13 +36,7 @@ export const protectedRoutes = [
     path: '/',
     element: <App />,
     children: [
-      { 
-        path: '/users', 
-        element: <Users />, 
-        children : [
-          { path: '/users/profile', element: <Profile /> }
-        ]
-      },
+      { path: '/users/*', element: <UsersRoutes /> },
       { path: '/tasks/*', element: <TasksRoutes /> },
       { path: '/profile', element: <Profile /> },
       { path: '/', element: <Dashboard /> },
