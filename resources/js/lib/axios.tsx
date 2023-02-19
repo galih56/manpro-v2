@@ -72,6 +72,7 @@ const AxiosInterceptor = ({ children } : any) => {
             if(error.config && error.response){
               if(error.response.status === 401){
                 navigate("/auth/login");
+                return Promise.reject(error);
               }
               status = error.response?.status?.toString() || "";
               message = error.response?.data?.message || error.message;
