@@ -2,7 +2,7 @@ import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
-import { Form, FormDrawer, InputField, SelectField, ComboBox, MultiSelectField } from '@/components/Form';
+import { Form, FormDrawer, InputField, SelectField, MultiSelectField } from '@/components/Form';
 import { useAuth } from '@/lib/authentication';
 
 import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
@@ -10,11 +10,11 @@ import { UpdateProfileDTO, useUpdateProfile } from '../api/updateProfile';
 const schema = z.object({
   email: z.string().min(1, 'Required'),
   name: z.string().min(1, 'Required'),
-  // roles: z.nullable(
-  //   z.array(
-  //     z.object({ label : z.string(), value : z.number() })
-  //   )
-  // )
+  roles: z.nullable(
+    z.array(
+      z.object({ label : z.string(), value : z.number() })
+    )
+  )
 });
 
 export const UpdateProfile = () => {
@@ -44,6 +44,9 @@ export const UpdateProfile = () => {
       <Form<UpdateProfileDTO['data'], typeof schema>
         id="update-profile"
         onSubmit={async (values) => {
+          if(values.roles){
+            values.roles = values.roles.map((role : any) => role.value);
+          }
           console.log(values)
           // await updateProfileMutation.mutateAsync({ data: values });
         }}
@@ -51,11 +54,13 @@ export const UpdateProfile = () => {
           defaultValues: {
             name: auth?.name,
             email: auth?.email,
+            roles: []
           },
         }}
         schema={schema}
       >
-        {({ register, formState, control }) => (
+        {({ register, formState, control }) =>{ 
+          return (
           <>
             <InputField
               label="Name"
@@ -78,17 +83,8 @@ export const UpdateProfile = () => {
               placeholder='Roles'
               multiple={true}
             /> */}
-            <ComboBox
-              options={[
-                { label : "Admin", value : 0 },
-                { label : "User", value : 1 },
-              ]}
-              error={formState.errors['roles']}
-              registration={register('roles')}
-              control={control}
-              multiple={true}
-            />
             <MultiSelectField
+              label='Roles'
               options={[
                 { label : "Admin", value : 0 },
                 { label : "User", value : 1 },
@@ -99,7 +95,7 @@ export const UpdateProfile = () => {
               multiple={true}
             />
           </>
-        )}
+        )}}
       </Form>
     </FormDrawer>
   );
