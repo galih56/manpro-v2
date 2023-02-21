@@ -2,7 +2,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
-import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
+import { Form, FormDrawer, InputField, MultiSelectField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { CreateUserDTO, useCreateUser } from '../api/createUser';
@@ -53,7 +53,7 @@ export const CreateUser = () => {
           }}
           schema={schema}
         >
-          {({ register, formState }) => (
+          {({ register, formState, control }) => (
             <>
               <InputField
                 type="text"
@@ -78,6 +78,17 @@ export const CreateUser = () => {
                 label="Password Confirmation"
                 error={formState.errors['passwordConfirmation']}
                 registration={register('passwordConfirmation')}
+              />
+              <MultiSelectField
+                label='Roles'
+                options={[
+                  { label : "Admin", value : 0 },
+                  { label : "User", value : 1 },
+                ]}
+                error={formState.errors['roles']}
+                registration={register('roles')}
+                control={control}
+                multiple={true}
               />
             </>
           )}

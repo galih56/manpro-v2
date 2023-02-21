@@ -30,9 +30,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $fields=$request->validate([
-            'name'=>'required|string|max:255',
-            'email'=>'required|string|unique:users,email|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|unique:users,email|max:255',
             'password' => 'string|required_with:password_confirmation|same:password_confirmation',
+            'roles.*' => 'array'
         ]);
 
         $user=User::create([
@@ -40,6 +41,7 @@ class UserController extends Controller
             'email'=> $fields['email'],
             'password'=> Hash::make($fields['password']),
         ]);
+        if($fields['roles']) $user->saveMany($fields['roles']);
 
         return response()->json([
             'message' => 'User created',

@@ -11,7 +11,7 @@ type Option = {
     value: string | number | string[];
 };
 
-type SelectFieldProps = FieldWrapperPassThroughProps & {
+export type SelectFieldProps = FieldWrapperPassThroughProps & {
     options: Option[];
     className?: string;
     defaultValue?: string;
@@ -25,7 +25,7 @@ export const MultiSelectField = (props : SelectFieldProps)=>{
     const { label, error, control, registration, multiple, options } = props;
     const [selectedItems, setSelectedItems] = useState<Array<Option>>([]);
     
-    const removeSelectedItems = (value : string) =>  setSelectedItems(selectedItems.filter(item => item.value != value))
+    const removeSelectedItems = (value : number) =>  setSelectedItems(selectedItems.filter(item => item.value != value))
     const handleOnChange = (value : any)=> {
         if(multiple){
             setSelectedItems(value ? value : []) 
@@ -38,7 +38,7 @@ export const MultiSelectField = (props : SelectFieldProps)=>{
             <div className='text-xs font-normal leading-none max-w-full flex-initial'>
                 {data.label}
             </div>
-            <button type="button" className='flex flex-auto flex-row-reverse' onClick={(event) => {removeSelectedItems(data.value)}}>
+            <button type="button" className='flex flex-auto flex-row-reverse' onClick={(event) => removeSelectedItems(data.value)}>
                 <XMarkIcon className='fill-current h-4 w-4 ' />
             </button>
         </div>
@@ -82,7 +82,7 @@ export const MultiSelectField = (props : SelectFieldProps)=>{
                                 MultiValue : TWMultiValue,
                             }}
                             name={name}
-                            value={value}
+                            value={selectedItems}
                             onChange={(values)=>{
                                 onChange(values);
                                 handleOnChange(values);

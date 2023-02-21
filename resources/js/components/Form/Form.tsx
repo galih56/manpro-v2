@@ -17,17 +17,12 @@ export const Form = <
   TFormValues extends Record<string, unknown> = Record<string, unknown>,
   Schema extends ZodType<unknown, ZodTypeDef, unknown> = ZodType<unknown, ZodTypeDef, unknown>
 >({
-  onSubmit,
-  children,
-  className,
-  options,
-  id,
-  schema,
+  onSubmit, children, className, options, id, schema,
 }: FormProps<TFormValues, Schema>) => {
   const methods = useForm<TFormValues>({ ...options, resolver: schema && zodResolver(schema) });
   return (
     <form
-      className={clsx('space-y-6', className)}
+      className={clsx('space-y-2', className)}
       onSubmit={methods.handleSubmit((values) => onSubmit( values, methods))}
       id={id}
     >
