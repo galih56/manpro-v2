@@ -72,17 +72,17 @@ export const UpdateProfile = () => {
               error={formState.errors['email']}
               registration={register('email')}
             />
-            {/* <SelectField
-              label="Roles"
+            <MultiSelectField
+              label='Roles'
               options={[
                 { label : "Admin", value : 0 },
                 { label : "User", value : 1 },
               ]}
               error={formState.errors['roles']}
               registration={register('roles')}
-              placeholder='Roles'
+              control={control}
               multiple={true}
-            /> */}
+            />
             
           </>
         )}}
