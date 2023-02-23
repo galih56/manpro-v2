@@ -7,10 +7,11 @@ type InputFieldProps = FieldWrapperPassThroughProps & {
   type?: 'text' | 'email' | 'password';
   className?: string;
   registration: Partial<UseFormRegisterReturn>;
+  maxLength?: number
 };
 
 export const InputField = (props: InputFieldProps) => {
-  const { type = 'text', label, className, registration, error } = props;
+  const { type = 'text', label, className, registration, error, maxLength } = props;
   return (
     <FieldWrapper label={label} error={error}>
       <input
@@ -20,6 +21,7 @@ export const InputField = (props: InputFieldProps) => {
           className
         )}
         {...registration}
+        maxLength={maxLength}
       />
     </FieldWrapper>
   );
