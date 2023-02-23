@@ -3,6 +3,9 @@ import { ReactNode } from "react"
 export type BaseEntity = {
     id: string;
     createdAt: number;
+    updatedAt: number;
+    // createdAt: Date;
+    // updatedAt: Date;
 };
 
 export interface Props {

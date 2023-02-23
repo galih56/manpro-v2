@@ -54,7 +54,7 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
       }
     },
     onSuccess: (data) => {
-      queryClient.refetchQueries(['task', data.id]);
+      // queryClient.refetchQueries(['task', data.id]);
       add({
         type: 'success',
         title: 'Task Updated',

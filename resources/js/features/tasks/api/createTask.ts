@@ -25,21 +25,21 @@ export const useCreateTask = ({ config }: UseCreateTaskOptions = {}) => {
   const { add } = useNotifications();
   return useMutation({
     onMutate: async (newTask) => {
-      await queryClient.cancelQueries('tasks');
+      await queryClient.cancelQueries(['tasks']);
 
-      const previousTasks = queryClient.getQueryData<Task[]>('tasks');
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks']);
 
-      queryClient.setQueryData('tasks', [...(previousTasks || []), newTask.data]);
+      queryClient.setQueryData(['tasks'], [...(previousTasks || []), newTask.data]);
 
       return { previousTasks };
     },
     onError: (_, __, context: any) => {
       if (context?.previousTasks) {
-        queryClient.setQueryData('tasks', context.previousTasks);
+        queryClient.setQueryData(['tasks'], context.previousTasks);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries('tasks');
+      queryClient.invalidateQueries(['tasks']);
       add({
         type: 'success',
         title: 'Task Created',
