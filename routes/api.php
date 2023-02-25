@@ -38,21 +38,33 @@ Route::group([
     Route::get('/{id}', [\App\Http\Controllers\api\UserController::class, 'show']);
     Route::post('/', [\App\Http\Controllers\api\UserController::class, 'store']);
     Route::put('/{id}', [\App\Http\Controllers\api\UserController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\UserController::class, 'update']);
     Route::delete('/{id}', [\App\Http\Controllers\api\UserController::class, 'destroy']);
-}
-);
+});
 
 Route::group([
-        "prefix" => "tasks", 
-        'middleware' => 'auth:sanctum'
-    ],function () {
-        Route::get('/', [\App\Http\Controllers\api\TaskController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\api\TaskController::class, 'show']);
-        Route::post('/', [\App\Http\Controllers\api\TaskController::class, 'store']);
-        Route::put('/{id}', [\App\Http\Controllers\api\TaskController::class, 'update']);
-        Route::delete('/{id}', [\App\Http\Controllers\api\TaskController::class, 'destroy']);
-    }
-);
+    "prefix" => "tasks", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\TaskController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\TaskController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\TaskController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\TaskController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\TaskController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\TaskController::class, 'destroy']);
+});
+
+Route::group([
+    "prefix" => "roles", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\RoleController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\RoleController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\RoleController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\RoleController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\RoleController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\RoleController::class, 'destroy']);
+});
 
 
 

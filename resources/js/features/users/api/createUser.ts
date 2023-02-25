@@ -12,6 +12,7 @@ export type CreateUserDTO = {
     email: string;
     password: string;
     passwordConfirmation: string;
+    roles? : [];
   };
 };
 
@@ -27,21 +28,21 @@ export const useCreateUser = ({ config }: UseCreateUserOptions = {}) => {
   const { add } = useNotifications();
   return useMutation({
     onMutate: async (newUser) => {
-      await queryClient.cancelQueries('users');
+      await queryClient.cancelQueries(['users']);
 
-      const previousUsers = queryClient.getQueryData<User[]>('users');
-
-      queryClient.setQueryData('users', [...(previousUsers || []), newUser.data]);
+      const previousUsers = queryClient.getQueryData<User[]>(['users']);
+      console.log(newUser)
+      queryClient.setQueryData(['users'], [...(previousUsers || []), newUser.data]);
 
       return { previousUsers };
     },
     onError: (_, __, context: any) => {
       if (context?.previousUsers) {
-        queryClient.setQueryData('users', context.previousUsers);
+        queryClient.setQueryData(['users'], context.previousUsers);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries('users');
+      queryClient.invalidateQueries(['users']);
       add({
         type: 'success',
         title: 'User Created',

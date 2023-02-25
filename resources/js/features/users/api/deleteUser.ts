@@ -24,12 +24,12 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
 
   return useMutation({
     onMutate: async (deletedUser) => {
-      await queryClient.cancelQueries('users');
+      await queryClient.cancelQueries(['users']);
 
-      const previousUsers = queryClient.getQueryData<User[]>('users');
+      const previousUsers = queryClient.getQueryData<User[]>(['users']);
 
       queryClient.setQueryData(
-        'users',
+        ['users'],
         previousUsers?.filter((user) => user.id !== deletedUser.userId)
       );
 
@@ -37,11 +37,11 @@ export const useDeleteUser = ({ config }: UseDeleteUserOptions = {}) => {
     },
     onError: (_, __, context: any) => {
       if (context?.previousUsers) {
-        queryClient.setQueryData('users', context.previousUsers);
+        queryClient.setQueryData(['users'], context.previousUsers);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries('users');
+      queryClient.invalidateQueries(['users']);
       const notification : NotificationType=  {
         type: 'success',
         title: 'User Deleted',

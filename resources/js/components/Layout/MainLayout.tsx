@@ -5,6 +5,7 @@ import {
   HomeIcon,
   UsersIcon,
   XMarkIcon,
+  UserGroupIcon,
   Bars3CenterLeftIcon,
 } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
@@ -27,8 +28,9 @@ const SideNavigation = () => {
   
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HomeIcon },
-    { name: 'Users', to: './users', icon: UsersIcon },
     { name: 'Tasks', to: './tasks', icon: FolderIcon },
+    { name: 'Users', to: './users', icon: UsersIcon },
+    { name: 'Roles', to: './roles', icon: UserGroupIcon },
 
     // checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
     //   name: 'Users',

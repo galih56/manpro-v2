@@ -4,24 +4,31 @@ import { useAuth } from '@/lib/authentication';
 import { axios } from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
+import { User } from '../types';
+import { Option } from '@/components/Form';
 
-export type UpdateProfileDTO = {
+export type UpdateUserDTO = {
   data: {
-    email: string;
-    name: string;
-    roles : [];
+    email : string;
+    name : string;
+    roles : Array<Option>;
   };
+  userId: string;
 };
 
-export const updateProfile = ({ data }: UpdateProfileDTO) => {
-  return axios.patch(`/users/profile`, data);
+export const updateUser = ({
+  data,
+  userId,
+}: UpdateUserDTO): Promise<User> => {
+  return axios.patch(`/users/${userId}`, data);
 };
 
-type UseUpdateProfileOptions = {
-  config?: MutationConfig<typeof updateProfile>;
+
+type UseUpdateUserOptions = {
+  config?: MutationConfig<typeof updateUser>;
 };
 
-export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
+export const useUpdateUser = ({ config }: UseUpdateUserOptions = {}) => {
   const { add } = useNotifications();
   const { refetch : refetchUser } = useAuth();
   return useMutation({
@@ -33,6 +40,6 @@ export const useUpdateProfile = ({ config }: UseUpdateProfileOptions = {}) => {
       refetchUser();
     },
     ...config,
-    mutationFn: updateProfile,
+    mutationFn: updateUser,
   });
 };

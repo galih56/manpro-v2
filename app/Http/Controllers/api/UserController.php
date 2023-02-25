@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::with('roles')->get();
         return response()->json($users);
     }
 
@@ -30,9 +30,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $fields=$request->validate([
-            'name'=>'required|string|max:255',
-            'email'=>'required|string|unique:users,email|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|unique:users,email|max:255',
             'password' => 'string|required_with:password_confirmation|same:password_confirmation',
+            'roles' => 'array',
+            'roles.*' => 'numeric|distinct'
         ]);
 
         $user=User::create([
@@ -40,10 +42,11 @@ class UserController extends Controller
             'email'=> $fields['email'],
             'password'=> Hash::make($fields['password']),
         ]);
+        if($fields['roles']) $user->roles()->sync($fields['roles']);
 
         return response()->json([
             'message' => 'User created',
-            'user' => $user,
+            'data' => $user,
         ]);
     }
 
@@ -55,7 +58,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $user = User::with('roles')->find($id);
 
         if(empty($user)){
             return response([
@@ -86,15 +89,18 @@ class UserController extends Controller
         
         $fields=$request->validate([
             'name'=>'required|string|max:255',
-            'email'=>'required|string|unique:users,email|max:255',
+            'email'=>'required|string|max:255',
             'password' => 'string|required_with:password_confirmation|same:password_confirmation',
+            'roles' => 'array',
+            'roles.*' => 'numeric|distinct'
         ]);
         
         $user->update($fields);
-        
+        if($fields['roles']) $user->roles()->sync($fields['roles']);
+
         return response()->json([
             'message' => 'User updated',
-            'user' => $user,
+            'data' => $user,
         ]);
     }
 
@@ -113,6 +119,7 @@ class UserController extends Controller
                 'message' => "User not found"
             ],404);
         }
+        $user->roles()->sync([]);
         $user->delete();
         return response()->json([
             'message' => 'User deleted'

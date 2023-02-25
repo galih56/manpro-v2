@@ -19,12 +19,12 @@ export const useDeleteTask = ({ config }: UseDeleteTaskOptions = {}) => {
 
   return useMutation({
     onMutate: async (deletedTask) => {
-      await queryClient.cancelQueries('tasks');
+      await queryClient.cancelQueries(['tasks']);
 
-      const previousTasks = queryClient.getQueryData<Task[]>('tasks');
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks']);
 
       queryClient.setQueryData(
-        'tasks',
+        ['tasks'],
         previousTasks?.filter(
           (task) => task.id !== deletedTask.taskId
         )
@@ -34,11 +34,11 @@ export const useDeleteTask = ({ config }: UseDeleteTaskOptions = {}) => {
     },
     onError: (_, __, context: any) => {
       if (context?.previousTasks) {
-        queryClient.setQueryData('tasks', context.previousTasks);
+        queryClient.setQueryData(['tasks'], context.previousTasks);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries('tasks');
+      queryClient.invalidateQueries(['tasks']);
       add({
         type: 'success',
         title: 'Task Deleted',
