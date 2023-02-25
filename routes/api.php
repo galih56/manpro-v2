@@ -38,7 +38,7 @@ Route::group([
     Route::get('/{id}', [\App\Http\Controllers\api\UserController::class, 'show']);
     Route::post('/', [\App\Http\Controllers\api\UserController::class, 'store']);
     Route::put('/{id}', [\App\Http\Controllers\api\UserController::class, 'update']);
-    Route::patch('/{id}', [\App\Http\Controllers\api\TaskController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\UserController::class, 'update']);
     Route::delete('/{id}', [\App\Http\Controllers\api\UserController::class, 'destroy']);
 });
 
