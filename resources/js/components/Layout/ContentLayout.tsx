@@ -4,7 +4,7 @@ import { Head } from '../Head';
 
 type ContentLayoutProps = {
   children: React.ReactNode;
-  title: string;
+  title?: string;
 };
 
 export const ContentLayout = ({ children, title }: ContentLayoutProps) => {
