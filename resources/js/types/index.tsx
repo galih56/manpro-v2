@@ -9,7 +9,8 @@ export type BaseEntity = {
 };
 
 export interface Props {
-    children?: ReactNode
+    children?: ReactNode,
+    className?: string
 }
  
 export type AppProviderProps = {
