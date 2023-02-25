@@ -1,10 +1,11 @@
-import { Table, Spinner, Link } from '@/components/Elements';
+import { Table, Spinner, Badge } from '@/components/Elements';
 import { formatDate } from '@/utils/format';
 
 import { useUsers } from '../api/getUsers';
 import { User } from '../types';
 
 import { DeleteUser } from './DeleteUser';
+import { UpdateUser } from './UpdateUser';
 
 export const UsersList = () => {
   const usersQuery = useUsers();
@@ -32,6 +33,21 @@ export const UsersList = () => {
           field: 'email',
         },
         {
+          title: 'Roles',
+          field: 'id',
+          Cell({ entry: { id, roles } }) {
+            console.log(roles)
+            if(roles){
+              return( 
+                <div>
+                  {roles.map(role => <Badge title={role.name} />)}
+                </div>
+              );
+            }
+            return <span> - </span>
+          },
+        },
+        {
           title: 'Created At',
           field: 'createdAt',
           Cell({ entry: { createdAt } }) {
@@ -42,7 +58,7 @@ export const UsersList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <Link to={`./${id}`}>View</Link>;
+            return <UpdateUser userId={id} />;
           },
         },
         {
