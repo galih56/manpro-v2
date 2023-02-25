@@ -2,16 +2,22 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
-import { Form, FormDrawer, InputField, MultiSelectField, TextAreaField } from '@/components/Form';
+import { Form, FormDrawer, InputField, SelectField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { CreateUserDTO, useCreateUser } from '../api/createUser';
+import { useRoleOptions } from '@/hooks/useRoleOptions';
 
 const schema = z.object({
   email: z.string().email("This is not a valid email").min(1, 'Email is required'),
   name: z.string().min(1, 'Name is required'),
   password: z.string().min(1, 'Password is required'),
   passwordConfirmation: z.string().min(1, 'Password confirmation is required'),
+  roles: z.nullable(
+    z.array(
+      z.object({ label : z.string(), value : z.number() })
+    )
+  )
 }).superRefine(({ password, passwordConfirmation } , ctx)=>{
   if(password != passwordConfirmation){
     ctx.addIssue({
@@ -23,6 +29,7 @@ const schema = z.object({
 });
 
 export const CreateUser = () => {
+  const roleOptions = useRoleOptions();
   const createUserMutation = useCreateUser();
 
   return (
@@ -49,6 +56,9 @@ export const CreateUser = () => {
         <Form<CreateUserDTO['data'], typeof schema>
           id="create-user"
           onSubmit={async (values) => {
+            if(values.roles){
+              values.roles = values.roles.map((role : any) => role.value);
+            }
             await createUserMutation.mutateAsync({ data: values });
           }}
           schema={schema}
@@ -79,12 +89,9 @@ export const CreateUser = () => {
                 error={formState.errors['passwordConfirmation']}
                 registration={register('passwordConfirmation')}
               />
-              <MultiSelectField
+              <SelectField
                 label='Roles'
-                options={[
-                  { label : "Admin", value : 0 },
-                  { label : "User", value : 1 },
-                ]}
+                options={roleOptions}
                 error={formState.errors['roles']}
                 registration={register('roles')}
                 control={control}
