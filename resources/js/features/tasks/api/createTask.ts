@@ -10,6 +10,7 @@ export type CreateTaskDTO = {
   data: {
     title: string;
     description: string;
+    labels? : [];
   };
 };
 

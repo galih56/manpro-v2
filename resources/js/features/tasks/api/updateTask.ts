@@ -10,6 +10,7 @@ export type UpdateTaskDTO = {
   data: {
     title: string;
     description: string;
+    labels?: []
   };
   taskId: string;
 };

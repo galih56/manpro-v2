@@ -1,10 +1,11 @@
-import { Table, Spinner, Link } from '@/components/Elements';
+import { Table, Spinner, Link, Badge } from '@/components/Elements';
 import { formatDate } from '@/utils/format';
 
 import { useTasks } from '../api/getTasks';
 import { Task } from '../types';
 
 import { DeleteTask } from './DeleteTask';
+import { UpdateTask } from './UpdateTask';
 
 export const TasksList = () => {
   const tasksQuery = useTasks();
@@ -28,6 +29,20 @@ export const TasksList = () => {
           field: 'title',
         },
         {
+          title: 'Labels',
+          field: 'id',
+          Cell({ entry: { id, name, labels } }) {
+            if(labels){
+              return( 
+                <div>
+                  {labels.map(label => <Badge key={id+"-label-"+label.id} title={label.name} />)}
+                </div>
+              );
+            }
+            return <span> - </span>
+          },
+        },
+        {
           title: 'Created At',
           field: 'createdAt',
           Cell({ entry: { createdAt } }) {
@@ -38,14 +53,14 @@ export const TasksList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <Link to={`./${id}`}>View</Link>;
+            return id ? <UpdateTask taskId={id} /> : <></>;
           },
         },
         {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <DeleteTask id={id} />;
+            return id ? <DeleteTask id={id} /> : <></>;
           },
         },
       ]}
