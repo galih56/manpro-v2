@@ -20,7 +20,7 @@ const schema = z.object({
   name: z.string().min(1, 'Required'),
   roles: z.nullable(
     z.array(
-      z.number()
+      z.object({ label : z.string(), value : z.number() })
     )
   )
 });
@@ -43,6 +43,7 @@ export const UpdateUser = ({ userId } : UpdateUserProps) => {
   useEffect(()=>{
     setDefaultRoles(()=>getDefaultRoleOptions());
   },[ userId, user?.roles ]);
+
 
   return (
     <FormDrawer
