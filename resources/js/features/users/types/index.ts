@@ -1,3 +1,4 @@
+import { Role } from '@/features/roles';
 import { BaseEntity } from '@/types';
 
 export type User = {
@@ -6,9 +7,3 @@ export type User = {
   is_admin: boolean;
   roles : Array<Role>
 } & BaseEntity;
-
-
-export type Role = {
-  name: string;
-} & BaseEntity;
-
