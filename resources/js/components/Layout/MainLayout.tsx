@@ -20,7 +20,7 @@ import { useLogout } from '@/lib/authentication';
 type SideNavigationItem = {
   name: string;
   to: string;
-  icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
+  icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
 };
 
 const SideNavigation = () => {
@@ -31,6 +31,7 @@ const SideNavigation = () => {
     { name: 'Tasks', to: './tasks', icon: FolderIcon },
     { name: 'Users', to: './users', icon: UsersIcon },
     { name: 'Roles', to: './roles', icon: UserGroupIcon },
+    { name: 'Labels', to: './labels' },
 
     // checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
     //   name: 'Users',
@@ -52,13 +53,13 @@ const SideNavigation = () => {
             ({isActive}) => isActive ? "bg-gray-900 text-white" : ""
           )}
         >
-          <item.icon
+          {item.icon && <item.icon
             className={clsx(
               'text-gray-400 group-hover:text-gray-300',
               'mr-4 flex-shrink-0 h-6 w-6'
             )}
             aria-hidden="true"
-          />
+          />}
           {item.name}
         </NavLink>
       ))}
