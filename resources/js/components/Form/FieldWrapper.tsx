@@ -13,7 +13,11 @@ type FieldWrapperProps = {
 export type FieldWrapperPassThroughProps = Omit<FieldWrapperProps, 'className' | 'children'>;
 
 export const FieldWrapper = (props: FieldWrapperProps) => {
-  const { label, className, error, children } = props;
+  const { label, className, children } = props;
+  var { error } = props;
+
+  if(Array.isArray(error)) error = error[0];
+  
   return (
     <>
       <label className={clsx('mt-2 block text-sm font-medium text-gray-700', className)}>
