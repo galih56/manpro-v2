@@ -66,6 +66,17 @@ Route::group([
     Route::delete('/{id}', [\App\Http\Controllers\api\RoleController::class, 'destroy']);
 });
 
+Route::group([
+    "prefix" => "labels", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\LabelController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\LabelController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\LabelController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\LabelController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\LabelController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\LabelController::class, 'destroy']);
+});
 
 
 Route::get('/sync', [MaintenanceRequestController::class, 'synchronize']);
