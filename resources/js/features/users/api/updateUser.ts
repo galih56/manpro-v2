@@ -11,7 +11,7 @@ export type UpdateUserDTO = {
   data: {
     email : string;
     name : string;
-    roles : Array<Option>;
+    roles : Option[];
   };
   userId: string;
 };
