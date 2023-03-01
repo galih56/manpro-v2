@@ -15,7 +15,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = Task::with('labels')->get();
         return response()->json($tasks);
     }
 
@@ -38,13 +38,16 @@ class TaskController extends Controller
             'complated' => 'boolean',
             'completed_at' => 'nullable|date_format:Y-m-d H:i:s',
             'completed_by' => 'nullable|numeric',
+            'labels' => 'array',
+            'labels.*' => 'numeric|distinct'
         ]);
 
         $task=Task::create($fields);
+        if($fields['labels']) $task->labels()->sync($fields['labels']);
 
         return response()->json([
             'message' => 'Task created',
-            'task' => $task,
+            'data' => $task,
         ]);
     }
 
@@ -56,7 +59,7 @@ class TaskController extends Controller
      */
     public function show(int $id)
     {
-        $task = Task::find($id);
+        $task = Task::with('labels')->find($id);
 
         if(empty($task)){
             return response([
@@ -87,7 +90,7 @@ class TaskController extends Controller
         }
         
         $fields=$request->validate([
-            'project_id' => 'required',
+            'project_id' => 'nullable',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'progress' => 'numeric',
@@ -97,13 +100,16 @@ class TaskController extends Controller
             'complated' => 'boolean',
             'completed_at' => 'nullable|date_format:Y-m-d H:i:s',
             'completed_by' => 'nullable|numeric',
+            'labels' => 'array',
+            'labels.*' => 'numeric|distinct'
         ]);
         
         $task->update($fields);
-        
+        if($fields['labels']) $task->labels()->sync($fields['labels']);
+
         return response()->json([
             'message' => 'Task updated',
-            'task' => $task,
+            'data' => $task,
         ]);
     }
 

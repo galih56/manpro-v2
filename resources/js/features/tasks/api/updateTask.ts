@@ -5,12 +5,13 @@ import { MutationConfig, queryClient } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
 
 import { Task } from '../types';
+import { Option } from '@/components/Form';
 
 export type UpdateTaskDTO = {
   data: {
     title: string;
     description: string;
-    labels?: []
+    labels?: Option[]
   };
   taskId: string;
 };

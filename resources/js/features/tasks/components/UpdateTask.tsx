@@ -30,7 +30,7 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
   const labelOptions = useLabelOptions();
   const updateTaskMutation = useUpdateTask();
 
-  const [ defaultLabels, setDefaultLabels ] = useState<Array<Option>>();
+  const [ defaultLabels, setDefaultLabels ] = useState<Array<Option>>([]);
 
   const getDefaultRoleOptions = useCallback(() : Array<Option> => {
     const labels =  taskQuery.data?.labels;
@@ -68,6 +68,9 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
         <Form<UpdateTaskDTO['data'], typeof schema>
           id="update-task"
           onSubmit={async (values) => {
+            if(values.labels){
+              values.labels = values.labels.map((label : any) => label.value);
+            }
             await updateTaskMutation.mutateAsync({ data: values, taskId });
           }}
           options={{
