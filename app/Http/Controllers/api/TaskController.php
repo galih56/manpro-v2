@@ -13,9 +13,11 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::with('labels')->get();
+        $tasks = Task::with('labels')->where('title','like',$request->title)->with('assignees')->paginate(
+            $request->limit ?? 15
+        )->withQueryString();
         return response()->json($tasks);
     }
 
@@ -32,18 +34,21 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'progress' => 'numeric',
-            'start_on' => 'nullable|date_format:Y-m-d H:i:s',
-            'due_on' => 'nullable|date_format:Y-m-d H:i:s',
-            'started_at' => 'nullable|date_format:Y-m-d H:i:s',
+            'start_on' => 'nullable|date_format:d-m-Y H:i:s',
+            'due_on' => 'nullable|date_format:d-m-Y H:i:s',
+            'started_at' => 'nullable|date_format:d-m-Y H:i:s',
             'complated' => 'boolean',
-            'completed_at' => 'nullable|date_format:Y-m-d H:i:s',
+            'completed_at' => 'nullable|date_format:d-m-Y H:i:s',
             'completed_by' => 'nullable|numeric',
             'labels' => 'array',
-            'labels.*' => 'numeric|distinct'
+            'labels.*' => 'numeric|distinct',
+            'assignees' => 'array',
+            'assignees.*' => 'numeric|distinct'
         ]);
 
         $task=Task::create($fields);
         if($fields['labels']) $task->labels()->sync($fields['labels']);
+        if($fields['assignees']) $task->assignees()->sync($fields['assignees']);
 
         return response()->json([
             'message' => 'Task created',
@@ -59,7 +64,7 @@ class TaskController extends Controller
      */
     public function show(int $id)
     {
-        $task = Task::with('labels')->find($id);
+        $task = Task::with('labels')->with('assignees')->find($id);
 
         if(empty($task)){
             return response([
@@ -94,18 +99,21 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'progress' => 'numeric',
-            'start_on' => 'nullable|date_format:Y-m-d H:i:s',
-            'due_on' => 'nullable|date_format:Y-m-d H:i:s',
-            'started_at' => 'nullable|date_format:Y-m-d H:i:s',
+            'start_on' => 'nullable|date_format:d-m-Y H:i:s',
+            'due_on' => 'nullable|date_format:d-m-Y H:i:s',
+            'started_at' => 'nullable|date_format:d-m-Y H:i:s',
             'complated' => 'boolean',
-            'completed_at' => 'nullable|date_format:Y-m-d H:i:s',
+            'completed_at' => 'nullable|date_format:d-m-Y H:i:s',
             'completed_by' => 'nullable|numeric',
             'labels' => 'array',
-            'labels.*' => 'numeric|distinct'
+            'labels.*' => 'numeric|distinct',
+            'assignees' => 'array',
+            'assignees.*' => 'numeric|distinct'
         ]);
         
         $task->update($fields);
         if($fields['labels']) $task->labels()->sync($fields['labels']);
+        if($fields['assignees']) $task->assignees()->sync($fields['assignees']);
 
         return response()->json([
             'message' => 'Task updated',
@@ -128,7 +136,10 @@ class TaskController extends Controller
                 'message' => "Task not found"
             ],404);
         }
+        $task->labels()->sync([]);
+        $task->assignees()->sync([]);
         $task->delete();
+
         return response()->json([
             'message' => 'Task deleted'
         ]);
