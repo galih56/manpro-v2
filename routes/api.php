@@ -43,6 +43,30 @@ Route::group([
 });
 
 Route::group([
+    "prefix" => "labels", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\ProjectController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\ProjectController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'destroy']);
+});
+
+Route::group([
+    "prefix" => "projects", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\ProjectController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\ProjectController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\ProjectController::class, 'destroy']);
+});
+
+Route::group([
     "prefix" => "tasks", 
     'middleware' => 'auth:sanctum'
 ],function () {
