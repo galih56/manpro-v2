@@ -35,7 +35,7 @@ class LabelController extends Controller
         $label=Label::create($fields);
         return response()->json([
             'message' => 'Label created',
-            'role' => $label,
+            'data' => $label,
         ]);
     }
 
