@@ -26,9 +26,7 @@ export const UpdateRole = ({ roleId }: UpdateRoleProps) => {
       <FormDrawer
         isDone={updateRoleMutation.isSuccess}
         triggerButton={
-          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm">
-            Update Role
-          </Button>
+          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm" />
         }
         title="Update Role"
         submitButton={
