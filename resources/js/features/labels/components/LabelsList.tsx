@@ -1,5 +1,5 @@
 import { Table, Spinner, Link } from '@/components/Elements';
-import { formatDate } from '@/utils/format';
+import { formatDate } from '@/utils/datetime';
 
 import { useLabels } from '../api/getLabels';
 import { Label } from '../types';
@@ -39,14 +39,14 @@ export const LabelsList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return id ? <UpdateLabel labelId={id} /> : <></>;
+            return id !== undefined || id !== null ? <UpdateLabel labelId={id} /> : <></>;
           },
         },
         {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return id ? <DeleteLabel id={id} /> : <></>;
+            return id !== undefined || id !== null ? <DeleteLabel id={id} /> : <></>;
           },
         },
       ]}
