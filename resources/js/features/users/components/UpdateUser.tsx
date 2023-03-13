@@ -49,9 +49,7 @@ export const UpdateUser = ({ userId } : UpdateUserProps) => {
     <FormDrawer
       isDone={updateUserMutation.isSuccess}
       triggerButton={
-        <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm">
-          Update Profile
-        </Button>
+        <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm" />
       }
       title="Update Profile"
       submitButton={
@@ -68,10 +66,6 @@ export const UpdateUser = ({ userId } : UpdateUserProps) => {
       <Form<UpdateUserDTO['data'], typeof schema>
         id="update-profile"
         onSubmit={async (values) => {
-          console.log(values)
-          if(values.roles){
-            values.roles = values.roles.map((role : any) => role.value);
-          }
           await updateUserMutation.mutateAsync({ data: values, userId : userId });
         }}
         options={{
