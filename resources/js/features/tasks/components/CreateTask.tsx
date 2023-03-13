@@ -7,6 +7,7 @@ import { Authorization, ROLES } from '@/lib/authorization';
 
 import { CreateTaskDTO, useCreateTask } from '../api/createTask';
 import { useLabelOptions } from '@/hooks/useLabelOptions';
+import { useUserOptions } from '@/hooks/useUserOptions';
 
 const schema = z.object({
   title: z.string().min(1, 'Required'),
@@ -15,11 +16,17 @@ const schema = z.object({
     z.array(
       z.object({ label : z.string(), value : z.number() })
     )
+  ),
+  assignees: z.nullable(
+    z.array(
+      z.object({ label : z.string(), value : z.number() })
+    )
   )
 });
 
 export const CreateTask = () => {
   const labelOptions = useLabelOptions();
+  const usersOptions = useUserOptions();
   const createTaskMutation = useCreateTask();
 
   return (
@@ -72,6 +79,15 @@ export const CreateTask = () => {
                 options={labelOptions}
                 error={formState.errors['labels']}
                 registration={register('labels')}
+                control={control}
+                multiple={true}
+              />
+              
+              <SelectField
+                label='Assignees'
+                options={usersOptions}
+                error={formState.errors['assignees']}
+                registration={register('assignees')}
                 control={control}
                 multiple={true}
               />
