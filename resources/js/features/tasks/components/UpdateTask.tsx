@@ -10,15 +10,20 @@ import { UpdateTaskDTO, useUpdateTask } from '../api/updateTask';
 import { useLabelOptions } from '@/hooks/useLabelOptions';
 import { useCallback, useEffect, useState } from 'react';
 import { Label } from '@/features/labels';
+import { useUserOptions } from '@/hooks/useUserOptions';
 
 type UpdateTaskProps = {
   taskId: string;
 };
 
 const schema = z.object({
-  title: z.string().min(1, 'Required'),
-  description: z.string().min(1, 'Required'),
+  search: z.nullable(z.string()),
   labels: z.nullable(
+    z.array(
+      z.object({ label : z.string(), value : z.number() })
+    )
+  ),
+  assignees: z.nullable(
     z.array(
       z.object({ label : z.string(), value : z.number() })
     )
@@ -28,6 +33,7 @@ const schema = z.object({
 export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
   const taskQuery = useTask({ taskId });
   const labelOptions = useLabelOptions();
+  const usersOptions = useUserOptions();
   const updateTaskMutation = useUpdateTask();
 
   const [ defaultLabels, setDefaultLabels ] = useState<Array<Option>>([]);
@@ -49,9 +55,7 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
       <FormDrawer
         isDone={updateTaskMutation.isSuccess}
         triggerButton={
-          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm">
-            Update Task
-          </Button>
+          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm" />
         }
         title="Update Task"
         submitButton={
@@ -68,9 +72,6 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
         <Form<UpdateTaskDTO['data'], typeof schema>
           id="update-task"
           onSubmit={async (values) => {
-            if(values.labels){
-              values.labels = values.labels.map((label : any) => label.value);
-            }
             await updateTaskMutation.mutateAsync({ data: values, taskId });
           }}
           options={{
@@ -99,6 +100,15 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
                 options={labelOptions}
                 error={formState.errors['labels']}
                 registration={register('labels')}
+                control={control}
+                multiple={true}
+              />
+              
+              <SelectField
+                label='Assignees'
+                options={usersOptions}
+                error={formState.errors['assignees']}
+                registration={register('assignees')}
                 control={control}
                 multiple={true}
               />
