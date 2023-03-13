@@ -26,9 +26,7 @@ export const UpdateLabel = ({ labelId }: UpdateLabelProps) => {
       <FormDrawer
         isDone={updateLabelMutation.isSuccess}
         triggerButton={
-          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm">
-            Update Label
-          </Button>
+          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm" />
         }
         title="Update Label"
         submitButton={
