@@ -7,6 +7,7 @@ import { lazyImport } from '@/utils/lazyImport';
 import { useAuth } from '@/lib/authentication';
 import { UsersRoutes } from '@/features/users/routes';
 
+const { ProjectsRoutes } = lazyImport(() => import('@/features/projects'), 'ProjectsRoutes');
 const { TasksRoutes } = lazyImport(() => import('@/features/tasks'), 'TasksRoutes');
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
@@ -37,6 +38,7 @@ export const protectedRoutes = [
     children: [
       { path: '/users/*', element: <UsersRoutes /> },
       { path: '/roles/*', element: <RolesRoutes /> },
+      { path: '/projects/*', element: <ProjectsRoutes /> },
       { path: '/tasks/*', element: <TasksRoutes /> },
       { path: '/profile', element: <Profile /> },
       { path: '/labels/*', element: <LabelsRoutes /> },
