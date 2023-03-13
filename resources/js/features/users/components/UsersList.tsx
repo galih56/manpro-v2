@@ -1,5 +1,5 @@
 import { Table, Spinner, Badge } from '@/components/Elements';
-import { formatDate } from '@/utils/format';
+import { formatDate } from '@/utils/datetime';
 
 import { useUsers } from '../api/getUsers';
 import { User } from '../types';
@@ -57,14 +57,14 @@ export const UsersList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return id ? <UpdateUser userId={id} /> : <></>;
+            return id !== undefined || id !== null ? <UpdateUser userId={id} /> : <></>;
           },
         },
         {
           title: 'Actions',
           field: 'id',
           Cell({ entry: { id } }) {
-            return id ? <DeleteUser id={id} /> : <></>;
+            return id !== undefined || id !== null ? <DeleteUser id={id} /> : <></>;
           },
         },
       ]}
