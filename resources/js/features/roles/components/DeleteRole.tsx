@@ -19,9 +19,7 @@ export const DeleteRole = ({ id }: DeleteRoleProps) => {
         title="Delete Role"
         body="Are you sure you want to delete this task?"
         triggerButton={
-          <Button variant="danger" startIcon={<TrashIcon className="h-4 w-4" />}>
-            Delete Role
-          </Button>
+          <Button variant="danger" startIcon={<TrashIcon className="h-4 w-4" />} />
         }
         confirmButton={
           <Button
