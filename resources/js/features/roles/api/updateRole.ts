@@ -31,14 +31,14 @@ export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
   return useMutation({
     onMutate: async (updatingRole: any) => {
       console.log(updatingRole)
-      await queryClient.cancelQueries(['role', updatingRole?.roleId]);
+      await queryClient.cancelQueries(['roles', updatingRole?.roleId]);
 
       const previousRole = queryClient.getQueryData<Role>([
-        'role',
+        'roles',
         updatingRole?.roleId,
       ]);
 
-      queryClient.setQueryData(['role', updatingRole?.roleId], {
+      queryClient.setQueryData(['roles', updatingRole?.roleId], {
         ...previousRole,
         ...updatingRole.data,
         id: updatingRole.roleId,
@@ -49,13 +49,12 @@ export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
     onError: (_, __, context: any) => {
       if (context?.previousRole) {
         queryClient.setQueryData(
-          ['role', context.previousRole.id],
+          ['roles', context.previousRole.id],
           context.previousRole
         );
       }
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['roles']);
       add({
         type: 'success',
         title: 'Role Updated',
