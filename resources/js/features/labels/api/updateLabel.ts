@@ -54,6 +54,7 @@ export const useUpdateLabel = ({ config }: UseUpdateLabelOptions = {}) => {
       }
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries(['labels']);
       // queryClient.refetchQueries(['label', data.id]);
       add({
         type: 'success',
