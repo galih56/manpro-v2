@@ -1,5 +1,5 @@
 import { Table, Spinner, Link } from '@/components/Elements';
-import { formatDate } from '@/utils/format';
+import { formatDate } from '@/utils/datetime';
 
 import { useRoles } from '../api/getRoles';
 import { Role } from '../types';
@@ -43,8 +43,7 @@ export const RolesList = () => {
           title: 'Actions',
           field: 'id',
           Cell({ entry: { id } }) {
-            console.log(id)
-            return id ? <UpdateRole roleId={id} /> : <></>;
+            return id !== undefined || id !== null ? <UpdateRole roleId={id} /> : <></>;
           },
         },
         // {
