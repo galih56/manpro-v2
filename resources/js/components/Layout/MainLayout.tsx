@@ -7,6 +7,7 @@ import {
   XMarkIcon,
   UserGroupIcon,
   Bars3CenterLeftIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import * as React from 'react';
@@ -28,7 +29,8 @@ const SideNavigation = () => {
   
   const navigation = [
     { name: 'Dashboard', to: '.', icon: HomeIcon },
-    { name: 'Tasks', to: './tasks', icon: FolderIcon },
+    { name: 'Projects', to: './projects', icon: FolderIcon },
+    { name: 'Tasks', to: './tasks', icon: CheckCircleIcon },
     { name: 'Users', to: './users', icon: UsersIcon },
     { name: 'Roles', to: './roles', icon: UserGroupIcon },
     { name: 'Labels', to: './labels' },
@@ -50,16 +52,16 @@ const SideNavigation = () => {
           className={clsx(
             'text-gray-300 hover:bg-gray-700 hover:text-white',
             'group flex items-center px-2 py-2 text-base font-medium rounded-md',
-            ({isActive}) => isActive ? "bg-gray-900 text-white" : ""
+            ({isActive} ) => isActive ? "bg-gray-900 text-white" : ""
           )}
         >
-          {item.icon && <item.icon
+          {item.icon ? <item.icon
             className={clsx(
               'text-gray-400 group-hover:text-gray-300',
               'mr-4 flex-shrink-0 h-6 w-6'
             )}
             aria-hidden="true"
-          />}
+          />:<></>}
           {item.name}
         </NavLink>
       ))}
