@@ -35,7 +35,7 @@ class RoleController extends Controller
         $role=Role::create($fields);
         return response()->json([
             'message' => 'Role created',
-            'role' => $role,
+            'data' => $role,
         ]);
     }
 
@@ -86,7 +86,7 @@ class RoleController extends Controller
         
         return response()->json([
             'message' => 'Role updated',
-            'role' => $role,
+            'data' => $role,
         ]);
     }
 

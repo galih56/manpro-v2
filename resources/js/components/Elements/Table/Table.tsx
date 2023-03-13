@@ -1,9 +1,12 @@
 import { ArchiveBoxIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
+import clsx from 'clsx'
 
 type TableColumn<Entry> = {
   title: string;
   field: keyof Entry;
+  thClassName? : string;
+  tdClassName? : string;
   Cell?({ entry }: { entry: Entry }): React.ReactElement;
 };
 
@@ -33,7 +36,7 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
                     <th
                       key={column.title + index}
                       scope="col"
-                      className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+                      className={clsx("px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase",column.thClassName)}
                     >
                       {column.title}
                     </th>
@@ -43,10 +46,10 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
               <tbody>
                 {data.map((entry, entryIndex) => (
                   <tr key={entry?.id || entryIndex} className="odd:bg-white even:bg-gray-100">
-                    {columns.map(({ Cell, field, title }, columnIndex) => (
+                    {columns.map(({ Cell, field, title, tdClassName }, columnIndex) => (
                       <td
                         key={title + columnIndex}
-                        className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap"
+                        className={clsx("px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap", tdClassName)}
                       >
                         {Cell ? <Cell entry={entry} /> : entry[field]}
                       </td>

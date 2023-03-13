@@ -98,6 +98,7 @@ class UserController extends Controller
         $user->update($fields);
         if($fields['roles']) $user->roles()->sync($fields['roles']);
 
+        $user = User::with('roles')->find($user->id);
         return response()->json([
             'message' => 'User updated',
             'data' => $user,

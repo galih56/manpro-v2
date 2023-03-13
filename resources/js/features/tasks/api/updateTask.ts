@@ -5,11 +5,14 @@ import { MutationConfig, queryClient } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
 
 import { Task } from '../types';
+import { Option } from '@/components/Form';
 
 export type UpdateTaskDTO = {
   data: {
     title: string;
     description: string;
+    labels?: Option[]
+    assignees?: Option[]
   };
   taskId: string;
 };
@@ -18,6 +21,9 @@ export const updateTask = ({
   data,
   taskId,
 }: UpdateTaskDTO): Promise<Task> => {
+  if(data.labels){
+    data.labels = data.labels.map((label : any) => label.value);
+  }
   return axios.patch(`/tasks/${taskId}`, data);
 };
 
@@ -30,14 +36,25 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
 
   return useMutation({
     onMutate: async (updatingTask: any) => {
-      await queryClient.cancelQueries(['task', updatingTask?.taskId]);
+      
+      if(updatingTask.labels){
+        updatingTask.labels = updatingTask.labels.map((item : any) => ({
+          id : item.value,
+          name : item.label
+        }));
+        updatingTask.assignees = updatingTask.assignees.map((item : any) => ({
+          id : item.value,
+          name : item.label
+        }));
+      }
+      await queryClient.cancelQueries(['tasks', updatingTask?.taskId]);
 
       const previousTask = queryClient.getQueryData<Task>([
-        'task',
+        'tasks',
         updatingTask?.taskId,
       ]);
-
-      queryClient.setQueryData(['task', updatingTask?.taskId], {
+      
+      queryClient.setQueryData(['tasks', updatingTask?.taskId], {
         ...previousTask,
         ...updatingTask.data,
         id: updatingTask.taskId,
@@ -48,13 +65,12 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
     onError: (_, __, context: any) => {
       if (context?.previousTask) {
         queryClient.setQueryData(
-          ['task', context.previousTask.id],
+          ['tasks', context.previousTask.id],
           context.previousTask
         );
       }
     },
     onSuccess: (data) => {
-      // queryClient.refetchQueries(['task', data.id]);
       add({
         type: 'success',
         title: 'Task Updated',

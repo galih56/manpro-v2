@@ -7,12 +7,12 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { decamelizeKeys } from 'humps';
 import { useNavigate } from 'react-router-dom';
+import { wait } from '@/utils/datetime';
 
 export const axios = Axios.create({
   baseURL: API_URL,
   // withCredentials: true,
 });
-
 
 const AxiosInterceptor = ({ children } : any) => {
   // useEffect is asynchronous to children's effect, so request call might be at the same time with interceptor setup and even sooner, in that case the interceptor might not work as we expected.
@@ -72,6 +72,20 @@ const AxiosInterceptor = ({ children } : any) => {
             if(error.config && error.response){
               if(error.response.status === 401){
                 navigate("/auth/login");
+                return Promise.reject(error);
+              }
+              if(error.response.status === 419){
+                toast.promise(
+                    wait(3000).then(()=>{
+                      window.location.assign(window.location.origin)
+                    }),
+                    {
+                      loading: <span>Session expired! <br/> Refreshing page...</span>,
+                      success: <b>Page refreshed</b>,
+                      error: <b>Oops..something went wrong!</b>,
+                    }
+                 );
+                
                 return Promise.reject(error);
               }
               status = error.response?.status?.toString() || "";

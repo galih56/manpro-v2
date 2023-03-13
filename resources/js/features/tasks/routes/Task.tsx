@@ -4,7 +4,7 @@ import { Spinner, MDPreview } from '@/components/Elements';
 import { Head } from '@/components/Head';
 import { ContentLayout } from '@/components/Layout';
 // import { Comments } from '@/features/comments';
-import { formatDate } from '@/utils/format';
+import { formatDate } from '@/utils/datetime';
 
 import { useTask } from '../api/getTask';
 import { UpdateTask } from '../components/UpdateTask';

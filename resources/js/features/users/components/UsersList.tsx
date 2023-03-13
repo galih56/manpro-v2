@@ -1,5 +1,5 @@
 import { Table, Spinner, Badge } from '@/components/Elements';
-import { formatDate } from '@/utils/format';
+import { formatDate } from '@/utils/datetime';
 
 import { useUsers } from '../api/getUsers';
 import { User } from '../types';
@@ -35,12 +35,11 @@ export const UsersList = () => {
         {
           title: 'Roles',
           field: 'id',
-          Cell({ entry: { id, roles } }) {
-            console.log(roles)
+          Cell({ entry: { id,name, roles } }) {
             if(roles){
               return( 
                 <div>
-                  {roles.map(role => <Badge title={role.name} />)}
+                  {roles.map(role => <Badge key={id+"-role-"+role.id} title={role.name} />)}
                 </div>
               );
             }
@@ -58,14 +57,14 @@ export const UsersList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <UpdateUser userId={id} />;
+            return id !== undefined || id !== null ? <UpdateUser userId={id} /> : <></>;
           },
         },
         {
-          title: '',
+          title: 'Actions',
           field: 'id',
           Cell({ entry: { id } }) {
-            return <DeleteUser id={id} />;
+            return id !== undefined || id !== null ? <DeleteUser id={id} /> : <></>;
           },
         },
       ]}

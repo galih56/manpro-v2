@@ -1,3 +1,4 @@
+import { Task } from "@/features/tasks";
 import { ReactNode } from "react"
 
 export type BaseEntity = {
@@ -22,4 +23,20 @@ export type NotificationType = {
     title? : string,
     type: 'info' | 'warning' | 'success' | 'error',
     message? : string
+}
+
+export type PaginationType = {
+    hasMore : boolean;
+    items : Task[];
+    total : number;
+    perPage : number;
+    currentPage : number;
+    totalPages : number;
+    lastPage : number;
+    nextPageUrl : string;
+    prevPageUrl : string;
+    onFirstPage : boolean;
+    onLastPage : boolean; 
+    path : string;
+    links : [];
 }

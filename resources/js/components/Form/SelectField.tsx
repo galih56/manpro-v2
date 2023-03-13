@@ -2,7 +2,7 @@ import { XMarkIcon, ChevronUpIcon, ChevronDownIcon} from '@heroicons/react/24/so
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { FieldWrapperPassThroughProps } from './FieldWrapper';
 import { Controller, UseFormRegisterReturn, useForm } from 'react-hook-form';
-import Select, { OptionProps, MultiValueGenericProps, MultiValueRemoveProps, StylesConfig } from 'react-select';
+import Select, { components, OptionProps, MultiValueGenericProps, MultiValueRemoveProps, StylesConfig } from 'react-select';
 import clsx from 'clsx';
 import { FieldWrapper } from './FieldWrapper';
 
@@ -23,31 +23,31 @@ export type SelectFieldProps = FieldWrapperPassThroughProps & {
   
 
 export const SelectField = (props : SelectFieldProps)=>{
-    const { label, error, control, registration, multiple, options, defaultValue } = props;
-    const [selectedItems, setSelectedItems] = useState<Array<Option>>(defaultValue ?? []);
+    const { label, error, control, registration, multiple, options, defaultValue, className } = props;
     
-    useEffect(()=>{
-        setSelectedItems(defaultValue ?? []);
-    },[defaultValue])
+    const TWMultiValueContainer = (props : MultiValueGenericProps) => (
+        <components.MultiValueContainer {...props}>
+        <div {...props.innerProps} className='flex justify-center items-center m-1 font-medium py-1 px-2 bg-white rounded-md shadow-sm text-teal-700 bg-teal-100 border border-teal-300 focus:outline-none sm:text-sm'>
+                {props.children}
+        </div>
+        </components.MultiValueContainer>
+    )
 
-    const removeSelectedItems = (value : number) =>  setSelectedItems(selectedItems.filter(item => item.value != value))
-    const handleOnChange = (value : any)=> {
-        if(multiple){
-            setSelectedItems(value ? value : []) 
-        }else{
-            setSelectedItems(value ? value[0] : []) 
-        }
-    }
-    const TWMultiValue = ({ innerProps, data } : MultiValueGenericProps) => (
-        <div {...innerProps} className='flex justify-center items-center m-1 font-medium py-1 px-2 bg-white rounded-md shadow-sm text-teal-700 bg-teal-100 border border-teal-300 focus:outline-none sm:text-sm'>
+    const TWMultiValueLabel = (props : MultiValueGenericProps) => (
+        <components.MultiValueLabel {...props} >
             <div className='text-xs font-normal leading-none max-w-full flex-initial'>
-                {data.label}
+                {props.data.label}
             </div>
-            <button type="button" className='flex flex-auto flex-row-reverse' onClick={(event) => removeSelectedItems(data.value)}>
+        </components.MultiValueLabel>
+    ) 
+    
+    const TWMultiValueRemove = (props : MultiValueRemoveProps) => (
+        <components.MultiValueRemove {...props}>
+            <button type="button" className='flex flex-auto flex-row-reverse'>
                 <XMarkIcon className='fill-current h-4 w-4 ' />
             </button>
-        </div>
-    ) 
+        </components.MultiValueRemove>
+    )
 
     const TWOption = (props : OptionProps) => {
         const { isSelected, innerProps, data } = props;
@@ -60,7 +60,7 @@ export const SelectField = (props : SelectFieldProps)=>{
                     )}>
                     <div className='w-full items-center flex'>
                         <div className="mx-2 leading-6">
-                            {data.label}
+                            {data!.label}
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,15 @@ export const SelectField = (props : SelectFieldProps)=>{
     }
 
     const styles : StylesConfig = {
-        
+        multiValue : (base) => ({
+            backgroundColor : 'transparent'
+        }),
+        multiValueRemove : (base) => ({
+            backgroundColor : 'transparent',
+            '&:hover' : {
+                backgroundColor : 'transparent'
+            }
+        })   
     }
 
     return (
@@ -77,25 +85,38 @@ export const SelectField = (props : SelectFieldProps)=>{
             <Controller
                 control={control}
                 name={registration.name!}
-                defaultValue={selectedItems}
-                render={({ field : { name, onChange, value } })=>{
-                    // console.log(value)
+                defaultValue={defaultValue ?? []}
+                render={({ field : {value, name, onChange, onBlur, ref } })=>{
                     return (
                         <Select 
                             components={{
                                 Option : TWOption,
-                                MultiValue : TWMultiValue,
+                                MultiValueContainer : TWMultiValueContainer,
+                                MultiValueLabel : TWMultiValueLabel,
+                                MultiValueRemove : TWMultiValueRemove 
+                                
                             }}
                             name={name}
-                            value={selectedItems}
+                            value={value}
                             onChange={(values)=>{
-                                onChange(values);
-                                handleOnChange(values);
+                                if(multiple){
+                                    onChange(values ? values : []) 
+                                }else{
+                                    onChange(values ? values[0] : null) 
+                                }
                             }}
+                            onBlur={onBlur}
+                            ref={ref}
                             options={options}
                             isMulti={multiple}
                             styles={styles}
-                            className='my-2 border border-gray-100 bg-white rounded relative w-full'
+                            className={clsx('border border-gray-100 bg-white rounded relative w-full')}
+                            classNames={{
+                                multiValue : (state) => 'bg-transparent',
+                                multiValueRemove : (state)=>{
+                                    return 'bg-teal-100 hover:bg-teal-100'
+                                }
+                            }}
                         />
                 )}}
             />

@@ -20,4 +20,12 @@ class Task extends Model
         'completed',
         'completed_by'
     ];
+    
+    public function labels(){        
+        return $this->belongsToMany(Label::class,'task_label','task_id','label_id');
+    }
+    
+    public function assignees(){        
+        return $this->belongsToMany(User::class,'user_task','task_id','user_id');
+    }
 }

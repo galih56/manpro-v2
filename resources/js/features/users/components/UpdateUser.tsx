@@ -20,7 +20,7 @@ const schema = z.object({
   name: z.string().min(1, 'Required'),
   roles: z.nullable(
     z.array(
-      z.number()
+      z.object({ label : z.string(), value : z.number() })
     )
   )
 });
@@ -44,13 +44,12 @@ export const UpdateUser = ({ userId } : UpdateUserProps) => {
     setDefaultRoles(()=>getDefaultRoleOptions());
   },[ userId, user?.roles ]);
 
+
   return (
     <FormDrawer
       isDone={updateUserMutation.isSuccess}
       triggerButton={
-        <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm">
-          Update Profile
-        </Button>
+        <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm" />
       }
       title="Update Profile"
       submitButton={
@@ -67,10 +66,6 @@ export const UpdateUser = ({ userId } : UpdateUserProps) => {
       <Form<UpdateUserDTO['data'], typeof schema>
         id="update-profile"
         onSubmit={async (values) => {
-          console.log(values)
-          if(values.roles){
-            values.roles = values.roles.map((role : any) => role.value);
-          }
           await updateUserMutation.mutateAsync({ data: values, userId : userId });
         }}
         options={{

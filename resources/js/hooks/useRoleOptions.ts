@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useRoles } from '@/features/roles/api/getRoles';
 
 export const useRoleOptions = () => {
