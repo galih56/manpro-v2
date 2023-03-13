@@ -17,4 +17,8 @@ class Project extends Model
         'completed_by',
         'completed',
     ];
+    
+    public function members(){        
+        return $this->belongsToMany(User::class,'user_project','project_id','user_id');
+    }
 }
