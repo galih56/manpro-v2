@@ -72,6 +72,7 @@ const AxiosInterceptor = ({ children } : any) => {
             if(error.config && error.response){
               if(error.response.status === 401){
                 navigate("/auth/login");
+                toast.error("Wrong credentials!")
                 return Promise.reject(error);
               }
               if(error.response.status === 419){
