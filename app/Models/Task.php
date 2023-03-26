@@ -21,6 +21,10 @@ class Task extends Model
         'completed_by'
     ];
     
+    public function project(){        
+        return $this->belongsTo(Project::class,'project_id');
+    }
+
     public function labels(){        
         return $this->belongsToMany(Label::class,'task_label','task_id','label_id');
     }
