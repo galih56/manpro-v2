@@ -1,12 +1,10 @@
 import { Task } from "@/features/tasks";
-import { ReactNode } from "react"
+import { ComponentType, ReactNode } from "react"
 
-export type BaseEntity = {
+export interface BaseEntity {
     id: string;
-    createdAt: number;
-    updatedAt: number;
-    // createdAt: Date;
-    // updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export interface Props {
@@ -14,6 +12,10 @@ export interface Props {
     className?: string
 }
  
+export type PaginationDTO = {
+  page? : number;
+  limit? : number;
+}
 export type AppProviderProps = {
     children: React.ReactNode;
 }; 
@@ -25,9 +27,9 @@ export type NotificationType = {
     message? : string
 }
 
-export type PaginationType = {
+export type PaginationType<Entry> = {
     hasMore : boolean;
-    items : Task[];
+    items : Entry[];
     total : number;
     perPage : number;
     currentPage : number;
@@ -40,3 +42,5 @@ export type PaginationType = {
     path : string;
     links : [];
 }
+
+export type ExtractProps<T> = T extends ComponentType<infer P> ? P : T
