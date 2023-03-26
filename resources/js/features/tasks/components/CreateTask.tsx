@@ -8,23 +8,27 @@ import { Authorization, ROLES } from '@/lib/authorization';
 import { CreateTaskDTO, useCreateTask } from '../api/createTask';
 import { useLabelOptions } from '@/hooks/useLabelOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
+import { useProjectOptions } from '@/hooks/useProjectOptions';
+import { DatePicker } from '@/components/Form/DatePicker';
 
 const schema = z.object({
+  projectId: z.number(),
   title: z.string().min(1, 'Required'),
   description: z.string().min(1, 'Required'),
   labels: z.nullable(
     z.array(
-      z.object({ label : z.string(), value : z.number() })
+      z.number()
     )
   ),
   assignees: z.nullable(
     z.array(
-      z.object({ label : z.string(), value : z.number() })
+      z.number()
     )
-  )
+  ),
 });
 
 export const CreateTask = () => {
+  const projectOptions = useProjectOptions();
   const labelOptions = useLabelOptions();
   const usersOptions = useUserOptions();
   const createTaskMutation = useCreateTask();
@@ -52,16 +56,18 @@ export const CreateTask = () => {
       >
         <Form<CreateTaskDTO['data'], typeof schema>
           id="create-task"
-          onSubmit={async (values) => {
-            if(values.labels){
-              values.labels = values.labels.map((role : any) => role.value);
-            }
-            await createTaskMutation.mutateAsync({ data: values });
-          }}
+          onSubmit={async (values) =>  await createTaskMutation.mutateAsync({ data: values })}
           schema={schema}
         >
           {({ register, formState, control }) => (
             <>
+              <SelectField
+                label='Project'
+                options={projectOptions}
+                error={formState.errors['projectId']}
+                registration={register('projectId')}
+                control={control}
+              />
               <InputField
                 label="Title"
                 error={formState.errors['title']}
@@ -91,6 +97,7 @@ export const CreateTask = () => {
                 control={control}
                 multiple={true}
               />
+              <DatePicker/>
             </>
           )}
         </Form>
