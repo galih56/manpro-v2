@@ -15,7 +15,7 @@ export type TaskFiltersDTO = {
   assignees?: string[]
 } & PaginationDTO;
 
-export const getTasks = (params? : TaskFiltersDTO):  (Promise<Task[] | PaginationType<Task>>) => {
+export const getTasks = (params? : TaskFiltersDTO):  (Promise<PaginationType<Task> | Task[]>) => {
   if(params){ 
     return axios.get('/tasks',{ params : params }).then(res => {
       var data = res.data;
@@ -28,7 +28,7 @@ export const getTasks = (params? : TaskFiltersDTO):  (Promise<Task[] | Paginatio
       }
     });
   }
-  return axios.get('/tasks').then(res => res.data);
+  return axios.get('/tasks').then(res => res.data.map((item : any) => camelizeKeys(item) as Task));
 };
 
 type QueryFnType = typeof getTasks;
@@ -49,10 +49,9 @@ export const useTasks = ({ config = {}, params }: UseTasksOptions) => {
 
   
   useEffect(() => {
-    if (!query.isPreviousData) {
+    if (!query.isPreviousData && query.data?.hasMore) {
       query.refetch();
     }
-    console.log(query.isPreviousData, config, params)
   }, [query.isPreviousData, params]);
   
   return query;
