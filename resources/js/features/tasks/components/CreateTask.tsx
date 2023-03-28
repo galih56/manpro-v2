@@ -73,7 +73,7 @@ export const CreateTask = () => {
                 error={formState.errors['title']}
                 registration={register('title')}
               />
-
+              <DatePicker/>
               <TextAreaField
                 label="Description"
                 error={formState.errors['description']}
@@ -97,7 +97,6 @@ export const CreateTask = () => {
                 control={control}
                 multiple={true}
               />
-              <DatePicker/>
             </>
           )}
         </Form>
