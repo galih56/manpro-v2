@@ -25,6 +25,11 @@ const schema = z.object({
       z.number()
     )
   ),
+  startOn: z.nullable(z.string().datetime()),
+  startedAt: z.nullable(z.string().datetime()),
+  dueOn: z.nullable(z.string().datetime()),
+  completedAt: z.nullable(z.string().datetime()),
+  userId: z.nullable(z.number())
 });
 
 export const CreateTask = () => {
@@ -73,7 +78,9 @@ export const CreateTask = () => {
                 error={formState.errors['title']}
                 registration={register('title')}
               />
-              <DatePicker/>
+              <DatePicker label='single date' mode='single'/>
+              <DatePicker label="range dates" mode='range'/>
+              <DatePicker label="multiple dates" mode='multiple'/>
               <TextAreaField
                 label="Description"
                 error={formState.errors['description']}

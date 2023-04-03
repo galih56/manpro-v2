@@ -8,5 +8,11 @@ export interface Task extends BaseEntity{
   description: string;
   labels : Array<Label>
   assignees : Array<User>;
-  project: Project
+  progress: number;
+  project?: Project;
+  startOn?: string;
+  dueOn?: string;
+  startedAt?: string;
+  completedAt?: string;
+  completedBy?: User;
 };
