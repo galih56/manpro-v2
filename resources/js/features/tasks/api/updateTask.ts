@@ -11,8 +11,9 @@ export type UpdateTaskDTO = {
   data: {
     title: string;
     description: string;
-    labels?: Option[]
-    assignees?: Option[]
+    labels?: string[]
+    assignees?: string[]
+    projectId: string
   };
   taskId: string;
 };
@@ -21,9 +22,6 @@ export const updateTask = ({
   data,
   taskId,
 }: UpdateTaskDTO): Promise<Task> => {
-  if(data.labels){
-    data.labels = data.labels.map((label : any) => label.value);
-  }
   return axios.patch(`/tasks/${taskId}`, data);
 };
 
@@ -36,7 +34,6 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
 
   return useMutation({
     onMutate: async (updatingTask: any) => {
-      
       if(updatingTask.labels){
         updatingTask.labels = updatingTask.labels.map((item : any) => ({
           id : item.value,
@@ -71,6 +68,7 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
       }
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries(['tasks']);
       add({
         type: 'success',
         title: 'Task Updated',

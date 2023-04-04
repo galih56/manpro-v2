@@ -1,21 +1,23 @@
 import { ArchiveBoxIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import clsx from 'clsx'
+import { Pagination } from '../Pagination';
 
 type TableColumn<Entry> = {
   title: string;
   field: keyof Entry;
-  thClassName? : string;
-  tdClassName? : string;
+  thClassName?: string;
+  tdClassName?: string;
   Cell?({ entry }: { entry: Entry }): React.ReactElement;
 };
 
 export type TableProps<Entry> = {
   data: Entry[];
   columns: TableColumn<Entry>[];
+  className?: string;
 };
 
-export const Table = <Entry extends { id: string }>({ data, columns }: TableProps<Entry>) => {
+export const Table = <Entry extends { id: string }>({ data, columns, className}: TableProps<Entry>) => {
   if (!data?.length) {
     return (
       <div className="flex flex-col items-center justify-center text-gray-500 bg-white h-80">
@@ -25,10 +27,10 @@ export const Table = <Entry extends { id: string }>({ data, columns }: TableProp
     );
   }
   return (
-    <div className="flex flex-col">
-      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div className={clsx("flex flex-col",className)}>
+      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+          <div className="my-3 overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>

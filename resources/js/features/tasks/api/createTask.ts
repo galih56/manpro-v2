@@ -5,13 +5,15 @@ import { MutationConfig, queryClient } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
 
 import { Task } from '../types';
+import { PaginationType } from '@/types';
 
 export type CreateTaskDTO = {
   data: {
     title: string;
     description: string;
-    labels? : [];
-    assignees? : [];
+    projectId? : number;
+    labels? : string[];
+    assignees? : string[];
   };
 };
 
@@ -26,16 +28,27 @@ type UseCreateTaskOptions = {
 export const useCreateTask = ({ config }: UseCreateTaskOptions = {}) => {
   const { add } = useNotifications();
   return useMutation({
-    onMutate: async (newTask) => {
+    onMutate: async (newTask : Task) => {
       await queryClient.cancelQueries(['tasks']);
 
-      const previousTasks = queryClient.getQueryData<Task[]>(['tasks']);
-
-      queryClient.setQueryData(['tasks'], [...(previousTasks || []), newTask.data]);
+      const previousTasks = queryClient.getQueryData<PaginationType<Task>>(['tasks']);
+      console.log('previousTasks',previousTasks)
+      if(previousTasks){
+        var newItems : Task[] = previousTasks.items.map((item : Task) => {
+          if(item.id == newTask.id){
+            return newTask;
+          }
+          return item
+        })
+        queryClient.setQueryData(['tasks'], {
+          ...previousTasks,
+          items : newItems
+        });
+      }
 
       return { previousTasks };
     },
-    onError: (_, __, context: any) => {
+    onError: (_: any, __: any, context: any) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(['tasks'], context.previousTasks);
       }

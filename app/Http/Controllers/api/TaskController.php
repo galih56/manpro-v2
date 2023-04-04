@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 
 class TaskController extends Controller
 {
@@ -15,9 +16,30 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $tasks = Task::with('labels')->where('title','like',$request->title)->with('assignees')->paginate(
-            $request->limit ?? 15
-        )->withQueryString();
+
+        $tasks = Task::select('*');
+        if($request->search){ 
+            $tasks = $tasks->where(function(Builder $q) use($request){
+                            $q->where('title','ilike',"%$request->search%")->orWhere('description','ilike',"%$request->search%")
+                                ->orWhereHas('labels', function(Builder $q1) use($request) {
+                                    $q1->where('name', 'ilike',"%$request->search%")->orWhere('description','ilike',"%$request->search%");
+                                });
+                        });
+        }
+        
+        if($request->labels){
+            $tasks = $tasks->whereHas('labels', function(Builder $q) use($request){
+                $q->whereIn('labels.id', $request->labels);
+            });
+        }
+        
+        if($request->has('assignees')){
+            $tasks = $tasks->whereHas('assignees', function(Builder $q) use($request){
+                $q->whereIn('assignees.id', $request->assignees);
+            });
+        }
+
+        $tasks = $tasks->with('project')->with('labels')->with('assignees')->paginate( $request->limit ?? 15)->withQueryString();
         return response()->json($tasks);
     }
 
@@ -30,7 +52,7 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $fields=$request->validate([
-            'project_id' => 'required',
+            'project_id' => 'nullable',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'progress' => 'numeric',
@@ -64,7 +86,7 @@ class TaskController extends Controller
      */
     public function show(int $id)
     {
-        $task = Task::with('labels')->with('assignees')->find($id);
+        $task = Task::with('project')->with('labels')->with('assignees')->find($id);
 
         if(empty($task)){
             return response([

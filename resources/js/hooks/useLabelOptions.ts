@@ -6,7 +6,7 @@ export const useLabelOptions = () => {
     if(!data) return [];
 
     return data.map(item => ({
-        value : item.id,
+        value : item.id.toString(),
         label : item.name
     }));
 };

@@ -4,6 +4,6 @@ import { BaseEntity } from '@/types';
 export type User = {
   name: string;
   email: string;
-  is_admin: boolean;
+  isAdmin: boolean;
   roles : Array<Role>
 } & BaseEntity;

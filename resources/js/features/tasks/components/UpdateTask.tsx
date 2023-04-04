@@ -11,44 +11,36 @@ import { useLabelOptions } from '@/hooks/useLabelOptions';
 import { useCallback, useEffect, useState } from 'react';
 import { Label } from '@/features/labels';
 import { useUserOptions } from '@/hooks/useUserOptions';
+import { useProjectOptions } from '@/hooks/useProjectOptions';
 
 type UpdateTaskProps = {
   taskId: string;
 };
 
 const schema = z.object({
-  search: z.nullable(z.string()),
+  title: z.string().min(1,'Required'),
+  description: z.nullable(z.string()),
   labels: z.nullable(
     z.array(
-      z.object({ label : z.string(), value : z.number() })
+      z.string()
     )
   ),
   assignees: z.nullable(
     z.array(
-      z.object({ label : z.string(), value : z.number() })
+      z.string()
     )
   )
 });
 
 export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
   const taskQuery = useTask({ taskId });
+  const projectOptions = useProjectOptions();
   const labelOptions = useLabelOptions();
   const usersOptions = useUserOptions();
   const updateTaskMutation = useUpdateTask();
 
-  const [ defaultLabels, setDefaultLabels ] = useState<Array<Option>>([]);
-
-  const getDefaultRoleOptions = useCallback(() : Array<Option> => {
-    const labels =  taskQuery.data?.labels;
-    return labels ? labels.map((label : Label)=> ({
-      value : label.id,
-      label : label.name
-    })) : [];
-  }, [taskId, taskQuery.data?.labels])
-
-  useEffect(()=>{
-    setDefaultLabels(()=>getDefaultRoleOptions());
-  },[ taskId, taskQuery.data?.labels ]);
+  const defaultLabels = taskQuery.data?.labels.map(label => label.id.toString());
+  const defaultAssignees = taskQuery.data?.assignees.map(assignee => assignee.id.toString());
 
   return (
     // <Authorization allowedRoles={[ROLES.ADMIN]}>
@@ -78,13 +70,23 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
             defaultValues: {
               title: taskQuery.data?.title,
               description: taskQuery.data?.description,
-              labels: defaultLabels
+              labels: defaultLabels,
+              assignees: defaultAssignees,
+              projectId: taskQuery.data?.project?.id 
             },
           }}
           schema={schema}
         >
           {({ register, formState, control }) => (
             <>
+              <SelectField
+                label='Project'
+                options={projectOptions}
+                defaultValue={taskQuery.data?.project?.id}
+                error={formState.errors['projectId']}
+                registration={register('projectId')}
+                control={control}
+              />
               <InputField
                 label="Title"
                 error={formState.errors['title']}
@@ -98,6 +100,7 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
               <SelectField
                 label='Labels'
                 options={labelOptions}
+                defaultValue={defaultLabels}
                 error={formState.errors['labels']}
                 registration={register('labels')}
                 control={control}
@@ -107,6 +110,7 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
               <SelectField
                 label='Assignees'
                 options={usersOptions}
+                defaultValue={defaultAssignees}
                 error={formState.errors['assignees']}
                 registration={register('assignees')}
                 control={control}
