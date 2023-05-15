@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('team_label', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('team_id')->nullable();
-            $table->foreign('team_id')->references('id')->on('teams');
-            $table->unsignedBigInteger('label_id')->nullable();
-            $table->foreign('label_id')->references('id')->on('labels');
-            $table->timestamps();
+            $table->string("name");
+            $table->text("description")->nullable();
+            $table->timestampsTz();
         });
     }
 
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('team_label');
+        Schema::dropIfExists('tags');
     }
 };

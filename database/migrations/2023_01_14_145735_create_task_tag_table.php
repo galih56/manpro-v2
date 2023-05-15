@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('labels', function (Blueprint $table) {
+        Schema::create('task_tag', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->text("description")->nullable();
+            $table->unsignedBigInteger('task_id')->nullable();
+            $table->foreign('task_id')->references('id')->on('tasks');
+            $table->unsignedBigInteger('tag_id')->nullable();
+            $table->foreign('tag_id')->references('id')->on('tags');
             $table->timestampsTz();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('labels');
+        Schema::dropIfExists('task_tag');
     }
 };
