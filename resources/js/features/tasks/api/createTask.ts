@@ -6,18 +6,24 @@ import { useNotifications } from '@/stores/notifications';
 
 import { Task } from '../types';
 import { PaginationType } from '@/types';
+import { DateRange } from 'react-day-picker';
 
 export type CreateTaskDTO = {
   data: {
     title: string;
     description: string;
-    projectId? : number;
-    labels? : string[];
+    projectId? : string;
+    tags? : string[];
     assignees? : string[];
+    startOn? : Date;
+    startedAt? : Date;
+    dueOn? : Date; 
+    completedAt? : Date;
   };
 };
 
 export const createTask = ({ data }: CreateTaskDTO): Promise<Task> => {
+  console.log(data);
   return axios.post(`/tasks`, data);
 };
 
