@@ -1,7 +1,7 @@
-import { useLabels } from '@/features/labels/api/getLabels';
+import { useTags } from '@/features/tags/api/getTags';
 
-export const useLabelOptions = () => {
-    const { data } = useLabels();
+export const useTagOptions = () => {
+    const { data } = useTags();
     
     if(!data) return [];
 
