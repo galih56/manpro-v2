@@ -3,6 +3,7 @@ import React from 'react';
 import { AppProvider } from './stores/providers';
 import { AppRoutes } from './routes';
 import './../css/app.css'
+import '@/lib/zod';
 
 class App extends React.Component{
    render() {
