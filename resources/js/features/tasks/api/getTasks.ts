@@ -11,7 +11,7 @@ import { camelizeKeys } from 'humps';
 
 export type TaskFiltersDTO = {
   search?: string;
-  labels?: string[]
+  tags?: string[]
   assignees?: string[]
 } & PaginationDTO;
 
