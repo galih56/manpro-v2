@@ -37,8 +37,8 @@ class SectionController extends Controller
             'complated' => 'boolean',
             'completed_at' => 'nullable|date_format:d-m-Y H:i:s',
             'completed_by' => 'nullable|numeric',
-            'labels' => 'array',
-            'labels.*' => 'numeric|distinct'
+            'tags' => 'array',
+            'tags.*' => 'numeric|distinct'
         ]);
 
         $section=Section::create($fields);

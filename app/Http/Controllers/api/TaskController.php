@@ -21,15 +21,15 @@ class TaskController extends Controller
         if($request->search){ 
             $tasks = $tasks->where(function(Builder $q) use($request){
                             $q->where('title','ilike',"%$request->search%")->orWhere('description','ilike',"%$request->search%")
-                                ->orWhereHas('labels', function(Builder $q1) use($request) {
+                                ->orWhereHas('tags', function(Builder $q1) use($request) {
                                     $q1->where('name', 'ilike',"%$request->search%")->orWhere('description','ilike',"%$request->search%");
                                 });
                         });
         }
         
-        if($request->labels){
-            $tasks = $tasks->whereHas('labels', function(Builder $q) use($request){
-                $q->whereIn('labels.id', $request->labels);
+        if($request->tags){
+            $tasks = $tasks->whereHas('tags', function(Builder $q) use($request){
+                $q->whereIn('tags.id', $request->tags);
             });
         }
         
@@ -39,7 +39,7 @@ class TaskController extends Controller
             });
         }
 
-        $tasks = $tasks->with('project')->with('labels')->with('assignees')->paginate( $request->limit ?? 15)->withQueryString();
+        $tasks = $tasks->with('project')->with('tags')->with('assignees')->paginate( $request->limit ?? 15)->withQueryString();
         return response()->json($tasks);
     }
 
@@ -56,21 +56,21 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'progress' => 'numeric',
-            'start_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'due_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'started_at' => 'nullable|date_format:d-m-Y H:i:s',
+            'start_on' => 'nullable|date|date_format:d-m-Y H:i:s',
+            'due_on' => 'nullable|date|date_format:d-m-Y H:i:s',
+            'started_at' => 'nullable|date|date_format:d-m-Y H:i:s',
             'complated' => 'boolean',
-            'completed_at' => 'nullable|date_format:d-m-Y H:i:s',
+            'completed_at' => 'nullable|date|date_format:d-m-Y H:i:s',
             'completed_by' => 'nullable|numeric',
-            'labels' => 'array',
-            'labels.*' => 'numeric|distinct',
+            'tags' => 'array',
+            'tags.*' => 'numeric|distinct',
             'assignees' => 'array',
             'assignees.*' => 'numeric|distinct'
         ]);
 
         $task=Task::create($fields);
-        if($fields['labels']) $task->labels()->sync($fields['labels']);
-        if($fields['assignees']) $task->assignees()->sync($fields['assignees']);
+        if(isset($fields['tags'])) $task->tags()->sync($fields['tags']);
+        if(isset($fields['assignees'])) $task->assignees()->sync($fields['assignees']);
 
         return response()->json([
             'message' => 'Task created',
@@ -86,7 +86,7 @@ class TaskController extends Controller
      */
     public function show(int $id)
     {
-        $task = Task::with('project')->with('labels')->with('assignees')->find($id);
+        $task = Task::with('project')->with('tags')->with('assignees')->find($id);
 
         if(empty($task)){
             return response([
@@ -121,21 +121,21 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'progress' => 'numeric',
-            'start_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'due_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'started_at' => 'nullable|date_format:d-m-Y H:i:s',
+            'start_on' => 'nullable|date|date_format:d-m-Y H:i:s',
+            'due_on' => 'nullable|date|date_format:d-m-Y H:i:s',
+            'started_at' => 'nullable|date|date_format:d-m-Y H:i:s',
             'complated' => 'boolean',
-            'completed_at' => 'nullable|date_format:d-m-Y H:i:s',
+            'completed_at' => 'nullable|date|date_format:d-m-Y H:i:s',
             'completed_by' => 'nullable|numeric',
-            'labels' => 'array',
-            'labels.*' => 'numeric|distinct',
+            'tags' => 'array',
+            'tags.*' => 'numeric|distinct',
             'assignees' => 'array',
             'assignees.*' => 'numeric|distinct'
         ]);
         
         $task->update($fields);
-        if($fields['labels']) $task->labels()->sync($fields['labels']);
-        if($fields['assignees']) $task->assignees()->sync($fields['assignees']);
+        if(isset($fields['tags'])) $task->tags()->sync($fields['tags']);
+        if(isset($fields['assignees'])) $task->assignees()->sync($fields['assignees']);
 
         return response()->json([
             'message' => 'Task updated',
@@ -158,7 +158,7 @@ class TaskController extends Controller
                 'message' => "Task not found"
             ],404);
         }
-        $task->labels()->sync([]);
+        $task->tags()->sync([]);
         $task->assignees()->sync([]);
         $task->delete();
 
