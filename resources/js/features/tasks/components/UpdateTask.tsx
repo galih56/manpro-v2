@@ -7,9 +7,9 @@ import { Authorization, ROLES } from '@/lib/authorization';
 
 import { useTask } from '../api/getTask';
 import { UpdateTaskDTO, useUpdateTask } from '../api/updateTask';
-import { useLabelOptions } from '@/hooks/useLabelOptions';
+import { useTagOptions } from '@/hooks/useTagOptions';
 import { useCallback, useEffect, useState } from 'react';
-import { Label } from '@/features/labels';
+import { Tag } from '@/features/tags';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
 
@@ -20,7 +20,7 @@ type UpdateTaskProps = {
 const schema = z.object({
   title: z.string().min(1,'Required'),
   description: z.nullable(z.string()),
-  labels: z.nullable(
+  tags: z.nullable(
     z.array(
       z.string()
     )
@@ -35,11 +35,11 @@ const schema = z.object({
 export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
   const taskQuery = useTask({ taskId });
   const projectOptions = useProjectOptions();
-  const labelOptions = useLabelOptions();
+  const tagOptions = useTagOptions();
   const usersOptions = useUserOptions();
   const updateTaskMutation = useUpdateTask();
 
-  const defaultLabels = taskQuery.data?.labels.map(label => label.id.toString());
+  const defaultTags = taskQuery.data?.tags.map(label => label.id.toString());
   const defaultAssignees = taskQuery.data?.assignees.map(assignee => assignee.id.toString());
 
   return (
@@ -70,7 +70,7 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
             defaultValues: {
               title: taskQuery.data?.title,
               description: taskQuery.data?.description,
-              labels: defaultLabels,
+              tags: defaultTags,
               assignees: defaultAssignees,
               projectId: taskQuery.data?.project?.id 
             },
@@ -98,11 +98,11 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
                 registration={register('description')}
               />
               <SelectField
-                label='Labels'
-                options={labelOptions}
-                defaultValue={defaultLabels}
-                error={formState.errors['labels']}
-                registration={register('labels')}
+                label='Tags'
+                options={tagOptions}
+                defaultValue={defaultTags}
+                error={formState.errors['tags']}
+                registration={register('tags')}
                 control={control}
                 multiple={true}
               />
