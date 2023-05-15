@@ -3,14 +3,14 @@ import { TrashIcon } from '@heroicons/react/24/solid';
 import { Button, ConfirmationDialog } from '@/components/Elements';
 import { Authorization, ROLES } from '@/lib/authorization';
 
-import { useDeleteLabel } from '../api/deleteLabel';
+import { useDeleteTag } from '../api/deleteTag';
 
-type DeleteLabelProps = {
+type DeleteTagProps = {
   id: string;
 };
 
-export const DeleteLabel = ({ id }: DeleteLabelProps) => {
-  const deleteLabelMutation = useDeleteLabel();
+export const DeleteTag = ({ id }: DeleteTagProps) => {
+  const deleteTagMutation = useDeleteTag();
 
   return (
     // <Authorization allowedRoles={[ROLES.ADMIN]}>
@@ -25,10 +25,10 @@ export const DeleteLabel = ({ id }: DeleteLabelProps) => {
         }
         confirmButton={
           <Button
-            isLoading={deleteLabelMutation.isLoading}
+            isLoading={deleteTagMutation.isLoading}
             type="button"
             className="bg-red-600"
-            onClick={async () => await deleteLabelMutation.mutateAsync({ labelId: id })}
+            onClick={async () => await deleteTagMutation.mutateAsync({ tagId: id })}
           >
             Delete Label
           </Button>

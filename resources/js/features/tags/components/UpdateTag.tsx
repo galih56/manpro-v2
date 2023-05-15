@@ -1,45 +1,55 @@
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
 
 import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
-import { CreateLabelDTO, useCreateLabel } from '../api/createLabel';
+import { useTag } from '../api/getTag';
+import { UpdatedTagDTO, useUpdatedTag } from '../api/updateTag';
+
+type UpdateTagProps = {
+  tagId: string;
+};
 
 const schema = z.object({
   name: z.string().min(1, 'Required'),
   description: z.string().min(1, 'Required'),
 });
 
-export const CreateLabel = () => {
-  const createLabelMutation = useCreateLabel();
+export const UpdateTag = ({ tagId }: UpdateTagProps) => {
+  const tagQuery = useTag({ tagId });
+  const updateTagMutation = useUpdatedTag();
 
   return (
     // <Authorization allowedRoles={[ROLES.ADMIN]}>
       <FormDrawer
-        isDone={createLabelMutation.isSuccess}
+        isDone={updateTagMutation.isSuccess}
         triggerButton={
-          <Button size="sm" startIcon={<PlusIcon className="h-4 w-4" />}>
-            Create Label
-          </Button>
+          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm" />
         }
-        title="Create Label"
+        title="Update Label"
         submitButton={
           <Button
-            form="create-label"
+            form="update-tag"
             type="submit"
             size="sm"
-            isLoading={createLabelMutation.isLoading}
+            isLoading={updateTagMutation.isLoading}
           >
             Submit
           </Button>
         }
       >
-        <Form<CreateLabelDTO['data'], typeof schema>
-          id="create-label"
+        <Form<UpdatedTagDTO['data'], typeof schema>
+          id="update-tag"
           onSubmit={async (values) => {
-            await createLabelMutation.mutateAsync({ data: values });
+            await updateTagMutation.mutateAsync({ data: values, tagId });
+          }}
+          options={{
+            defaultValues: {
+              name: tagQuery.data?.name,
+              description: tagQuery.data?.description,
+            },
           }}
           schema={schema}
         >
@@ -50,7 +60,6 @@ export const CreateLabel = () => {
                 error={formState.errors['name']}
                 registration={register('name')}
               />
-
               <TextAreaField
                 label="Description"
                 error={formState.errors['description']}

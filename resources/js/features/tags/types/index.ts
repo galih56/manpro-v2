@@ -1,6 +1,6 @@
 import { BaseEntity } from '@/types';
 
-export type Label = {
+export type Tag = {
   name: string;
   description: string;
 } & BaseEntity;

@@ -1,16 +1,16 @@
 import { Table, Spinner, Link } from '@/components/Elements';
 import { formatDate } from '@/utils/datetime';
 
-import { useLabels } from '../api/getLabels';
-import { Label } from '../types';
+import { useTags } from '../api/getTags';
+import { Tag } from '../types';
 
-import { DeleteLabel } from './DeleteLabel';
-import { UpdateLabel } from './UpdateLabel';
+import { DeleteTag } from './DeleteTag';
+import { UpdateTag } from './UpdateTag';
 
-export const LabelsList = () => {
-  const labelsQuery = useLabels();
+export const TagsList = () => {
+  const tagsQuery = useTags();
   
-  if (labelsQuery.isLoading) {
+  if (tagsQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -18,11 +18,11 @@ export const LabelsList = () => {
     );
   }
 
-  if (!labelsQuery.data) return null;
+  if (!tagsQuery.data) return null;
 
   return (
-    <Table<Label>
-      data={labelsQuery.data}
+    <Table<Tag>
+      data={tagsQuery.data}
       columns={[
         {
           title: 'Name',
@@ -39,14 +39,14 @@ export const LabelsList = () => {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return id !== undefined || id !== null ? <UpdateLabel labelId={id} /> : <></>;
+            return id !== undefined || id !== null ? <UpdateTag tagId={id} /> : <></>;
           },
         },
         {
           title: '',
           field: 'id',
           Cell({ entry: { id } }) {
-            return id !== undefined || id !== null ? <DeleteLabel id={id} /> : <></>;
+            return id !== undefined || id !== null ? <DeleteTag id={id} /> : <></>;
           },
         },
       ]}

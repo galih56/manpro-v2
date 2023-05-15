@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Models\Label;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class LabelController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,8 @@ class LabelController extends Controller
      */
     public function index()
     {
-        $labels = Label::all();
-        return response()->json($labels);
+        $tags = Tag::all();
+        return response()->json($tags);
     }
 
     /**
@@ -32,31 +32,31 @@ class LabelController extends Controller
             'description' => 'required|string',
         ]);
 
-        $label=Label::create($fields);
+        $tag=Tag::create($fields);
         return response()->json([
-            'message' => 'Label created',
-            'data' => $label,
+            'message' => 'Tag created',
+            'data' => $tag,
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Label  $label
+     * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $label = Label::find($id);
+        $tag = Tag::find($id);
 
-        if(empty($label)){
+        if(empty($tag)){
             return response([
-                'message' => "Label not found"
+                'message' => "Tag not found"
             ],404);
         }
         
         return response()->json(
-            $label
+            $tag
         );
     }
 
@@ -64,16 +64,16 @@ class LabelController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Label  $label
+     * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $label = Label::find($id);
+        $tag = Tag::find($id);
         
-        if(empty($label)){
+        if(empty($tag)){
             return response([
-                'message' => "Label not found"
+                'message' => "Tag not found"
             ],404);
         }
         
@@ -82,32 +82,32 @@ class LabelController extends Controller
             'description' => 'required|string',
         ]);
         
-        $label->update($fields);
+        $tag->update($fields);
         
         return response()->json([
-            'message' => 'Label updated',
-            'data' => $label,
+            'message' => 'Tag updated',
+            'data' => $tag,
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Label  $label
+     * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $label = Label::find($id);
+        $tag = Tag::find($id);
         
-        if(empty($label)){
+        if(empty($tag)){
             return response([
-                'message' => "Label not found"
+                'message' => "Tag not found"
             ],404);
         }
-        $label->delete();
+        $tag->delete();
         return response()->json([
-            'message' => 'Label deleted'
+            'message' => 'Tag deleted'
         ]);
     }
 }

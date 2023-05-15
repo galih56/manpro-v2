@@ -1,11 +1,11 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { Labels } from './Label';
+import { Tags } from './Tag';
 
-export const LabelsRoutes = () => {
+export const TagsRoutes = () => {
   return (
     <Routes>
-      <Route path="" element={<Labels />} />
+      <Route path="" element={<Tags />} />
       <Route path="*" element={<Navigate to="." />} />
     </Routes>
   );
