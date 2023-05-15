@@ -11,7 +11,7 @@ export type UpdateTaskDTO = {
   data: {
     title: string;
     description: string;
-    labels?: string[]
+    tags?: string[]
     assignees?: string[]
     projectId: string
   };
@@ -34,8 +34,8 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
 
   return useMutation({
     onMutate: async (updatingTask: any) => {
-      if(updatingTask.labels){
-        updatingTask.labels = updatingTask.labels.map((item : any) => ({
+      if(updatingTask.tags){
+        updatingTask.tags = updatingTask.tags.map((item : any) => ({
           id : item.value,
           name : item.label
         }));
