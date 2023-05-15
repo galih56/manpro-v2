@@ -1,8 +1,7 @@
-import React, { ChangeEventHandler, Fragment, ReactNode, useEffect, useRef, useState } from 'react';
-import { format, isAfter, isBefore, isValid, parse } from 'date-fns';
+import React, { ChangeEventHandler, ReactNode, useEffect, useState } from 'react';
+import { format, isAfter, isBefore } from 'date-fns';
 import { 
-  DayPicker, DayPickerProps, useInput,
-  DayPickerDefaultProps, DayPickerSingleProps, DayPickerRangeProps, DateRange, SelectRangeEventHandler, SelectSingleEventHandler, SelectMultipleEventHandler
+  DayPicker, DayPickerProps,  DateRange, SelectRangeEventHandler, SelectSingleEventHandler, SelectMultipleEventHandler
 } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { Popover as UIPopover, Transition } from '@headlessui/react'
@@ -14,6 +13,7 @@ import { usePopper } from 'react-popper';
 import MaskedInput from 'react-text-mask'
 import { formatDate, validateDateFormat } from '@/utils/datetime';
 import { Badge } from '../elements';
+import { useFormContext, Controller, UseFormRegisterReturn, Control } from 'react-hook-form';
 
 export type DateFieldProps = {
   required?: boolean;
@@ -28,7 +28,7 @@ export type DateFieldProps = {
   keepCharPositions?: boolean;
 } & FieldWrapperPassThroughProps ;
 
-export const DateField = ({ value, label, error, placeholder, required, description, className, icon, onChange, onBlur, guide=false, keepCharPositions=false, mask } : DateFieldProps) => {
+export const DateField = ({ value, placeholder, required, className, icon, onChange, onBlur, guide=false, keepCharPositions=false, mask } : DateFieldProps) => {
   const [ date, setDate ] =useState<string>(); 
 
   useEffect(()=>{
@@ -36,59 +36,92 @@ export const DateField = ({ value, label, error, placeholder, required, descript
   },[value])
 
   return (
-    <FieldWrapper label={label} error={error} description={description}>
-      <MaskedInput
-        mask={mask??[/[0-9]/, /[0-9]/, '-', /[0-9]/, /[0-9]/, '-', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]}
-        placeholder={placeholder}
-        required={required}
-        onChange={onChange}
-        onBlur={onBlur}
-        value={date}
-        guide={guide}
-        showMask={false}
-        keepCharPositions={keepCharPositions}
-        render={(ref : any, props : any) => (
-          <div className="relative">
-            <input type="text" 
-              className={
-                clsx(
-                  "w-full appearance-none px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
-                  className
-                )} 
-              placeholder="Select date" 
-              ref={ref}
-              {...props}
-            />
-            {
-              icon  ? (
-                <div className="absolute inset-y-2 right-0 px-2">
-                  <XMarkIcon  className="h-6 w-6 opacity-30"/>
-                </div>
-              ) : null
-            }
-          </div>
-        )}
-      />
-    </FieldWrapper>
+    <MaskedInput
+      mask={mask??[/[0-9]/, /[0-9]/, '-', /[0-9]/, /[0-9]/, '-', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]}
+      placeholder={placeholder}
+      required={required}
+      onChange={onChange}
+      onBlur={onBlur}
+      value={date}
+      guide={guide}
+      showMask={false}
+      keepCharPositions={keepCharPositions}
+      render={(ref : any, props : any) => (
+        <div className="relative">
+          <input type="text" 
+            className={
+              clsx(
+                "w-full appearance-none px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+                className
+              )} 
+            placeholder="Select date" 
+            ref={ref}
+            {...props}
+          />
+          {
+            icon  ? (
+              <div className="absolute inset-y-2 right-0 px-2">
+                <XMarkIcon  className="h-6 w-6 opacity-30"/>
+              </div>
+            ) : null
+          }
+        </div>
+      )}
+    />
   )
 }
 
 export type DatePickerProps = {
-  required?: boolean;
+  name: string;
+  control : any;
+  className?: string;
+  mode: 'single' | 'multiple' | 'range';
+  label: string;
   dateFormat?: string;
   placeholder?: string;
-  className?: string;
-  iconPosition? : 'right' | 'left'
-} &  DayPickerProps & FieldWrapperPassThroughProps ;
+  iconPosition? : 'right' | 'left';
+} & DayPickerProps & FieldWrapperPassThroughProps ;
 
+export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', label = "Select date...", iconPosition='left',  error, name, control} : DatePickerProps) => {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field: { onChange, value } }) => {
+        return (
+          <FieldWrapper label={label} error={error}>
+            <DatePickerPopover 
+              mode={mode}
+              dateFormat={dateFormat}
+              label={label}
+              iconPosition={iconPosition}
+              onChange={onChange}
+            />
+          </FieldWrapper>
+        )}}
+      />
+    )
+}
 
-export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', required=false, className , label = "Select date...", iconPosition='left',  error} : DatePickerProps)=>{
+type SelectedDate = Date | Date[] | DateRange | undefined;
+
+export type DatePickerPopoverProps = {
+  name?: string;
+  control? : any;
+  onChange : (value : SelectedDate) => void;
+} & DatePickerProps;
+
+export const DatePickerPopover = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', label = "Select date...", iconPosition='left',  onChange} : DatePickerPopoverProps)=>{
   let [referenceElement, setReferenceElement] = useState<HTMLButtonElement | null>();
   let [popperElement, setPopperElement] = useState<HTMLDivElement | null>();
   let { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement : 'top'
+    placement : 'auto'
   });
-  const [selected, setSelected] = useState<Date | Date[] | DateRange | undefined>();
+  const [selected, setSelected] = useState<SelectedDate>();
+
+  useEffect(()=>{
+    onChange(selected)
+  },[selected])
 
   const handleSingleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const date = validateDateFormat(e.target.value,dateFormat);
@@ -139,27 +172,32 @@ export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', required
   const Footer = () => {  
     if(mode === "single"){
       return (
-        <FieldWrapper label={label} error={error}>
+        <FieldWrapper label={label}>
           <DateField value={selected ? format(selected as Date,"dd-MM-yyyy") : undefined} onChange={handleSingleChange}/>
         </FieldWrapper>
       )
     }
 
     if(mode === "range"){
+      console.log(selected)
       return (
         <div className={'flex'}>
           <div className='mx-1'>
-            <FieldWrapper label={label} error={error}>
-              <DateField value={selected? format(selected?.from,"dd-MM-yyyy") : undefined} onChange={handleFromChange} />
+            <FieldWrapper label={"Start Date"}>
+              <DateField value={selected && selected!.from? format(selected?.from,"dd-MM-yyyy") : undefined} onChange={handleFromChange} />
             </FieldWrapper>
           </div>
           <div className='mx-1'>
-            <FieldWrapper label={label} error={error}>
-              <DateField value={selected? format(selected?.to,"dd-MM-yyyy") : undefined} onChange={handleToChange}/>
+            <FieldWrapper label={"End Date"}>
+              <DateField value={selected && selected!.to? format(selected?.to,"dd-MM-yyyy") : undefined} onChange={handleToChange}/>
             </FieldWrapper>
           </div>
         </div>
       )
+    }
+
+    if(mode === "multiple"){
+      return <SelectedDates mode={mode} selected={selected} label={label} onRemove={handleRemoveDate}/>
     }
     return null;
   }
@@ -203,16 +241,14 @@ export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', required
 }
 
 export type SelectedDateProps = {
-  mode: 'default' | 'single' | 'multiple' | 'range';
-  label? : string;
+  mode: 'single' | 'multiple' | 'range';
   onRemove: (date : Date) => void
   placeholder?: string; 
   selected?: Date | Date[] | DateRange | undefined;
 };
 
 
-
-const SelectedDates = ({ mode, selected, label, onRemove } : SelectedDateProps) => {
+const SelectedDates = ({ mode, selected, placeholder, onRemove } : SelectedDateProps) => {
   if(selected) {
     if(mode === 'multiple'){
       return (
@@ -256,7 +292,7 @@ const SelectedDates = ({ mode, selected, label, onRemove } : SelectedDateProps) 
       clsx(
         "w-full focus:outline-none sm:text-sm",
       )} 
-    >{label ?? "Select date..."}</label>
+    >{placeholder ?? "Select date..."}</label>
   );
 }
 
