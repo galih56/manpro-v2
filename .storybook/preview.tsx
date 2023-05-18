@@ -1,9 +1,6 @@
 import React from 'react';
-import { AppProvider } from './stores/providers';
-import { AppRoutes } from './routes';
-import './../css/app.css'
-import '../src/index.css';
-
+import { AppProvider } from '../resources/js/stores/providers';
+import '../resources/css/app.css'
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
 };
@@ -11,7 +8,7 @@ export const parameters = {
 export const decorators = [
   (Story) => (
     <AppProvider>
-      <AppRoutes />
+      <Story />
     </AppProvider>
   ),
 ];
