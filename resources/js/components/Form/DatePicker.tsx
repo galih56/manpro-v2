@@ -201,7 +201,7 @@ export const DatePickerPopover = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', l
     }
     return null;
   }
-  
+   
 
   return (
     <>
@@ -256,7 +256,7 @@ const SelectedDates = ({ mode, selected, placeholder, onRemove } : SelectedDateP
           {selected.map((date : Date, i : number)=>(
               <Badge key={`${date.toISOString()}-${i}`} variant='default' className={"inline-flex mt-2"}>
                 {formatDate(date)} 
-                <XMarkIcon className='h-4 h-4 ml-2 hover:fill-red-900 px-0' onClick={()=> onRemove(date)}/>
+                <XMarkIcon className='h-4 ml-2 hover:fill-red-900 px-0' onClick={()=> onRemove(date)}/>
               </Badge>
             )
           )}
