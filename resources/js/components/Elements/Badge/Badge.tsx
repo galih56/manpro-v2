@@ -29,7 +29,7 @@ export const Badge = ( {  className = '', variant = 'default', size = 'md', titl
         <span 
 
             className={clsx(
-                "rounded mr-2 px-1.5 py-0.5",
+                "rounded align-middle mx-1 px-1.5 py-0.5",
                 variants[variant],
                 sizes[size],
                 className
