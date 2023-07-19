@@ -4,47 +4,47 @@ import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
 
-import { Role } from '../types';
+import { Section } from '../types';
 
-export const deleteRole = ({ roleId }: { roleId: string }) => {
+export const deleteSection = ({ roleId }: { roleId: string }) => {
   return axios.delete(`/roles/${roleId}`);
 };
 
-type UseDeleteRoleOptions = {
-  config?: MutationConfig<typeof deleteRole>;
+type UseDeleteSectionOptions = {
+  config?: MutationConfig<typeof deleteSection>;
 };
 
-export const useDeleteRole = ({ config }: UseDeleteRoleOptions = {}) => {
+export const useDeleteSection = ({ config }: UseDeleteSectionOptions = {}) => {
   const { add } = useNotifications();
 
   return useMutation({
-    onMutate: async (deletedRole) => {
+    onMutate: async (deletedSection) => {
       await queryClient.cancelQueries(['roles']);
 
-      const previousRoles = queryClient.getQueryData<Role[]>(['roles']);
+      const previousSections = queryClient.getQueryData<Section[]>(['roles']);
 
       queryClient.setQueryData(
         ['roles'],
-        previousRoles?.filter(
-          (role) => role.id !== deletedRole.roleId
+        previousSections?.filter(
+          (role) => role.id !== deletedSection.roleId
         )
       );
 
-      return { previousRoles };
+      return { previousSections };
     },
     onError: (_, __, context: any) => {
-      if (context?.previousRoles) {
-        queryClient.setQueryData(['roles'], context.previousRoles);
+      if (context?.previousSections) {
+        queryClient.setQueryData(['roles'], context.previousSections);
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['roles']);
       add({
         type: 'success',
-        title: 'Role Deleted',
+        title: 'Section Deleted',
       });
     },
     ...config,
-    mutationFn: deleteRole,
+    mutationFn: deleteSection,
   });
 };

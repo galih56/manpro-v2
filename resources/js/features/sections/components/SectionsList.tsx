@@ -1,16 +1,16 @@
 import { Table, Spinner, Link } from '@/components/Elements';
 import { formatDate } from '@/utils/datetime';
 
-import { useRoles } from '../api/getRoles';
-import { Role } from '../types';
+import { useSections } from '../api/getSections';
+import { Section } from '../types';
 
-import { DeleteRole } from './DeleteRole';
-import { UpdateRole } from './UpdateRole';
+import { DeleteSection } from './DeleteSection';
+import { UpdateSection } from './UpdateSection';
 
-export const RolesList = () => {
-  const rolesQuery = useRoles();
+export const SectionsList = () => {
+  const sectionsQuery = useSections();
   
-  if (rolesQuery.isLoading) {
+  if (sectionsQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -18,11 +18,11 @@ export const RolesList = () => {
     );
   }
 
-  if (!rolesQuery.data) return null;
+  if (!sectionsQuery.data) return null;
 
   return (
-    <Table<Role>
-      data={rolesQuery.data}
+    <Table<Section>
+      data={sectionsQuery.data}
       columns={[
         {
           title: 'Name',
@@ -44,14 +44,14 @@ export const RolesList = () => {
           field: 'id',
           Cell({ entry: { id } }) {
             console.log(id)
-            return id !== undefined || id !== null ? <UpdateRole roleId={id} /> : <></>;
+            return id !== undefined || id !== null ? <UpdateSection sectionId={id} /> : <></>;
           },
         },
         // {
         //   title: '',
         //   field: 'id',
         //   Cell({ entry: { id } }) {
-        //     return <DeleteRole id={id} />;
+        //     return <DeleteSection id={id} />;
         //   },
         // },
       ]}

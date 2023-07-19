@@ -11,9 +11,13 @@ export type UpdateTaskDTO = {
   data: {
     title: string;
     description: string;
-    tags?: string[]
-    assignees?: string[]
-    projectId: string
+    projectId: string;
+    tags? : string[];
+    assignees? : string[];
+    startOn? : Date;
+    startedAt? : Date;
+    dueOn? : Date; 
+    completedAt? : Date;
   };
   taskId: string;
 };

@@ -4,48 +4,63 @@ import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
 
-import { Role } from '../types';
+import { Section } from '../types';
+import { PaginationType } from '@/types';
+import { DateRange } from 'react-day-picker';
 
-export type CreateRoleDTO = {
+export type CreateSectionDTO = {
   data: {
-    name: string;
-    code: string;
+    title: string;
+    description: string;
+    projectId? : string;
   };
 };
 
-export const createRole = ({ data }: CreateRoleDTO): Promise<Role> => {
-  return axios.post(`/roles`, data);
+export const createSection = ({ data }: CreateSectionDTO): Promise<Section> => {
+  console.log(data);
+  return axios.post(`/sections`, data);
 };
 
-type UseCreateRoleOptions = {
-  config?: MutationConfig<typeof createRole>;
+type UseCreateSectionOptions = {
+  config?: MutationConfig<typeof createSection>;
 };
 
-export const useCreateRole = ({ config }: UseCreateRoleOptions = {}) => {
+export const useCreateSection = ({ config }: UseCreateSectionOptions = {}) => {
   const { add } = useNotifications();
   return useMutation({
-    onMutate: async (newRole) => {
-      await queryClient.cancelQueries(['roles']);
+    onMutate: async (newSection : Section) => {
+      await queryClient.cancelQueries(['sections']);
 
-      const previousRoles = queryClient.getQueryData<Role[]>(['roles']);
+      const previousSections = queryClient.getQueryData<PaginationType<Section>>(['sections']);
+      console.log('previousSections',previousSections)
+      if(previousSections){
+        var newItems : Section[] = previousSections.items.map((item : Section) => {
+          if(item.id == newSection.id){
+            return newSection;
+          }
+          return item
+        })
+        queryClient.setQueryData(['sections'], {
+          ...previousSections,
+          items : newItems
+        });
+      }
 
-      queryClient.setQueryData(['roles'], [...(previousRoles || []), newRole.data]);
-
-      return { previousRoles };
+      return { previousSections };
     },
-    onError: (_, __, context: any) => {
-      if (context?.previousRoles) {
-        queryClient.setQueryData(['roles'], context.previousRoles);
+    onError: (_: any, __: any, context: any) => {
+      if (context?.previousSections) {
+        queryClient.setQueryData(['sections'], context.previousSections);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['roles']);
+      queryClient.invalidateQueries(['sections']);
       add({
         type: 'success',
-        title: 'Role Created',
+        title: 'Section Created',
       });
     },
     ...config,
-    mutationFn: createRole,
+    mutationFn: createSection,
   });
 };

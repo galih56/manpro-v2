@@ -4,9 +4,9 @@ import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 import { useNotifications } from '@/stores/notifications';
 
-import { Role } from '../types';
+import { Section } from '../types';
 
-export type UpdateRoleDTO = {
+export type UpdateSectionDTO = {
   data: {
     name: string;
     code: string;
@@ -14,53 +14,53 @@ export type UpdateRoleDTO = {
   roleId: string;
 };
 
-export const updateRole = ({
+export const updateSection = ({
   data,
   roleId,
-}: UpdateRoleDTO): Promise<Role> => {
+}: UpdateSectionDTO): Promise<Section> => {
   return axios.patch(`/roles/${roleId}`, data);
 };
 
-type UseUpdateRoleOptions = {
-  config?: MutationConfig<typeof updateRole>;
+type UseUpdateSectionOptions = {
+  config?: MutationConfig<typeof updateSection>;
 };
 
-export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
+export const useUpdateSection = ({ config }: UseUpdateSectionOptions = {}) => {
   const { add } = useNotifications();
 
   return useMutation({
-    onMutate: async (updatingRole: any) => {
-      console.log(updatingRole)
-      await queryClient.cancelQueries(['roles', updatingRole?.roleId]);
+    onMutate: async (updatingSection: any) => {
+      console.log(updatingSection)
+      await queryClient.cancelQueries(['roles', updatingSection?.roleId]);
 
-      const previousRole = queryClient.getQueryData<Role>([
+      const previousSection = queryClient.getQueryData<Section>([
         'roles',
-        updatingRole?.roleId,
+        updatingSection?.roleId,
       ]);
 
-      queryClient.setQueryData(['roles', updatingRole?.roleId], {
-        ...previousRole,
-        ...updatingRole.data,
-        id: updatingRole.roleId,
+      queryClient.setQueryData(['roles', updatingSection?.roleId], {
+        ...previousSection,
+        ...updatingSection.data,
+        id: updatingSection.roleId,
       });
 
-      return { previousRole };
+      return { previousSection };
     },
     onError: (_, __, context: any) => {
-      if (context?.previousRole) {
+      if (context?.previousSection) {
         queryClient.setQueryData(
-          ['roles', context.previousRole.id],
-          context.previousRole
+          ['roles', context.previousSection.id],
+          context.previousSection
         );
       }
     },
     onSuccess: (data) => {
       add({
         type: 'success',
-        title: 'Role Updated',
+        title: 'Section Updated',
       });
     },
     ...config,
-    mutationFn: updateRole,
+    mutationFn: updateSection,
   });
 };
