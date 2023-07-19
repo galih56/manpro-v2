@@ -11,4 +11,13 @@ class Section extends Model
         'title',
         'description'
     ];
+
+    
+    public function project(){        
+        return $this->belongsTo(Project::class,'project_id');
+    }
+
+    public function tasks(){
+        return $this->hasMany(Task::class, 'section_id');
+    }
 }
