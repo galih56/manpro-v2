@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string("name");
-            $table->string("code");
-            $table->timestampsTz();
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->unsignedBigInteger('task_id')->nullable();
+            $table->foreign('task_id')->references('id')->on('tasks');
         });
     }
 
@@ -28,6 +26,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropForeign(['task_id']);
+            $table->dropColumn('task_id');
+        });
     }
 };
