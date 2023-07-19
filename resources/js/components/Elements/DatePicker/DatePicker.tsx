@@ -108,10 +108,6 @@ export const DatePickerPopover = ({
     if(onChange) onChange(selected)
   },[selected])
 
-  useEffect(()=>{
-    setSelected(value);
-    console.log('DayPicker',value)
-  },[value])
 
   const handleSingleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const date = validateDateFormat(e.target.value,dateFormat);
