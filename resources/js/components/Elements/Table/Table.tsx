@@ -2,6 +2,7 @@ import { ArchiveBoxIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import clsx from 'clsx'
 import { Pagination } from '../Pagination';
+import { NoEntriesFound } from '@/components/Layout';
 
 type TableColumn<Entry> = {
   title: string;
@@ -20,10 +21,7 @@ export type TableProps<Entry> = {
 export const Table = <Entry extends { id: string }>({ data, columns, className}: TableProps<Entry>) => {
   if (!data?.length) {
     return (
-      <div className="flex flex-col items-center justify-center text-gray-500 bg-white h-80">
-        <ArchiveBoxIcon className="w-16 h-16" />
-        <h4>No Entries Found</h4>
-      </div>
+      <NoEntriesFound/>
     );
   }
   return (
