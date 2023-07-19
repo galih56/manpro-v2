@@ -41,7 +41,7 @@ export const TasksList = () => {
   
   return (
     <>
-      <div className={clsx('bg-white rounded-xl shadow-lg my-3 p-4')}>
+      <div className={clsx('bg-white rounded-xl shadow-lg my-3 p-4')}>  
         <Disclosure>
             {({ open }) => (
               /* Use the `open` state to conditionally change the direction of an icon. */
