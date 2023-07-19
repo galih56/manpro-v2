@@ -13,6 +13,7 @@ const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
 const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
 const { Users } = lazyImport(() => import('@/features/users'), 'Users');
 const { RolesRoutes } = lazyImport(() => import('@/features/roles'), 'RolesRoutes');
+const { SectionsRoutes } = lazyImport(() => import('@/features/sections'), 'SectionsRoutes');
 const { TagsRoutes } = lazyImport(() => import('@/features/tags'), 'TagsRoutes');
 
 const App = () => {
@@ -42,6 +43,7 @@ export const protectedRoutes = [
       { path: '/tasks/*', element: <TasksRoutes /> },
       { path: '/profile', element: <Profile /> },
       { path: '/tags/*', element: <TagsRoutes /> },
+      { path: '/sections/*', element: <SectionsRoutes /> },
       { path: '/', element: <Dashboard /> },
       { path: '*', element: <Navigate to="." /> },
     ],
