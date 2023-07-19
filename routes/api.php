@@ -91,6 +91,18 @@ Route::group([
 });
 
 Route::group([
+    "prefix" => "sections", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\SectionController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\SectionController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\SectionController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\SectionController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\SectionController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\SectionController::class, 'destroy']);
+});
+
+Route::group([
     "prefix" => "tags", 
     'middleware' => 'auth:sanctum'
 ],function () {
