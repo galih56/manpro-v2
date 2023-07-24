@@ -3,23 +3,23 @@ import { useQuery } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
 import { ExtractFnReturnType, QueryConfig } from '@/lib/react-query';
 
-import { Role } from '../types';
+import { Section } from '../types';
 
-export const getRole = ({ roleId }: { roleId: string }): Promise<Role> => {
-  return axios.get(`/roles/${roleId}`).then(res => res.data);
+export const getSection = ({ sectionId }: { sectionId: string }): Promise<Section> => {
+  return axios.get(`/sections/${sectionId}`).then(res => res.data);
 };
 
-type QueryFnType = typeof getRole;
+type QueryFnType = typeof getSection;
 
-type UseRoleOptions = {
-  roleId: string;
+type UseSectionOptions = {
+  sectionId: string;
   config?: QueryConfig<QueryFnType>;
 };
 
-export const useRole = ({ roleId, config }: UseRoleOptions) => {
+export const useSection = ({ sectionId, config }: UseSectionOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['role', roleId],
-    queryFn: () => getRole({ roleId }),
+    queryKey: ['section', sectionId],
+    queryFn: () => getSection({ sectionId }),
   });
 };

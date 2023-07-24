@@ -18,22 +18,23 @@ const sizes = {
 
 
 export type BadgeProps = React.HTMLAttributes<HTMLElement> & {
-  title: string;
+  title? : string;
+  children?: React.ReactNode;
   variant?: keyof typeof variants;
   size?: keyof typeof sizes;
 } & Props;
 
-export const Badge = ( {  className = '', variant = 'default', size = 'md', title, ...props } : BadgeProps ) => {
+export const Badge = ( {  className = '', variant = 'default', size = 'md', title, children, ...props } : BadgeProps ) => {
     return (
         <span 
 
             className={clsx(
-                "rounded mr-2 px-2.5 py-0.5",
+                "rounded align-middle mx-1 px-1.5 py-0.5",
                 variants[variant],
                 sizes[size],
                 className
             )}
-        >{title}</span>
+        >{title}{children}</span>
     );
 }
 

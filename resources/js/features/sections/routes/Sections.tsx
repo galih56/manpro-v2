@@ -1,16 +1,16 @@
 import { ContentLayout } from '@/components/Layout';
 
-import { CreateRole } from '../components/CreateRole';
-import { RolesList } from '../components/RolesList';
+import { CreateSection } from '../components/CreateSection';
+import { SectionsList } from '../components/SectionsList';
 
-export const Roles = () => {
+export const Sections = () => {
   return (
-    <ContentLayout title="Roles">
+    <ContentLayout title="Sections">
       <div className="flex justify-end">
-        <CreateRole />
+        <CreateSection />
       </div>
       <div className="mt-4">
-        <RolesList />
+        <SectionsList />
       </div>
     </ContentLayout>
   );

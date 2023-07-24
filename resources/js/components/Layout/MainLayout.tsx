@@ -33,7 +33,8 @@ const SideNavigation = () => {
     { name: 'Tasks', to: './tasks', icon: CheckCircleIcon },
     { name: 'Users', to: './users', icon: UsersIcon },
     { name: 'Roles', to: './roles', icon: UserGroupIcon },
-    { name: 'Labels', to: './labels' },
+    { name: 'Project Sections', to: './sections' },
+    { name: 'Tags', to: './tags' },
 
     // checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
     //   name: 'Users',

@@ -1,13 +1,13 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { Role } from './Role';
-import { Roles } from './Roles';
+import { Section } from './Section';
+import { Sections } from './Sections';
 
-export const RolesRoutes = () => {
+export const SectionsRoutes = () => {
   return (
     <Routes>
-      <Route path="" element={<Roles />} />
-      <Route path=":roleId" element={<Role />} />
+      <Route path="" element={<Sections />} />
+      <Route path=":sectionId" element={<Section />} />
       <Route path="*" element={<Navigate to="." />} />
     </Routes>
   );

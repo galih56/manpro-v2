@@ -6,6 +6,7 @@ import { Project } from '../types';
 
 import { DeleteProject } from './DeleteProject';
 import { UpdateProject } from './UpdateProject';
+import { NavLink } from 'react-router-dom';
 
 export const ProjectsList = () => {
   const rolesQuery = useProjects();
@@ -27,6 +28,9 @@ export const ProjectsList = () => {
         {
           title: 'Title',
           field: 'title',
+          Cell({ entry : { id, title }}){
+            return <NavLink to={`/projects/${id}`} className={"hover:cursor-pointer"}>{title}</NavLink>
+          }
         },
         {
           title: 'Description',

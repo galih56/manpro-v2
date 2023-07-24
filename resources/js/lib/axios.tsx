@@ -1,4 +1,4 @@
-import Axios, { AxiosError, AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import Axios, { AxiosError, AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, AxiosRequestTransformer, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 import { API_URL } from '@/config';
 import { useNotifications } from '@/stores/notifications';
@@ -8,9 +8,25 @@ import toast from 'react-hot-toast';
 import { decamelizeKeys } from 'humps';
 import { useNavigate } from 'react-router-dom';
 import { wait } from '@/utils/datetime';
+import { format } from 'date-fns';
+
+
+const dateTransformer : AxiosRequestTransformer = (data: any): any => {
+  if (data instanceof Date) {
+    return format(data, "dd-MM-yyyy HH:mm:ss");
+  }
+  if (Array.isArray(data)) {
+    return data.map(dateTransformer)
+  }
+  if (typeof data === 'object' && data !== null) {
+    return Object.fromEntries(Object.entries(data).map(([key, value]) => [key, dateTransformer(value)]))
+  }
+  return data
+}
 
 export const axios = Axios.create({
   baseURL: API_URL,
+  transformRequest: [ dateTransformer ].concat(Axios.defaults.transformRequest)
   // withCredentials: true,
 });
 

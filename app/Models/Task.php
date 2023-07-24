@@ -25,8 +25,16 @@ class Task extends Model
         return $this->belongsTo(Project::class,'project_id');
     }
 
-    public function labels(){        
-        return $this->belongsToMany(Label::class,'task_label','task_id','label_id');
+    public function section(){        
+        return $this->belongsTo(Project::class,'section_id');
+    }
+
+    public function tasks(){
+        return $this->hasMany(Task::class, 'task_id');
+    }
+
+    public function tags(){        
+        return $this->belongsToMany(Tag::class,'task_tag','task_id','tag_id');
     }
     
     public function assignees(){        

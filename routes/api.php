@@ -43,7 +43,7 @@ Route::group([
 });
 
 Route::group([
-    "prefix" => "labels", 
+    "prefix" => "tags", 
     'middleware' => 'auth:sanctum'
 ],function () {
     Route::get('/', [\App\Http\Controllers\api\ProjectController::class, 'index']);
@@ -91,15 +91,27 @@ Route::group([
 });
 
 Route::group([
-    "prefix" => "labels", 
+    "prefix" => "sections", 
     'middleware' => 'auth:sanctum'
 ],function () {
-    Route::get('/', [\App\Http\Controllers\api\LabelController::class, 'index']);
-    Route::get('/{id}', [\App\Http\Controllers\api\LabelController::class, 'show']);
-    Route::post('/', [\App\Http\Controllers\api\LabelController::class, 'store']);
-    Route::put('/{id}', [\App\Http\Controllers\api\LabelController::class, 'update']);
-    Route::patch('/{id}', [\App\Http\Controllers\api\LabelController::class, 'update']);
-    Route::delete('/{id}', [\App\Http\Controllers\api\LabelController::class, 'destroy']);
+    Route::get('/', [\App\Http\Controllers\api\SectionController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\SectionController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\SectionController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\SectionController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\SectionController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\SectionController::class, 'destroy']);
+});
+
+Route::group([
+    "prefix" => "tags", 
+    'middleware' => 'auth:sanctum'
+],function () {
+    Route::get('/', [\App\Http\Controllers\api\TagController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\api\TagController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\api\TagController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\api\TagController::class, 'update']);
+    Route::patch('/{id}', [\App\Http\Controllers\api\TagController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\api\TagController::class, 'destroy']);
 });
 
 

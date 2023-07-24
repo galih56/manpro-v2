@@ -1,4 +1,4 @@
-import { Label } from '@/features/labels';
+import { Tag } from '@/features/tags';
 import { Project } from '@/features/projects';
 import { User } from '@/features/users';
 import { BaseEntity } from '@/types';
@@ -6,13 +6,15 @@ import { BaseEntity } from '@/types';
 export interface Task extends BaseEntity{
   title: string;
   description: string;
-  labels : Array<Label>
+  tags : Array<Tag>
   assignees : Array<User>;
   progress: number;
   project?: Project;
-  startOn?: string;
-  dueOn?: string;
-  startedAt?: string;
-  completedAt?: string;
+  startOn?: Date | string | null ;
+  dueOn?: Date | string | null ;
+  startAt?: Date | string | null ;
+  dueAt?: Date | string | null ;
+  startedAt?: Date | string | null ;
+  completedAt?: Date | string | null ;
   completedBy?: User;
 };

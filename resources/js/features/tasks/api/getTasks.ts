@@ -9,13 +9,13 @@ import { useEffect, useState } from 'react';
 import { PaginationDTO, PaginationType } from '@/types';
 import { camelizeKeys } from 'humps';
 
-export type TaskFiltersDTO = {
+export type TaskRequestDTO = {
   search?: string;
-  labels?: string[]
+  tags?: string[]
   assignees?: string[]
 } & PaginationDTO;
 
-export const getTasks = (params? : TaskFiltersDTO):  (Promise<PaginationType<Task> | Task[]>) => {
+export const getTasks = (params? : TaskRequestDTO):  (Promise<PaginationType<Task> | Task[]>) => {
   if(params){ 
     return axios.get('/tasks',{ params : params }).then(res => {
       var data = res.data;
@@ -34,7 +34,7 @@ export const getTasks = (params? : TaskFiltersDTO):  (Promise<PaginationType<Tas
 type QueryFnType = typeof getTasks;
 
 type UseTasksOptions = {
-  params? : TaskFiltersDTO;
+  params? : TaskRequestDTO;
   config?: QueryConfig<QueryFnType>;
 };
 

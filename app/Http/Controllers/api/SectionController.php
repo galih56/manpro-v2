@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Models\Section;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SectionController extends Controller
 {
@@ -30,21 +31,12 @@ class SectionController extends Controller
             'project_id' => 'required',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'progress' => 'numeric',
-            'start_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'due_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'started_at' => 'nullable|date_format:d-m-Y H:i:s',
-            'complated' => 'boolean',
-            'completed_at' => 'nullable|date_format:d-m-Y H:i:s',
-            'completed_by' => 'nullable|numeric',
-            'labels' => 'array',
-            'labels.*' => 'numeric|distinct'
         ]);
 
         $section=Section::create($fields);
 
         return response()->json([
-            'message' => 'Task created',
+            'message' => 'Section created',
             'data' => $section,
         ]);
     }
@@ -55,16 +47,26 @@ class SectionController extends Controller
      * @param  \App\Models\Section  $section
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $section = Section::with('tasks')->find($id);
+        $section = new Section();
 
+        if($request->tasks && empty($request->subtasks)){
+            $section = $section->with("tasks");
+        }
+
+        if($request->subtasks){
+            $section = $section->with("tasks.tasks");
+        }        
+        
         if(empty($section)){
             return response([
                 'message' => "Section not found"
             ],404);
         }
         
+        $section = $section->find($id);
+
         return response()->json(
             $section
         );
@@ -91,15 +93,6 @@ class SectionController extends Controller
             'project_id' => 'nullable',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'progress' => 'numeric',
-            'start_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'due_on' => 'nullable|date_format:d-m-Y H:i:s',
-            'started_at' => 'nullable|date_format:d-m-Y H:i:s',
-            'complated' => 'boolean',
-            'completed_at' => 'nullable|date_format:d-m-Y H:i:s',
-            'completed_by' => 'nullable|numeric',
-            'tasks' => 'nullable|array',
-            'tasks.*' => 'numeric|distinct'
         ]);
         
         $section->update($fields);

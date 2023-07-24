@@ -39,7 +39,7 @@ export const UsersList = () => {
             if(roles){
               return( 
                 <div>
-                  {roles.map(role => <Badge key={id+"-role-"+role.id} title={role.name} />)}
+                  {roles.map(role => <Badge key={id+"-role-"+role.id} >{role.name}</Badge>)}
                 </div>
               );
             }

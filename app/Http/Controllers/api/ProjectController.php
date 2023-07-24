@@ -53,16 +53,26 @@ class ProjectController extends Controller
      * @param  \App\Models\Project $project
      * @return \Illuminate\Http\Response
      */
-    public function show(int $id)
+    public function show(int $id, Request $request)
     {
-        $project = Project::find($id);
+        $project = Project::with('sections.tasks');
+        
+        if($request->tasks && empty($request->subtasks)){
+            $project = $project->with("tasks");
+        }
 
+        if($request->subtasks){
+            $project = $project->with("tasks.tasks");
+        }        
+        
         if(empty($project)){
             return response([
                 'message' => "Project not found"
             ],404);
         }
-        
+
+        $project = $project->find($id);
+
         return response()->json(
             $project
         );
@@ -125,4 +135,5 @@ class ProjectController extends Controller
             'message' => 'Project deleted'
         ]);
     }
+
 }

@@ -6,35 +6,26 @@ import { Form, FormDrawer, InputField, SelectField, TextAreaField } from '@/comp
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { CreateTaskDTO, useCreateTask } from '../api/createTask';
-import { useLabelOptions } from '@/hooks/useLabelOptions';
+import { useTagOptions } from '@/hooks/useTagOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
-import { DatePicker } from '@/components/Form/DatePicker';
+import { DatePicker } from '@/components/Elements/DatePicker';
 
 const schema = z.object({
-  projectId: z.number(),
+  projectId: z.string(),
   title: z.string().min(1, 'Required'),
   description: z.string().min(1, 'Required'),
-  labels: z.nullable(
-    z.array(
-      z.number()
-    )
-  ),
-  assignees: z.nullable(
-    z.array(
-      z.number()
-    )
-  ),
-  startOn: z.nullable(z.string().datetime()),
-  startedAt: z.nullable(z.string().datetime()),
-  dueOn: z.nullable(z.string().datetime()),
-  completedAt: z.nullable(z.string().datetime()),
-  userId: z.nullable(z.number())
+  tags: z.array(z.string()).optional(),
+  assignees: z.array( z.string()).optional(),
+  startOn: z.date().optional(),
+  dueOn: z.date().optional(),
+  startedAt: z.date().optional(),
+  completedAt: z.date().optional(),
 });
 
 export const CreateTask = () => {
   const projectOptions = useProjectOptions();
-  const labelOptions = useLabelOptions();
+  const tagOptions = useTagOptions();
   const usersOptions = useUserOptions();
   const createTaskMutation = useCreateTask();
 
@@ -64,7 +55,8 @@ export const CreateTask = () => {
           onSubmit={async (values) =>  await createTaskMutation.mutateAsync({ data: values })}
           schema={schema}
         >
-          {({ register, formState, control }) => (
+          {({ register, formState, control, getValues }) => {
+            return(
             <>
               <SelectField
                 label='Project'
@@ -78,20 +70,18 @@ export const CreateTask = () => {
                 error={formState.errors['title']}
                 registration={register('title')}
               />
-              <DatePicker label='single date' mode='single'/>
-              <DatePicker label="range dates" mode='range'/>
-              <DatePicker label="multiple dates" mode='multiple'/>
               <TextAreaField
                 label="Description"
                 error={formState.errors['description']}
                 registration={register('description')}
               />
-              
+              <DatePicker label='Start On'  mode='single' name="startOn" control={control} error={formState.errors['startOn']}/>
+              <DatePicker label='Due On' mode='single' name="dueOn" control={control} error={formState.errors['dueOn']}/>
               <SelectField
-                label='Labels'
-                options={labelOptions}
-                error={formState.errors['labels']}
-                registration={register('labels')}
+                label='Tags'
+                options={tagOptions}
+                error={formState.errors['tags']}
+                registration={register('tags')}
                 control={control}
                 multiple={true}
               />
@@ -105,7 +95,7 @@ export const CreateTask = () => {
                 multiple={true}
               />
             </>
-          )}
+          )}}
         </Form>
       </FormDrawer>
     // </Authorization>

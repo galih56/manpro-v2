@@ -6,14 +6,14 @@ import { ContentLayout } from '@/components/Layout';
 // import { Comments } from '@/features/comments';
 import { formatDate } from '@/utils/datetime';
 
-import { useRole } from '../api/getRole';
-import { UpdateRole } from '../components/UpdateRole';
+import { useSection } from '../api/getSection';
+import { UpdateSection } from '../components/UpdateSection';
 
-export const Role = () => {
-  const { roleId } = useParams();
-  const roleQuery = useRole({ roleId });
+export const Section = () => {
+  const { sectionId } = useParams();
+  const sectionQuery = useSection({ sectionId });
 
-  if (roleQuery.isLoading) {
+  if (sectionQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -21,16 +21,16 @@ export const Role = () => {
     );
   }
 
-  if (!roleQuery.data) return null;
+  if (!sectionQuery.data) return null;
 
   return (
     <>
-      <Head title={roleQuery.data.name} />
-      <ContentLayout title={roleQuery.data.name}>
-        <span className="text-xs font-bold">{formatDate(roleQuery.data.createdAt)}</span>
+      <Head title={sectionQuery.data.name} />
+      <ContentLayout title={sectionQuery.data.name}>
+        <span className="text-xs font-bold">{formatDate(sectionQuery.data.createdAt)}</span>
         <div className="mt-6 flex flex-col space-y-16">
           <div className="flex justify-end">
-            <UpdateRole roleId={roleId} />
+            <UpdateSection sectionId={sectionId} />
           </div>
         </div>
       </ContentLayout>

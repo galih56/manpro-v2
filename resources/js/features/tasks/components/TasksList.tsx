@@ -7,7 +7,7 @@ import { Task } from '../types';
 import { DeleteTask } from './DeleteTask';
 import { UpdateTask } from './UpdateTask';
 import { Form, InputField, Option, SelectField } from '@/components/Form';
-import { useLabelOptions } from '@/hooks/useLabelOptions';
+import { useTagOptions } from '@/hooks/useTagOptions';
 import { useState } from 'react';
 import { usePagination } from '@/hooks/usePagination';
 import { Disclosure } from '@headlessui/react';
@@ -25,7 +25,7 @@ export const TasksList = () => {
   const [ params, setParams ] =useState<TaskFiltersDTO>();
   const handleParamsOnChange = (value : Object) => setParams((prevValue)=>({ ...prevValue, ...value} as TaskFiltersDTO));
   const { isLoading, data, refetch } = useTasks({ config : { keepPreviousData : true }, params : { page: page, limit: limit, ...params}} );
-  const labelOptions = useLabelOptions();
+  const tagOptions = useTagOptions();
   
   
   if (isLoading) {
@@ -41,7 +41,7 @@ export const TasksList = () => {
   
   return (
     <>
-      <div className={clsx('bg-white rounded-xl shadow-lg my-3 p-4')}>
+      <div className={clsx('bg-white rounded-xl shadow-lg my-3 p-4')}>  
         <Disclosure>
             {({ open }) => (
               /* Use the `open` state to conditionally change the direction of an icon. */
@@ -78,17 +78,17 @@ export const TasksList = () => {
                   <div className="flex space-x-4">
                     <div className="basis-1/2">
                       <SelectField 
-                        placeholder='Labels'
-                        name='labels'
-                        options={labelOptions}
+                        placeholder='Tags'
+                        name='tags'
+                        options={tagOptions}
                         multiple={true} 
-                        onChange={(options) => handleParamsOnChange({ labels : options })} 
+                        onChange={(options) => handleParamsOnChange({ tags : options })} 
                         />
                     </div>
                     <div className="basis-1/2">
                       <SelectField 
                         name='assignees'
-                        options={labelOptions}
+                        options={tagOptions}
                         multiple={true} 
                         onChange={(options) => handleParamsOnChange({ assignees : options })} 
                         placeholder='Assignees'
@@ -106,21 +106,22 @@ export const TasksList = () => {
             {
               title: 'Title',
               field: 'title',
-            },
-            {
-              title: 'Labels',
-              field: 'id',
-              Cell({ entry: { id, labels } }) {
-                if(labels){
+              Cell({ entry : { id, title , tags }}) {
+                if(tags){
                   return( 
-                    <div>
-                      {labels.map(label => <Badge key={id+"-label-"+label.id} title={label.name} />)}
+                    <div className="flex flex-col">
+                      <span>
+                        {title} 
+                      </span>
+                      <div className="truncate">
+                        {tags.map(tag => <Badge key={id+"-tag-"+tag.id} >{tag.name}</Badge>)}
+                      </div>
                     </div>
                   );
                 }
                 return <span> - </span>
-              },
-            }, 
+              }
+            },
             {
               title: 'Assignees',
               field: 'id',
@@ -128,11 +129,62 @@ export const TasksList = () => {
                 if(assignees){
                   return( 
                     <div>
-                      {assignees.map(assignee => <Badge key={id+"-assignee-"+assignee.id} title={assignee.name} />)}
+                      {assignees.map(assignee => <Badge key={id+"-assignee-"+assignee.id} >{assignee.name}</Badge>)}
                     </div>
                   );
                 }
                 return <span> - </span>
+              },
+            },
+            {
+              title: 'Start On',
+              field: 'title',
+              thClassName: 'truncate',
+              tdClassName: 'truncate',
+              Cell({ entry : { startOn }}) {
+                return startOn ? <span> {formatDate(startOn)}</span> : <></>
+              }
+            }, 
+            {
+              title: 'Due On',
+              field: 'title',
+              thClassName: 'truncate',
+              tdClassName: 'truncate',
+              Cell({ entry : { dueOn }}) {
+                return dueOn ? <span>{formatDate(dueOn)}</span> : <></>
+              }
+            },
+            {
+              title: 'Start At',
+              field: 'title',
+              thClassName: 'truncate',
+              tdClassName: 'truncate',
+              Cell({ entry : { startAt }}) {
+                return startAt ? <span> {formatDate(startAt)}</span> : <></>
+              }
+            }, 
+            {
+              title: 'Due At',
+              field: 'title',
+              thClassName: 'truncate',
+              tdClassName: 'truncate',
+              Cell({ entry : { dueAt }}) {
+                return dueAt ? <span>{formatDate(dueAt)}</span> : <></>
+              }
+            },
+            {
+              title: 'Actions',
+              field: 'id',
+              thClassName: 'text-center',
+              Cell({ entry: { id } }) {
+                return id !== undefined || id !== null ? <div className="flex justify-evenly"><UpdateTask taskId={id} />  <DeleteTask id={id} /></div>: <></>;
+              },
+            },
+            {
+              title: 'Updated At',
+              field: 'updatedAt',
+              Cell({ entry : { updatedAt } }) {
+                return <span>{formatDate(updatedAt)}</span>;
               },
             },
             {
@@ -141,15 +193,7 @@ export const TasksList = () => {
               Cell({ entry : { createdAt } }) {
                 return <span>{formatDate(createdAt)}</span>;
               },
-            },
-            {
-              title: 'Action',
-              field: 'id',
-              thClassName: 'text-center',
-              Cell({ entry: { id } }) {
-                return id !== undefined || id !== null ? <div className="flex justify-evenly"><UpdateTask taskId={id} />  <DeleteTask id={id} /></div>: <></>;
-              },
-            },
+            }
           ]}
         />
         <Pagination currentPage={page} itemsPerPage={limit} offset={3} pageNumbers={data.totalPages} pageOnChange={pageOnChange} itemsPerPageOnChange={itemsPerPageOnChange}/>

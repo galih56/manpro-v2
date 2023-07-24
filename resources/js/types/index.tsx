@@ -3,8 +3,8 @@ import { ComponentType, ReactNode } from "react"
 
 export interface BaseEntity {
     id: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date | string;
+    updatedAt: Date | string;
 };
 
 export interface Props {
