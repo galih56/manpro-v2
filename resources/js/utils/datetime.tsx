@@ -39,9 +39,9 @@ export const formatDateTime = (date: number | Date | string) => {
     return "";
 };
 
-export const convertDates = (data : any, callback  : Function | null) : any=> {
+export const convertDates = (data : any) : any=> {
   if (data instanceof Array) {
-    return data.map((item) => convertDates(item,callback));
+    return data.map((item) => convertDates(item));
   } else if (data instanceof Object) {
     for (const key in data) {
         // const date = parseWithTimeZone(data[key], "yyyy-MM-dd'T'HH:mm:ssXXX", new Date(), "UTC");
@@ -50,12 +50,7 @@ export const convertDates = (data : any, callback  : Function | null) : any=> {
         if (isValid(date)) {
             data[key] = date;
         } else if (typeof data[key] === "object") {
-            data[key] = convertDates(data[key],callback);
-        }
-        console.log(callback)
-        // use callback to do extra data manipulation
-        if(callback){ 
-            data = callback(key, data);
+            data[key] = convertDates(data[key]);
         }
     }
   }

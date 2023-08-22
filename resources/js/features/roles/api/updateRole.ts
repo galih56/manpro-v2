@@ -30,7 +30,7 @@ export const useUpdateRole = ({ config }: UseUpdateRoleOptions = {}) => {
 
   return useMutation({
     onMutate: async (updatingRole: any) => {
-      console.log(updatingRole)
+
       await queryClient.cancelQueries(['roles', updatingRole?.roleId]);
 
       const previousRole = queryClient.getQueryData<Role>([

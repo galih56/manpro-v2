@@ -13,9 +13,17 @@ class SectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $sections = Section::with('tasks')->with('project')->get();
+        $sections = Section::select('*');
+
+        if($request->search){ 
+            $sections = $sections->where(function(Builder $q) use($request){
+                            $q->where('title','ilike',"%$request->search%")->orWhere('description','ilike',"%$request->search%");
+                        });
+        }
+        
+        $sections = $sections->with('tasks')->with('project')->paginate( $request->limit ?? 15)->withQueryString();
         return response()->json($sections);
     }
 
@@ -50,6 +58,7 @@ class SectionController extends Controller
     public function show($id, Request $request)
     {
         $section = new Section();
+        $section = $section->with('project');
 
         if($request->tasks && empty($request->subtasks)){
             $section = $section->with("tasks");
@@ -90,7 +99,7 @@ class SectionController extends Controller
         }
         
         $fields=$request->validate([
-            'project_id' => 'nullable',
+            'project_id' => 'required',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
         ]);

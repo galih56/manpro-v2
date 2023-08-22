@@ -35,7 +35,6 @@ export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', defaultV
   iconPosition='left',  error, name, control, placeholder, onChange, value
 } : DatePickerProps) => {
   
-  
   if(!control) return (
     <FieldWrapper label={label} error={error}>
       <DatePickerPopover 
@@ -68,6 +67,7 @@ export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', defaultV
               onChange={onChange}
               value={value}
               placeholder={placeholder}
+              defaultValue={defaultValue}
             />
           </FieldWrapper>
         )}}
@@ -75,7 +75,7 @@ export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', defaultV
     )
 }
 
-type SelectedDate = Date | Date[] | DateRange | undefined;
+type SelectedDate = Date | Date[] | DateRange | undefined | null;
 
 export type DatePickerPopoverProps = {
   defaultValue? : SelectedDate;

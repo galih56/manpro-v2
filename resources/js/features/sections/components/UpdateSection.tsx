@@ -19,6 +19,7 @@ type UpdateSectionProps = {
 };
 
 const schema = z.object({
+  projectId: z.string(),
   title: z.string().min(1,'Required'),
   description: z.nullable(z.string()),
 });

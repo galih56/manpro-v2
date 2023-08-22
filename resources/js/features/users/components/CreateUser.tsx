@@ -13,11 +13,7 @@ const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   password: z.string().min(1, 'Password is required'),
   passwordConfirmation: z.string().min(1, 'Password confirmation is required'),
-  roles: z.nullable(
-    z.array(
-      z.object({ label : z.string(), value : z.number() })
-    )
-  )
+  roles: z.array(z.object({ label : z.string(), value : z.number() })).nullish()
 }).superRefine(({ password, passwordConfirmation } , ctx)=>{
   if(password != passwordConfirmation){
     ctx.addIssue({

@@ -1,14 +1,14 @@
 import { Table, Spinner, Link, Badge, Button, Pagination } from '@/components/Elements';
 import { formatDate, formatDateTime } from '@/utils/datetime';
 
-import { TaskFiltersDTO, useTasks } from '../api/getTasks';
+import { TaskRequestDTO, useTasks } from '../api/getTasks';
 import { Task } from '../types';
 
 import { DeleteTask } from './DeleteTask';
 import { UpdateTask } from './UpdateTask';
 import { Form, InputField, Option, SelectField } from '@/components/Form';
 import { useTagOptions } from '@/hooks/useTagOptions';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePagination } from '@/hooks/usePagination';
 import { Disclosure } from '@headlessui/react';
 import { ChevronDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
@@ -22,9 +22,12 @@ type FilterToggleIconProps = {
 
 export const TasksList = () => {
   const {  page, limit, pageOnChange, itemsPerPageOnChange } = usePagination({});
-  const [ params, setParams ] =useState<TaskFiltersDTO>();
-  const handleParamsOnChange = (value : Object) => setParams((prevValue)=>({ ...prevValue, ...value} as TaskFiltersDTO));
-  const { isLoading, data, refetch } = useTasks({ config : { keepPreviousData : true }, params : { page: page, limit: limit, ...params}} );
+  const [ params, setParams ] =useState<TaskRequestDTO>({
+    page : page,
+    limit : limit,
+  });
+  const handleParamsOnChange = (value : Object) => setParams((prevValue)=>({ ...prevValue, ...value} as TaskRequestDTO));
+  const { isLoading, data, refetch } = useTasks({ config : { keepPreviousData : true }, params : { ...params, page: page, limit: limit }} );
   const tagOptions = useTagOptions();
   
   
@@ -35,6 +38,7 @@ export const TasksList = () => {
       </div>
     );
   }
+
   
   if (!data) return null;
   const FilterToggleIcon = ({ open } : FilterToggleIconProps) => (open ? <ChevronUpIcon className="h-6 w-6"/> : <ChevronDownIcon className="h-6 w-6"/>)
@@ -106,12 +110,12 @@ export const TasksList = () => {
             {
               title: 'Title',
               field: 'title',
-              Cell({ entry : { id, title , tags }}) {
+              Cell({ entry : { id, title , tags, project }}) {
                 if(tags){
                   return( 
                     <div className="flex flex-col">
                       <span>
-                        {title} 
+                        {title} {project ? " - " + project.title : ""}
                       </span>
                       <div className="truncate">
                         {tags.map(tag => <Badge key={id+"-tag-"+tag.id} >{tag.name}</Badge>)}
@@ -159,8 +163,8 @@ export const TasksList = () => {
               field: 'title',
               thClassName: 'truncate',
               tdClassName: 'truncate',
-              Cell({ entry : { startAt }}) {
-                return startAt ? <span> {formatDate(startAt)}</span> : <></>
+              Cell({ entry : { startedAt }}) {
+                return startedAt ? <span> {formatDate(startedAt)}</span> : <></>
               }
             }, 
             {
@@ -168,8 +172,8 @@ export const TasksList = () => {
               field: 'title',
               thClassName: 'truncate',
               tdClassName: 'truncate',
-              Cell({ entry : { dueAt }}) {
-                return dueAt ? <span>{formatDate(dueAt)}</span> : <></>
+              Cell({ entry : { completedAt }}) {
+                return completedAt ? <span>{formatDate(completedAt)}</span> : <></>
               }
             },
             {
@@ -196,7 +200,14 @@ export const TasksList = () => {
             }
           ]}
         />
-        <Pagination currentPage={page} itemsPerPage={limit} offset={3} pageNumbers={data.totalPages} pageOnChange={pageOnChange} itemsPerPageOnChange={itemsPerPageOnChange}/>
+        <Pagination 
+          currentPage={page} 
+          itemsPerPage={limit} 
+          offset={3} 
+          pageNumbers={data.totalPages} 
+          pageOnChange={console.log} 
+          itemsPerPageOnChange={itemsPerPageOnChange}
+        />
       </div>
     </>
   );

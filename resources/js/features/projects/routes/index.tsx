@@ -5,10 +5,10 @@ import { Projects } from './Projects';
 
 export const ProjectsRoutes = () => {
   return (
-    <Routes>
-      <Route path="" element={<Projects />} />
-      <Route path=":projectId/*" element={<Project />} />
-      <Route path="*" element={<Navigate to="." />} />
-    </Routes>
+      <Routes>
+        <Route path=""  element={<Projects />} />
+        <Route path=":projectId/*" element={<Project />} />
+        <Route path="*" element={<Navigate to="." />} />
+      </Routes>
   );
 };

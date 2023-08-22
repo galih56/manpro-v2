@@ -20,6 +20,11 @@ export const Form = <
   onSubmit, children, className, options, id, schema,
 }: FormProps<TFormValues, Schema>) => {
   const methods = useForm<TFormValues>({ ...options, resolver: schema && zodResolver(schema) });
+  
+  React.useEffect(()=>{
+    methods.reset(options?.defaultValues);
+  },[ options?.defaultValues])
+
   return (
     <form
       className={clsx('space-y-2', className)}

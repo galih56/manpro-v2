@@ -4,7 +4,7 @@ import { Controller, UseFormRegisterReturn, useForm } from 'react-hook-form';
 import Select, { components, OptionProps, MultiValueGenericProps, MultiValueRemoveProps, StylesConfig } from 'react-select';
 import clsx from 'clsx';
 import { FieldWrapper } from './FieldWrapper';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type Option = {
     label: React.ReactNode;
@@ -25,22 +25,27 @@ export type SelectFieldProps = FieldWrapperPassThroughProps & {
   
 
 export const SelectField = ({ label, error, name, control, registration, multiple, options, defaultValue, placeholder, onChange } : SelectFieldProps)=>{
-    var defaultSelectedValue : Option | Option[] | undefined= undefined;
-    if(multiple){
-        const values = defaultValue ?? [] ;
-        defaultSelectedValue = options.filter((option : Option) => {
-            if(values.includes(option.value)) return option;
-        })
-    }else{
-        defaultSelectedValue = options.filter((option : Option) => {
-            if(option.value == defaultValue) return option;
-        });
-        defaultSelectedValue = defaultSelectedValue[0] as Option
-    }
-
-
-    const [ selectedValues, setSelectedVales ] = useState<Option | Option[] | undefined>(defaultSelectedValue);
+   
     
+
+    const [ selectedValues, setSelectedVales ] = useState<Option | Option[] | undefined>();
+    
+    useEffect(()=>{
+        var defaultSelectedValue : Option | Option[] | undefined= undefined;
+        if(multiple){
+            const values = defaultValue ?? [] ;
+            defaultSelectedValue = options.filter((option : Option) => {
+                if(values.includes(option.value)) return option;
+            })
+        }else{
+            defaultSelectedValue = options.filter((option : Option) => {
+                if(option.value == defaultValue) return option;
+            });
+            defaultSelectedValue = defaultSelectedValue[0] as Option
+        }
+        setSelectedVales(defaultSelectedValue);
+    },[options, multiple, defaultValue]);
+
     const TWMultiValueContainer = (props : MultiValueGenericProps) => (
         <components.MultiValueContainer {...props}>
         <div {...props.innerProps} className='flex justify-center items-center m-1 font-medium py-1 px-2 rounded-md shadow-sm text-teal-700 bg-teal-100 border border-teal-300 focus:outline-none sm:text-sm'>
@@ -118,9 +123,9 @@ export const SelectField = ({ label, error, name, control, registration, multipl
                                 onChange={(options : any)=>{
                                     var values = undefined;
                                     if(multiple){
-                                        values = options.map((option : Option) => option.value) as number[] ?? [];
+                                        values = options.map((option : Option) => option.value) as string[] ?? [];
                                     }else{
-                                        values = options.value as number ?? undefined;
+                                        values = options.value as string ?? undefined;
                                     }
                                     if(onChange) onChange(values)
                                     setSelectedVales(options);

@@ -159,7 +159,6 @@ export const DatePickerPopover = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', l
   };
   
   const handleRemoveDate = ( removedDate : Date)=> {
-    // console.log(selected!.filter((date : Date) => formatDate(date) != formatDate(removedDate)))
     setSelected(selected!.filter((date : Date) => formatDate(date) != formatDate(removedDate)))
   }
 
@@ -179,7 +178,6 @@ export const DatePickerPopover = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', l
     }
 
     if(mode === "range"){
-      console.log(selected)
       return (
         <div className={'flex'}>
           <div className='mx-1'>
