@@ -103,14 +103,15 @@ export const Pagination = ({ currentPage, pageNumbers, offset=1, itemsPerPage, t
                                     label: numbers[0],
                                     value: numbers[0]
                                  }
-                              ]} 
+                              ]
+                           } 
                            options={
                               numbers.map(number => ({
                                  label: number,
                                  value: number
                               }))
                            }
-                           onChange={(option : any)=> pageOnChange(option.value as number)} 
+                           onChange={(option : any)=> pageOnChange(option )} 
                         />
                      </div>
                      <div className="flex">
@@ -121,13 +122,14 @@ export const Pagination = ({ currentPage, pageNumbers, offset=1, itemsPerPage, t
                            defaultValue={[{ label : 10, value : 10 }]}
                            options={
                               [
+                                 { label : 5, value : 5 },
                                  { label : 10, value : 10 },
                                  { label : 25, value : 25 },
                                  { label : 50, value : 50 },
                                  { label : 100, value : 100 },
                               ]
                            }
-                           onChange={(option : any)=> itemsPerPageOnChange(option.value as number)} 
+                           onChange={(option : any)=> itemsPerPageOnChange(option)} 
                         />
                      </div>
                   </>
