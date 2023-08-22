@@ -19,22 +19,15 @@ type UpdateTaskProps = {
 };
 
 const schema = z.object({
+  projectId: z.string(),
   title: z.string().min(1,'Required'),
   description: z.nullable(z.string()),
-  tags: z.nullable(
-    z.array(
-      z.string()
-    )
-  ),
-  assignees: z.nullable(
-    z.array(
-      z.string()
-    )
-  ),
-  startOn: z.date().optional(),
-  dueOn: z.date().optional(),
-  startedAt: z.date().optional(),
-  completedAt: z.date().optional(),
+  tags: z.array(z.string()).nullish(),
+  assignees: z.array(z.string()).nullish(),
+  startOn: z.date().optional().nullish(),
+  dueOn: z.date().optional().nullish(),
+  startedAt: z.date().optional().nullish(),
+  completedAt: z.date().optional().nullish(),
 });
 
 export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
@@ -77,7 +70,7 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
               description: taskQuery.data?.description,
               tags: defaultTags,
               assignees: defaultAssignees,
-              projectId: taskQuery.data?.project?.id 
+              projectId: taskQuery.data?.project?.id.toString() 
             },
           }}
           schema={schema}
@@ -87,7 +80,7 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
               <SelectField
                 label='Project'
                 options={projectOptions}
-                defaultValue={taskQuery.data?.project?.id}
+                defaultValue={taskQuery.data?.project?.id.toString()}
                 error={formState.errors['projectId']}
                 registration={register('projectId')}
                 control={control}
@@ -121,10 +114,30 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
                 control={control}
                 multiple={true}
               />
-              <DatePicker label='Start On'  mode='single' name="startOn" control={control} error={formState.errors['startOn']}/>
-              <DatePicker label='Due On' mode='single' name="dueOn" control={control} error={formState.errors['dueOn']}/>
-              <DatePicker label='Started At'  mode='single' name="startedAt" control={control} error={formState.errors['startedAt']}/>
-              <DatePicker label='Completed At' mode='single' name="completedAt" control={control} error={formState.errors['completedAt']}/>
+              <DatePicker 
+                label='Start On'  
+                mode='single' 
+                name="startOn" 
+                control={control} error={formState.errors['startOn']}
+              />
+              <DatePicker 
+                label='Due On' 
+                mode='single' 
+                name="dueOn" 
+                control={control} error={formState.errors['dueOn']}
+              />
+              <DatePicker 
+                label='Started At'  
+                mode='single' 
+                name="startedAt" 
+                control={control} error={formState.errors['startedAt']}
+              />
+              <DatePicker 
+                label='Completed At' 
+                mode='single' 
+                name="completedAt" 
+                control={control} error={formState.errors['completedAt']}
+              />
             </>
           )}
         </Form>

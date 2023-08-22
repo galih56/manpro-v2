@@ -9,18 +9,19 @@ import { CreateTaskDTO, useCreateTask } from '../api/createTask';
 import { useTagOptions } from '@/hooks/useTagOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
-import { DatePicker } from '@/components/Elements/DatePicker';
+import { DatePicker } from '@/components/Form/DatePicker';
 
 const schema = z.object({
   projectId: z.string(),
   title: z.string().min(1, 'Required'),
   description: z.string().min(1, 'Required'),
-  tags: z.array(z.string()).optional(),
-  assignees: z.array( z.string()).optional(),
-  startOn: z.date().optional(),
-  dueOn: z.date().optional(),
-  startedAt: z.date().optional(),
-  completedAt: z.date().optional(),
+  tags: z.array( z.string() ).nullish(),
+  assignees: z.array(z.string()).nullish(),
+  startOn: z.string().datetime().nullish(),
+  startedAt: z.string().datetime().nullish(),
+  dueOn: z.string().datetime().nullish(),
+  completedAt: z.string().datetime().nullish(),
+  userId: z.number().nullish()
 });
 
 export const CreateTask = () => {
@@ -55,8 +56,7 @@ export const CreateTask = () => {
           onSubmit={async (values) =>  await createTaskMutation.mutateAsync({ data: values })}
           schema={schema}
         >
-          {({ register, formState, control, getValues }) => {
-            return(
+          {({ register, formState, control }) => (
             <>
               <SelectField
                 label='Project'
@@ -70,13 +70,28 @@ export const CreateTask = () => {
                 error={formState.errors['title']}
                 registration={register('title')}
               />
+              <DatePicker 
+                label='Start On'  mode='single' name="startOn" 
+                control={control} error={formState.errors['startOn']}
+              />
+              <DatePicker 
+                label='Due On' mode='single' name="dueOn" 
+                control={control} error={formState.errors['dueOn']}
+              />
+              <DatePicker 
+                label='Started At'  mode='single' name="startedAt" 
+                control={control} error={formState.errors['startedAt']}
+              />
+              <DatePicker 
+                label='Completed At' mode='single' name="completedAt" 
+                control={control} error={formState.errors['completedAt']}
+              />
               <TextAreaField
                 label="Description"
                 error={formState.errors['description']}
                 registration={register('description')}
               />
-              <DatePicker label='Start On'  mode='single' name="startOn" control={control} error={formState.errors['startOn']}/>
-              <DatePicker label='Due On' mode='single' name="dueOn" control={control} error={formState.errors['dueOn']}/>
+              
               <SelectField
                 label='Tags'
                 options={tagOptions}
@@ -95,7 +110,7 @@ export const CreateTask = () => {
                 multiple={true}
               />
             </>
-          )}}
+          )}
         </Form>
       </FormDrawer>
     // </Authorization>
