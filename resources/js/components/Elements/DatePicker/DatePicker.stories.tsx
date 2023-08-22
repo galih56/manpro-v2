@@ -20,10 +20,6 @@ export const DatePickerSingle : Story = () => {
     const [ date , setDate ] = useState<Date>(new Date());
     const resetState = () => setDate(new Date());
     
-    useEffect(()=>{
-        console.log(date)
-    },[date])
-    
     return (
         <div className="flex flex-col">
             <div>
@@ -50,10 +46,6 @@ const initialStateMultiple = [
 export const DatePickerMultiple : Story = () => {
     const [ dates , setDates ] = useState<Date[]>(initialStateMultiple);
     const resetState = () => setDates(initialStateMultiple);
-    
-    useEffect(()=>{
-        console.log(dates)
-    },[dates])
 
     return (
         <div className="flex flex-col">
@@ -81,10 +73,6 @@ const initialStateRange = {
 export const DatePickerRange : Story = () => {
     const [ dates , setDates ] = useState<DateRange>(initialStateRange);
     const resetState = () => setDates(initialStateRange)
-
-    useEffect(()=>{
-        console.log(dates)
-    },[dates])
 
     return (
         <div className="flex flex-col">
