@@ -32,7 +32,7 @@ export const FormDrawer = ({
 
   return (
     <>
-      {React.cloneElement(triggerButton, { onClick: open })}
+      {triggerButton && React.cloneElement(triggerButton, { onClick: open })}
       <Drawer
         isOpen={isOpen}
         onClose={close}
