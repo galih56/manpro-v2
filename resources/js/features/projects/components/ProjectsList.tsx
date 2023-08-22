@@ -47,13 +47,6 @@ export const ProjectsList = () => {
           title: 'Actions',
           field: 'id',
           Cell({ entry: { id } }) {
-            return id !== undefined || id !== null ? <UpdateProject projectId={id} /> : <></>;
-          },
-        },
-        {
-          title: '',
-          field: 'id',
-          Cell({ entry: { id } }) {
             return id !== undefined || id !== null ? <DeleteProject id={id} /> : <></>;
           },
         },
