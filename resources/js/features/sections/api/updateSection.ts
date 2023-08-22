@@ -8,17 +8,18 @@ import { Section } from '../types';
 
 export type UpdateSectionDTO = {
   data: {
-    name: string;
-    code: string;
+    title: string;
+    description: string;
+    projectId: string;
   };
-  roleId: string;
+  sectionId: string;
 };
 
 export const updateSection = ({
   data,
-  roleId,
+  sectionId,
 }: UpdateSectionDTO): Promise<Section> => {
-  return axios.patch(`/roles/${roleId}`, data);
+  return axios.patch(`/sections/${sectionId}`, data);
 };
 
 type UseUpdateSectionOptions = {
@@ -30,18 +31,18 @@ export const useUpdateSection = ({ config }: UseUpdateSectionOptions = {}) => {
 
   return useMutation({
     onMutate: async (updatingSection: any) => {
-      console.log(updatingSection)
-      await queryClient.cancelQueries(['roles', updatingSection?.roleId]);
+
+      await queryClient.cancelQueries(['sections', updatingSection?.sectionId]);
 
       const previousSection = queryClient.getQueryData<Section>([
-        'roles',
-        updatingSection?.roleId,
+        'sections',
+        updatingSection?.sectionId,
       ]);
 
-      queryClient.setQueryData(['roles', updatingSection?.roleId], {
+      queryClient.setQueryData(['sections', updatingSection?.sectionId], {
         ...previousSection,
         ...updatingSection.data,
-        id: updatingSection.roleId,
+        id: updatingSection.sectionId,
       });
 
       return { previousSection };
@@ -49,7 +50,7 @@ export const useUpdateSection = ({ config }: UseUpdateSectionOptions = {}) => {
     onError: (_, __, context: any) => {
       if (context?.previousSection) {
         queryClient.setQueryData(
-          ['roles', context.previousSection.id],
+          ['sections', context.previousSection.id],
           context.previousSection
         );
       }
