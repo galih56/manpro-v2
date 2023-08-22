@@ -5,28 +5,34 @@ import { useNotifications } from '@/stores/notifications';
 import storage from '@/utils/storage';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { decamelizeKeys } from 'humps';
+import { camelizeKeys, decamelizeKeys } from 'humps';
 import { useNavigate } from 'react-router-dom';
-import { wait } from '@/utils/datetime';
+import { convertDates, wait } from '@/utils/datetime';
 import { format } from 'date-fns';
 
 
-const dateTransformer : AxiosRequestTransformer = (data: any): any => {
+const transformDateToString : AxiosRequestTransformer = (data: any): any => {
   if (data instanceof Date) {
     return format(data, "dd-MM-yyyy HH:mm:ss");
   }
   if (Array.isArray(data)) {
-    return data.map(dateTransformer)
+    return data.map(transformDateToString)
   }
   if (typeof data === 'object' && data !== null) {
-    return Object.fromEntries(Object.entries(data).map(([key, value]) => [key, dateTransformer(value)]))
+    return Object.fromEntries(Object.entries(data).map(([key, value]) => [key, transformDateToString(value)]))
   }
   return data
 }
 
+const transformStringDateToDate = (data : any) : any  => {
+  data = convertDates(JSON.parse(data))
+  return data;
+}
+
 export const axios = Axios.create({
   baseURL: API_URL,
-  transformRequest: [ dateTransformer ].concat(Axios.defaults.transformRequest)
+  transformRequest: [ transformDateToString ].concat(Axios.defaults.transformRequest),
+  transformResponse: [ transformStringDateToDate ].concat(Axios.defaults.transformResponse)
   // withCredentials: true,
 });
 
@@ -41,7 +47,7 @@ const AxiosInterceptor = ({ children } : any) => {
       var requestInterceptor = axios.interceptors.request.use( (config: InternalAxiosRequestConfig) => {
         config.headers = config.headers ?? {};
         config.url = `${config.url}`;
-        
+       
         const token = storage.getToken();
         if (token) {
           config.headers.Authorization = token;
@@ -80,7 +86,13 @@ const AxiosInterceptor = ({ children } : any) => {
       });
       
 
-      var responseInterceptor = axios.interceptors.response.use((response : AxiosResponse) => response, 
+      var responseInterceptor = axios.interceptors.response.use(
+        (response : AxiosResponse) => {
+          if(response.config?.method == "get"){
+            response.data = camelizeKeys(response.data)
+          }
+          return response;
+        }, 
           (error : any) => {
             var status : string = "";
             var message : string = "Ooops, omething went wrong!";
