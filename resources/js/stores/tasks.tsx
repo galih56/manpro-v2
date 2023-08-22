@@ -7,10 +7,10 @@ interface Props {
   // any props that come into the component
 }
 
-const initialState : Task[] = [];
+const initialState : any[] = [];
 
 type TasksContextType = {
-  state : Task[],
+  state : any[],
   dispatch : React.Dispatch<any>
 }
 
@@ -18,7 +18,7 @@ const tasksReducer = (state = initialState, action : any) => {
   const { type, payload } = action;
   switch (type) {
     case 'store' : {
-      return state;
+      return payload;
     }
     case 'add' : {
       return [
@@ -46,7 +46,7 @@ const tasksReducer = (state = initialState, action : any) => {
 const TasksContext = createContext<TasksContextType>({
     state: initialState,
     dispatch: () => null
-  });;
+});
 
 const withTasks = (Child : ElementType) => (props : Props) => (
   <TasksContext.Consumer>
@@ -71,8 +71,10 @@ function useTasks() {
   }
   return {
     tasks : context.state,
-    add : (task : Task) => context.dispatch({ type : 'add', payload : task}),
-    dismiss : (id : string) => context.dispatch({ type : 'delete', payload : id})
+    add : (task : any) => context.dispatch({ type : 'add', payload : task}),
+    store : (tasks : Array<any>) => context.dispatch({ type : 'store', payload : tasks}),
+    update : (task : any) => context.dispatch({ type : 'update', payload : task}),
+    remove : (id : string) => context.dispatch({ type : 'delete', payload : id})
   };
 }
 
