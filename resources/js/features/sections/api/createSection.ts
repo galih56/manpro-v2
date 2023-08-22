@@ -17,7 +17,6 @@ export type CreateSectionDTO = {
 };
 
 export const createSection = ({ data }: CreateSectionDTO): Promise<Section> => {
-  console.log(data);
   return axios.post(`/sections`, data);
 };
 
@@ -32,7 +31,7 @@ export const useCreateSection = ({ config }: UseCreateSectionOptions = {}) => {
       await queryClient.cancelQueries(['sections']);
 
       const previousSections = queryClient.getQueryData<PaginationType<Section>>(['sections']);
-      console.log('previousSections',previousSections)
+
       if(previousSections){
         var newItems : Section[] = previousSections.items.map((item : Section) => {
           if(item.id == newSection.id){
