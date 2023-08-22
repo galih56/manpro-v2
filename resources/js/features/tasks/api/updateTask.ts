@@ -43,6 +43,8 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
           id : item.value,
           name : item.label
         }));
+      }
+      if(updatingTask.assignees){
         updatingTask.assignees = updatingTask.assignees.map((item : any) => ({
           id : item.value,
           name : item.label
@@ -77,6 +79,7 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
         type: 'success',
         title: 'Task Updated',
       });
+      return data;
     },
     ...config,
     mutationFn: updateTask,
