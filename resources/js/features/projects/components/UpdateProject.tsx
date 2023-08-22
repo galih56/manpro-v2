@@ -7,6 +7,7 @@ import { Authorization, ROLES } from '@/lib/authorization';
 
 import { useProject } from '../api/getProject';
 import { UpdateProjectDTO, useUpdateProject } from '../api/updateProject';
+import { useTasks } from '@/stores/tasks';
 
 type UpdateProjectProps = {
   projectId: string;
@@ -19,7 +20,8 @@ const schema = z.object({
 
 export const UpdateProject = ({ projectId }: UpdateProjectProps) => {
   const projectQuery = useProject({ projectId });
-  const updateProjectMutation = useUpdateProject();
+    const { tasks } = useTasks();
+    const updateProjectMutation = useUpdateProject();
 
   return (
     // <Authorization allowedProjects={[ROLES.ADMIN]}>
