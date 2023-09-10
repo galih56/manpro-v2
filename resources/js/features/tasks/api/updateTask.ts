@@ -6,6 +6,7 @@ import { useNotifications } from '@/stores/notifications';
 
 import { Task } from '../types';
 import { Option } from '@/components/Form';
+import { useTasks } from '@/stores/tasks';
 
 export type UpdateTaskDTO = {
   data: {
@@ -35,6 +36,7 @@ type UseUpdateTaskOptions = {
 
 export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
   const { add } = useNotifications();
+  const taskContext = useTasks();
 
   return useMutation({
     onMutate: async (updatingTask: any) => {
@@ -63,6 +65,9 @@ export const useUpdateTask = ({ config }: UseUpdateTaskOptions = {}) => {
         id: updatingTask.taskId,
       });
 
+      if(taskContext){
+        taskContext.update({ id : updatingTask.taskId, ...updatingTask.data })
+      }
       return { previousTask };
     },
     onError: (_, __, context: any) => {

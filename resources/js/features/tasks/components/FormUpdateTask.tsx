@@ -1,15 +1,20 @@
 import * as z from 'zod';
-
-import { Form, FormDrawer, InputField, Option, SelectField, TextAreaField } from '@/components/Form';
+import { Form,  InputField,  SelectField, TextAreaField } from '@/components/Form';
 import { useTask } from '../api/getTask';
 import { UpdateTaskDTO, useUpdateTask } from '../api/updateTask';
 import { useTagOptions } from '@/hooks/useTagOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
 import { DatePicker } from '@/components/Elements/DatePicker';
+import { UseBaseMutationResult } from '@tanstack/react-query';
+
 
 type UpdateTaskProps = {
   taskId: string;
+  /*
+    Only receive UseMutationResult
+  */
+  onSubmit?: (values : any) => void;
 };
 
 const schema = z.object({
@@ -24,29 +29,43 @@ const schema = z.object({
   completedAt: z.date().optional().nullish(),
 });
 
-export const FormUpdateTask = ({ taskId }: UpdateTaskProps) => {
+export const FormUpdateTask = ({ taskId, onSubmit }: UpdateTaskProps) => {
   const taskQuery = useTask({ taskId });
+  const task = taskQuery.data;
+
   const projectOptions = useProjectOptions();
   const tagOptions = useTagOptions();
   const usersOptions = useUserOptions();
-  const updateTaskMutation = useUpdateTask();
 
-  const defaultTags = taskQuery.data?.tags?.map(label => label.id.toString()) ?? undefined;
-  const defaultAssignees = taskQuery.data?.assignees?.map(assignee => assignee.id.toString()) ?? undefined;
-
+  const defaultTags = task?.tags?.map(label => label.id.toString()) ?? undefined;
+  const defaultAssignees = task?.assignees?.map(assignee => assignee.id.toString()) ?? undefined;
+ 
+  const defaultEstimation = {
+    from : task?.startOn?? undefined, 
+    to : task?.dueOn?? undefined
+  }
+  const defaultRealisation = {
+    from : task?.startedAt?? undefined, 
+    to : task?.completedAt?? undefined
+  }
+  console.log(defaultEstimation);
   return (
     <Form<UpdateTaskDTO['data'], typeof schema>
       id="update-task"
-      onSubmit={async (values) => {
-        await updateTaskMutation.mutateAsync({ data: values, taskId });
+      onSubmit={(values) => {
+        if(onSubmit) onSubmit(values);
       }}
       options={{
         defaultValues: {
-          title: taskQuery.data?.title,
-          description: taskQuery.data?.description,
+          title: task?.title,
+          description: task?.description,
           tags: defaultTags,
           assignees: defaultAssignees,
-          projectId: taskQuery.data?.project?.id.toString() 
+          projectId: task?.project?.id.toString(),
+          startOn: task?.startOn,
+          dueOn: task?.dueOn,
+          startedAt: task?.startedAt,
+          completedAt: task?.completedAt,
         },
       }}
       schema={schema}
@@ -56,7 +75,7 @@ export const FormUpdateTask = ({ taskId }: UpdateTaskProps) => {
           <SelectField
             label='Project'
             options={projectOptions}
-            defaultValue={taskQuery.data?.project?.id.toString()}
+            defaultValue={task?.project?.id.toString()}
             error={formState.errors['projectId']}
             registration={register('projectId')}
             control={control}
@@ -91,29 +110,18 @@ export const FormUpdateTask = ({ taskId }: UpdateTaskProps) => {
             multiple={true}
           />
           <DatePicker 
-            label='Start On'  
-            mode='single' 
-            name="startOn" 
+            label='Deadline Estimation'  
+            mode='range' 
+            name={["startOn", "dueOn"]} 
+            defaultValue={defaultEstimation}
             control={control} error={formState.errors['startOn']}
           />
           <DatePicker 
-            label='Due On' 
-            mode='single' 
-            name="dueOn" 
-            control={control} error={formState.errors['dueOn']}
-          />
-          <DatePicker 
-            label='Started At'  
-            mode='single' 
-            name="startedAt" 
-            control={control} error={formState.errors['startedAt']}
-          />
-          <DatePicker 
-            label='Completed At' 
-            mode='single' 
-            name="completedAt" 
-            control={control} error={formState.errors['completedAt']}
-          />
+            label='Realisation'  
+            mode='range' 
+            name={["startedAt","completedAt"]} 
+            defaultValue={defaultRealisation}
+            control={control}/>
         </>
       )}
     </Form>

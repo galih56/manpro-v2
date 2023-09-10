@@ -11,8 +11,7 @@ export type GanttChartProps = {
 
 export const GanttChart = (props : GanttChartProps) => {
   const [view, setView] = useState<ViewMode | undefined>(props.viewMode);
-  const [tasks, setTasks] = useState<Task[]>(props.tasks?? []);
-  const [isChecked, setIsChecked] = useState(props.tasks ? props.showTaskList : false);
+  const [isChecked, setIsChecked] = useState(props.tasks ? props.showTaskList : true);
   
   let columnWidth = 65;
   if (view === ViewMode.Year) {
@@ -33,7 +32,7 @@ export const GanttChart = (props : GanttChartProps) => {
       />
       <Gantt
         {...props}
-        tasks={tasks}
+        tasks={props.tasks}
         viewMode={view}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}

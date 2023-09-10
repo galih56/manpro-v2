@@ -62,7 +62,8 @@ export const UpdateTask = ({ taskId }: UpdateTaskProps) => {
         <Form<UpdateTaskDTO['data'], typeof schema>
           id="update-task"
           onSubmit={async (values) => {
-            await updateTaskMutation.mutateAsync({ data: values, taskId });
+            console.log(values)
+            // await updateTaskMutation.mutateAsync({ data: values, taskId });
           }}
           options={{
             defaultValues: {

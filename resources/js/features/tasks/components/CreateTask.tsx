@@ -9,7 +9,7 @@ import { CreateTaskDTO, useCreateTask } from '../api/createTask';
 import { useTagOptions } from '@/hooks/useTagOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
-import { DatePicker } from '@/components/Form/DatePicker';
+import { DatePicker } from '@/components/Elements/DatePicker/DatePicker';
 
 const schema = z.object({
   projectId: z.string(),
@@ -71,12 +71,8 @@ export const CreateTask = () => {
                 registration={register('title')}
               />
               <DatePicker 
-                label='Start On'  mode='single' name="startOn" 
+                label='Deadline'  mode='single' name={["startOn","dueOn"]} 
                 control={control} error={formState.errors['startOn']}
-              />
-              <DatePicker 
-                label='Due On' mode='single' name="dueOn" 
-                control={control} error={formState.errors['dueOn']}
               />
               <DatePicker 
                 label='Started At'  mode='single' name="startedAt" 
