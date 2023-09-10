@@ -19,19 +19,14 @@ export const DeleteTag = ({ id }: DeleteTagProps) => {
         title="Delete Label"
         body="Are you sure you want to delete this label?"
         triggerButton={
-          <Button variant="danger" startIcon={<TrashIcon className="h-4 w-4" />}>
-            Delete Label
-          </Button>
+          <Button variant="danger" startIcon={<TrashIcon className="h-4 w-4" />} />
         }
         confirmButton={
           <Button
             isLoading={deleteTagMutation.isLoading}
             type="button"
             className="bg-red-600"
-            onClick={async () => await deleteTagMutation.mutateAsync({ tagId: id })}
-          >
-            Delete Label
-          </Button>
+            onClick={async () => await deleteTagMutation.mutateAsync({ tagId: id })} />
         }
       />
     // </Authorization>

@@ -9,7 +9,7 @@ import { CreateTagDTO, useCreateTag } from '../api/createTag';
 
 const schema = z.object({
   name: z.string().min(1, 'Required'),
-  description: z.string().min(1, 'Required'),
+  description: z.string(),
 });
 
 export const CreateTag = () => {
@@ -21,10 +21,10 @@ export const CreateTag = () => {
         isDone={createTagMutation.isSuccess}
         triggerButton={
           <Button size="sm" startIcon={<PlusIcon className="h-4 w-4" />}>
-            Create Label
+            Create Tag
           </Button>
         }
-        title="Create Label"
+        title="Create Tag"
         submitButton={
           <Button
             form="create-label"
