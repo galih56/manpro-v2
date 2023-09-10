@@ -1,12 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 import * as React from 'react';
-import { useForm, UseFormReturn, UseFormProps } from 'react-hook-form';
+import { useForm, UseFormReturn, UseFormProps, FormProvider } from 'react-hook-form';
 import { ZodType, ZodTypeDef } from 'zod';
 
 type FormProps<TFormValues, Schema> = {
   className?: string;
-  onSubmit: (values : any, methods : UseFormReturn<TFormValues, any>) => {};
+  onSubmit: (values : any, methods? : UseFormReturn<TFormValues, any>) => void;
   children: (methods: UseFormReturn<TFormValues>) => React.ReactNode;
   options?: UseFormProps<TFormValues>;
   id?: string;
@@ -22,16 +22,18 @@ export const Form = <
   const methods = useForm<TFormValues>({ ...options, resolver: schema && zodResolver(schema) });
   
   React.useEffect(()=>{
-    methods.reset(options?.defaultValues);
+    methods.reset(options!.defaultValues);
   },[ options?.defaultValues])
 
   return (
-    <form
-      className={clsx('space-y-2', className)}
-      onSubmit={methods.handleSubmit((values) => onSubmit( values, methods))}
-      id={id}
-    >
-      {children(methods)}
-    </form>
+    <FormProvider {...methods}>
+      <form
+        className={clsx('space-y-2', className)}
+        onSubmit={methods.handleSubmit((values) => onSubmit( values, methods))}
+        id={id}
+      >
+        {children(methods)}
+      </form>
+    </FormProvider>
   );
 };

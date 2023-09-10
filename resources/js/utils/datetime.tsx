@@ -17,23 +17,23 @@ export const validateDateFormat = (date : string, format: string) => {
     return null;
 }
 
-export const formatDate = (date: number | Date | string) => {
+export const formatDate = (date: number | Date | string, stringFormat : string = "d MMM yyyy") => {
     if(date){
         if(typeof date === "string"){
             date = parseISO(date);
         }
-        date = format(date, 'd MMM yyyy');
+        date = format(date, stringFormat);
         return date
     }
     return "";
 };
 
-export const formatDateTime = (date: number | Date | string) => {
+export const formatDateTime = (date: number | Date | string, stringFormat : string = 'd MMM yyyy hh:mm:ss') => {
     if(date){
         if(typeof date === "string"){
             date = parseISO(date);
         }
-        date = format(date, 'd MMM yyyy hh:mm:ss');
+        date = format(date, stringFormat);
         return date
     }
     return "";

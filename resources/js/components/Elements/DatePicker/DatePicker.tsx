@@ -1,101 +1,75 @@
 import React, { ChangeEventHandler, ReactNode, useEffect, useState } from 'react';
 import { format, isAfter, isBefore } from 'date-fns';
 import { 
-  DayPicker, DayPickerProps,  DateRange, SelectRangeEventHandler, SelectSingleEventHandler, SelectMultipleEventHandler
+  DayPicker, DayPickerProps, SelectRangeEventHandler, SelectSingleEventHandler, SelectMultipleEventHandler
 } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { Popover as UIPopover, Transition } from '@headlessui/react'
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
-import { FieldWrapper, FieldWrapperPassThroughProps } from './../../Form/FieldWrapper';
+import { FieldWrapper, FieldWrapperPassThroughProps } from '../../Form/FieldWrapper';
 import { usePopper } from 'react-popper';
+import MaskedInput from 'react-text-mask'
 import { formatDate, validateDateFormat } from '@/utils/datetime';
 import { Badge } from '..';
-import {  Controller } from 'react-hook-form';
+import { useFormContext, Controller, UseFormRegisterReturn, Control } from 'react-hook-form';
 import { DateDisplay } from '../DateDisplay';
 import { DateField } from '../DateField';
+import { useController } from "react-hook-form";
 
+
+export type DateRange = {
+  from?: Date | null | undefined;
+  to?: Date | null | undefined;
+};
 
 export type DatePickerProps = {
-  defaultValue? : SelectedDate;
-  value? : SelectedDate;
-  onChange? : (value : SelectedDate) => void;
-  name: string;
-  control : any;
+  defaultValue? : Date | Date[] | DateRange;
+  control? : any;
   className?: string;
   mode: 'single' | 'multiple' | 'range';
   label: string;
   dateFormat?: string;
   placeholder?: string;
   iconPosition? : 'right' | 'left';
+  name: string | [string, string];
 } & DayPickerProps & FieldWrapperPassThroughProps ;
 
-export const DatePicker = ({ mode = 'single', dateFormat= 'dd-MM-yyyy', defaultValue, label, 
-  iconPosition='left',  error, name, control, placeholder, onChange, value
+export const DatePicker = ({ 
+  name, error, control,
+  mode = 'single', dateFormat= 'dd-MM-yyyy', 
+  label = "Select date...", iconPosition='left',
+  defaultValue,  
 } : DatePickerProps) => {
-  
-  if(!control) return (
+  return (
     <FieldWrapper label={label} error={error}>
       <DatePickerPopover 
         mode={mode}
         dateFormat={dateFormat}
         label={label}
         iconPosition={iconPosition}
+        control={control}
+        name={name}
         defaultValue={defaultValue}
-        placeholder={placeholder}
-        onChange={onChange}
-        value={value}
       />
     </FieldWrapper>
-  )
-
-
-  return (
-    <Controller
-      control={control}
-      name={name}
-      defaultValue={defaultValue}
-      render={({ field: { onChange, value } }) => {
-        return (
-          <FieldWrapper label={label} error={error}>
-            <DatePickerPopover 
-              mode={mode}
-              dateFormat={dateFormat}
-              label={label}
-              iconPosition={iconPosition}
-              onChange={onChange}
-              value={value}
-              placeholder={placeholder}
-              defaultValue={defaultValue}
-            />
-          </FieldWrapper>
-        )}}
-      />
     )
 }
 
-type SelectedDate = Date | Date[] | DateRange | undefined | null;
+type SelectedDate = Date | Date[] | DateRange | undefined;
 
 export type DatePickerPopoverProps = {
-  defaultValue? : SelectedDate;
-  value? : SelectedDate;
-  name?: string;
+  name: string | [string, string];
   control? : any;
   onChange? : (value : SelectedDate) => void;
-  placeholder? : string;
 } & DatePickerProps;
 
-type CustomBadgeProps = {
-  key: string;
-  className? : string;
-  children: React.ReactNode;
-  onRemove: () => void
-}
-
 export const DatePickerPopover = ({ 
-    mode = 'single', dateFormat= 'dd-MM-yyyy', defaultValue, label, 
-    iconPosition='left',  onChange, placeholder, value
+    name, defaultValue,
+    mode = 'single', dateFormat= 'dd-MM-yyyy', 
+    label = "Select date...", control,
+    iconPosition='left',  onChange
   } : DatePickerPopoverProps)=>{
   let [referenceElement, setReferenceElement] = useState<HTMLButtonElement | null>();
   let [popperElement, setPopperElement] = useState<HTMLDivElement | null>();
@@ -104,15 +78,10 @@ export const DatePickerPopover = ({
   });
   const [selected, setSelected] = useState<SelectedDate>(defaultValue);
 
-  useEffect(()=>{
-    if(onChange) onChange(selected)
-  },[selected])
-
-
   const handleSingleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const date = validateDateFormat(e.target.value,dateFormat);
     if (date) {
-      return setSelected(date);
+      setSelected(date);
     }
   };
 
@@ -154,53 +123,76 @@ export const DatePickerPopover = ({
     setSelected(value);
   };
 
-
-  const CustomBadge = ( { 
-      onRemove,
-      children
-  } : CustomBadgeProps )=>{
-      return (
-          <Badge variant='default' className={"inline-flex"}>
-              {children}
-              <XMarkIcon className='h-4 ml-2 hover:fill-red-900 px-0' onClick={() => onRemove()}/>
-          </Badge>
-      )
-  }
-
-  const Footer = () => {  
+  const Footer = () => {
     if(mode === "single"){
+      const { field } = useController({ name : name as string, control: control, defaultValue : defaultValue });
+      
+      useEffect(()=>{
+        if(field) field.onChange(selected)
+      },[]);
+      
+      useEffect(()=>{
+        if(onChange) onChange(selected)
+        if(field) field.onChange(selected)
+      },[selected])
+        
+      if(!(typeof name == 'string')) return (<span className={'text-red-700'}>Input Name must be an array</span>);
+        
       return (
         <FieldWrapper label={label}>
-          <DateField value={selected ? format(selected as Date,"dd-MM-yyyy") : undefined} onChange={handleSingleChange}/>
-        </FieldWrapper>
-      )
-    }
-
-    if(mode === "range"){
-      return (
-        <div className={'flex'}>
-          <div className='mx-1'>
-            <FieldWrapper label={"Start Date"}>
-              <DateField value={selected && selected!.from? format(selected?.from,"dd-MM-yyyy") : undefined} onChange={handleFromChange} />
-            </FieldWrapper>
-          </div>
-          <div className='mx-1'>
-            <FieldWrapper label={"End Date"}>
-              <DateField value={selected && selected!.to? format(selected?.to,"dd-MM-yyyy") : undefined} onChange={handleToChange}/>
-            </FieldWrapper>
-          </div>
-        </div>
+          <DateField name={field.name} value={selected ? format(selected as Date,"dd-MM-yyyy") : undefined} onChange={handleSingleChange}/>
+        </FieldWrapper> 
       )
     }
 
     if(mode === "multiple"){
-      return <DateDisplay 
-        mode={mode} 
-        data={selected} 
-        placeholder={placeholder}
-        CustomBadge={ (date, i) =>  <CustomBadge key={`${date.toISOString()}-${i}`} onRemove={() => handleRemoveDate(date)}   > {formatDate(date)} </CustomBadge>}
-        />
+      if(!(typeof name == 'string')) return ( <span className={'text-red-700'}>Input Name must be an array</span>);
+      return <DateDisplay mode={mode} dates={selected as Date[]} onRemove={handleRemoveDate}/>
     }
+      
+    if(mode === "range"){  
+      if(!Array.isArray(name)){
+        return (
+          <span className={'text-red-700'}>Input Name must be an array</span>
+        )
+      }else{
+        const { field : startField } = useController({ name : name[0], control: control, defaultValue : defaultValue!.from });
+        const { field : endField } = useController({ name : name[1], control: control, defaultValue : defaultValue!.to });
+        
+        useEffect(()=>{
+          if(onChange) onChange(selected)
+          if(selected){
+            if(startField && selected.from) startField.onChange(selected!.from);
+            if(endField && selected.to) endField.onChange(selected!.to);
+          }
+        },[])
+
+        useEffect(()=>{
+          if(onChange) onChange(selected)
+          if(selected){
+            if(startField && selected.from) startField.onChange(selected!.from);
+            if(endField && selected.to) endField.onChange(selected!.to);
+          }
+        },[selected])
+        
+    
+        return (
+          <div className={'flex'}>
+            <div className='mx-1'>
+              <FieldWrapper label={"Start Date"}>
+                <DateField name={startField.name} value={selected && selected!.from? format(selected?.from,"dd-MM-yyyy") : undefined} onChange={handleFromChange} />
+              </FieldWrapper>
+            </div>
+            <div className='mx-1'>
+              <FieldWrapper label={"End Date"}>
+                <DateField name={endField.name} value={selected && selected!.to? format(selected?.to,"dd-MM-yyyy") : undefined} onChange={handleToChange}/>
+              </FieldWrapper>
+            </div>
+          </div>
+        )
+      }
+    } 
+
     return null;
   }
    
@@ -218,12 +210,8 @@ export const DatePickerPopover = ({
                   )}>
                     { open ?  <XMarkIcon  className="h-6 w-6 opacity-30"/> : <CalendarIcon className="h-6 w-6 opacity-30"/>}
                 </UIPopover.Button>
-                <div className="hover:cursor-pointer text-right align-middle items-center mx-2">
-                  <DateDisplay 
-                    mode={mode} data={selected} 
-                    placeholder={placeholder} 
-                    CustomBadge={ (date, i) =>  <CustomBadge key={`${date.toISOString()}-${i}`} onRemove={() => handleRemoveDate(date)}   > {formatDate(date)} </CustomBadge>}
-                  />
+                <div className="hover:cursor-pointer text-right align-middle mx-2">
+                  <DateDisplay mode={mode} dates={selected} label={label} onRemove={handleRemoveDate}/>
                 </div>
             </div>
             <UIPopover.Panel 

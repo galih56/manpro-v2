@@ -2,65 +2,62 @@ import { formatDate } from "@/utils/datetime";
 import { Badge } from "../Badge";
 import clsx from "clsx";
 import { ReactNode } from "react";
-
-export type DateRange = {
-    from: Date | undefined;
-    to?: Date | undefined;
-};
-
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { DateRange } from "react-day-picker";
 
 export type DateDisplayProps = {
-    mode: 'single' | 'multiple' | 'range';
-    placeholder?: string; 
-    data?: Date | Date[] | DateRange | undefined;
-    /*
-    *   Use this if you don't want to use Badge Component
-    */
-    CustomBadge?: (date : Date, index :number ) => React.ReactNode;
+  name?: string;
+  mode: 'single' | 'multiple' | 'range';
+  onRemove: (date : Date) => void
+  placeholder?: string; 
+  dates?: Date | Date[] | DateRange | undefined;
 };
-  
-export const DateDisplay = ( { mode, placeholder, data, CustomBadge } : DateDisplayProps)=>{
-  if(data) {
+
+
+export const DateDisplay = ({name, mode, dates, placeholder, onRemove } : DateDisplayProps) => {
+  if(dates) {
     if(mode === 'multiple'){
       return (
         <div className="flex flex-wrap">
-          {data.map((date : Date, i : number)=>(
-              CustomBadge ? 
-                CustomBadge(date, i)
-                : 
-                <Badge key={`${date.toISOString()}-${i}`} variant='default' className={"inline-flex"}>
-                    {formatDate(date)} 
-                </Badge>
+          {dates.map((date : Date, i : number)=>(
+              <Badge key={`${date.toISOString()}-${i}`} variant='default' className={"inline-flex mt-2"}>
+                {formatDate(date)} 
+                {name && <input name={`${name}[]`} type="hidden" value={formatDate(date, 'dd-MM-yyyy')} />}
+                <XMarkIcon className='h-4 ml-2 hover:fill-red-900 px-0' onClick={()=> onRemove(date)}/>
+              </Badge>
             )
           )}
         </div>
        ); 
      }
-     
      if(mode === 'range'){
-        const to = formatDate(data.to)
-        const from = formatDate(data.from);
-
-        const toSplit = to.split(" ");
-        const fromSplit = from.split(" ");
-
-        const toMonthYear = `${toSplit[1]} ${toSplit[2]}`;
-        const fromMonthYear = `${fromSplit[1]} ${fromSplit[2]}`;
-
-        var dates = "";
-        if(toMonthYear == fromMonthYear){
-            dates = `${fromSplit[0]} - ${toSplit[0]} ${fromSplit[1]} ${fromSplit[2]}`;
-        }
-        else dates = `${from} - ${to}`;
-
+      var from = dates.from;  
+      var to = dates.to;  
+      
+      if(!(from && to)){
         return (
+          <div className="inline-flex">
+            <label className={
+              clsx(
+                "w-full focus:outline-none sm:text-sm",
+              )} 
+            >
+              {formatDate(dates.from)} - {formatDate(dates.to)}
+            </label>
+          </div>
+        )
+      }
+      
+      from = formatDate(dates.from);
+      to = formatDate(dates.to);
+      return (
            <div className="inline-flex">
               <label className={
                 clsx(
                   "w-full focus:outline-none sm:text-sm",
                 )} 
               >
-                {dates}
+                {from} - {to}
               </label>
            </div>
        )
@@ -71,7 +68,7 @@ export const DateDisplay = ( { mode, placeholder, data, CustomBadge } : DateDisp
           clsx(
             "w-full focus:outline-none sm:text-sm",
           )} 
-        >{formatDate(data as Date)}</label>
+        >{formatDate(dates as Date)}</label>
       )
     }
   }  
@@ -84,3 +81,4 @@ export const DateDisplay = ( { mode, placeholder, data, CustomBadge } : DateDisp
     >{placeholder ?? "Select date..."}</label>
   );
 }
+
