@@ -29,7 +29,7 @@ class TagController extends Controller
     {
         $fields=$request->validate([
             'name' => 'required|string',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         $tag=Tag::create($fields);
@@ -79,7 +79,7 @@ class TagController extends Controller
         
         $fields=$request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
         ]);
         
         $tag->update($fields);
