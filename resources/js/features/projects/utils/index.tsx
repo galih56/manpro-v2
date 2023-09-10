@@ -9,35 +9,6 @@ export const flattenSectionTasks = (sections_or_tasks : Array<any> | Object)=>{
 
             if(item.hasOwnProperty('tasks')){
                 if(item.tasks){
-                    var tasks = [];
-                    
-                    item.tasks.forEach((task : any) => {
-                        for (const key in task) {
-                            const date = parseISO(task[key]);
-                                        
-                            if (isValid(date)) {
-                                task[key] = date;
-                            } 
-                            
-
-                            if(key == "startOn" ){
-                                if(task[key]) task.start = task[key];
-                            }
-
-                            if(key == "dueOn"){
-                                if(task[key]) task.end = task[key];
-                            }
-
-
-                            if(key == "taskId"){
-                                if(task[key]) task.dependencies = [ task[key] ];
-                            }
-                            if(key == "title" && task[key]){
-                                if(task[key]) task.name = task[key];
-                            }
-                        }
-                        tasks.push(task)
-                    }); 
                     new_data = [ ...new_data, ...item.tasks]
                 }
             }
