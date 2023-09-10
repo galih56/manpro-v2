@@ -2,9 +2,10 @@ import { XMarkIcon, ChevronUpIcon, ChevronDownIcon} from '@heroicons/react/24/so
 import { FieldWrapperPassThroughProps } from './FieldWrapper';
 import { Controller, UseFormRegisterReturn, useForm } from 'react-hook-form';
 import Select, { components, OptionProps, MultiValueGenericProps, MultiValueRemoveProps, StylesConfig } from 'react-select';
-import clsx from 'clsx';
+import CreatableSelect from 'react-select/creatable';
 import { FieldWrapper } from './FieldWrapper';
 import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 
 export type Option = {
     label: React.ReactNode;
@@ -20,14 +21,13 @@ export type SelectFieldProps = FieldWrapperPassThroughProps & {
     control?: any;
     registration?: Partial<UseFormRegisterReturn>;
     multiple?: boolean;
+    creatable?: boolean;
     onChange?: (values : string | string[] | undefined)=> void;
+    onCreateOption?: (values : string | string[] | undefined)=> void;
 };
   
 
-export const SelectField = ({ label, error, name, control, registration, multiple, options, defaultValue, placeholder, onChange } : SelectFieldProps)=>{
-   
-    
-
+export const SelectField = ({ label, error, name, control, registration, multiple, options, defaultValue, placeholder, onChange, creatable, onCreateOption } : SelectFieldProps)=>{
     const [ selectedValues, setSelectedVales ] = useState<Option | Option[] | undefined>();
     
     useEffect(()=>{
@@ -109,6 +109,45 @@ export const SelectField = ({ label, error, name, control, registration, multipl
                     name={registration.name!}
                     defaultValue={defaultValue}
                     render={({ field : {value, name, onChange, onBlur, ref } })=>{
+                        if(creatable){
+                            return (
+                                <CreatableSelect
+                                    components={{
+                                        Option : TWOption,
+                                        MultiValueContainer : TWMultiValueContainer,
+                                        MultiValueLabel : TWMultiValueLabel,
+                                        MultiValueRemove : TWMultiValueRemove 
+                                        
+                                    }}
+                                    name={name}
+                                    value={selectedValues}
+                                    onChange={(options : any)=>{
+                                        var values = undefined;
+                                        if(multiple){
+                                            values = options.map((option : Option) => option.value) as string[] ?? [];
+                                        }else{
+                                            values = options.value as string ?? undefined;
+                                        }
+                                        if(onChange) onChange(values)
+                                        setSelectedVales(options);
+                                    }}
+                                    onBlur={onBlur}
+                                    ref={ref}
+                                    options={options}
+                                    isMulti={multiple}
+                                    styles={styles}
+                                    className={clsx('border border-gray-100 bg-white rounded relative w-full')}
+                                    classNames={{
+                                        multiValue : (state) => 'bg-transparent',
+                                        multiValueRemove : (state)=>{
+                                            return 'bg-teal-100 hover:bg-teal-100'
+                                        }
+                                    }}
+                                    onCreateOption={onCreateOption}
+                                    placeholder={placeholder}
+                                />
+                            )
+                        }
                         return (
                             <Select 
                                 components={{
@@ -149,6 +188,46 @@ export const SelectField = ({ label, error, name, control, registration, multipl
             </FieldWrapper>
         )
     }else{
+        if(creatable){
+            
+            if(creatable){
+                return (
+                    <CreatableSelect
+                        components={{
+                            Option : TWOption,
+                            MultiValueContainer : TWMultiValueContainer,
+                            MultiValueLabel : TWMultiValueLabel,
+                            MultiValueRemove : TWMultiValueRemove 
+                            
+                        }}
+                        name={name}
+                        value={selectedValues}
+                        onChange={(options : any)=>{
+                            var values = undefined;
+                            if(multiple){
+                                values = options.map((option : Option) => option.value) as string[] ?? [];
+                            }else{
+                                values = options.value as string ?? undefined;
+                            }
+                            if(onChange) onChange(values)
+                            setSelectedVales(options);
+                        }}
+                        options={options}
+                        isMulti={multiple}
+                        styles={styles}
+                        className={clsx('border border-gray-100 bg-white rounded relative w-full')}
+                        classNames={{
+                            multiValue : (state) => 'bg-transparent',
+                            multiValueRemove : (state)=>{
+                                return 'bg-teal-100 hover:bg-teal-100'
+                            }
+                        }}
+                        onCreateOption={onCreateOption}
+                        placeholder={placeholder}
+                    />
+                )
+            }
+        }
         return (
             <FieldWrapper label={label} error={error}>                
                 <Select
@@ -189,3 +268,8 @@ export const SelectField = ({ label, error, name, control, registration, multipl
     }
 
 }
+
+
+
+
+
