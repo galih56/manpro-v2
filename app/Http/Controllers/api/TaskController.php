@@ -137,6 +137,7 @@ class TaskController extends Controller
         if(isset($fields['tags'])) $task->tags()->sync($fields['tags']);
         if(isset($fields['assignees'])) $task->assignees()->sync($fields['assignees']);
 
+        $task = Task::with('project')->with('tags')->with('assignees')->find($id);
         return response()->json([
             'message' => 'Task updated',
             'data' => $task,
