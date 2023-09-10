@@ -9,10 +9,10 @@ export interface Task extends BaseEntity{
   tags : Array<Tag>
   assignees : Array<User>;
   progress: number;
-  project?: Project | null;
-  startOn?: Date | string | null ;
-  dueOn?: Date | string | null ;
-  startedAt?: Date | string | null ;
-  completedAt?: Date | string | null ;
+  project?: Project;
+  startOn?: Date ;
+  dueOn?: Date ;
+  startedAt?: Date ;
+  completedAt?: Date ;
   completedBy?: User;
 };

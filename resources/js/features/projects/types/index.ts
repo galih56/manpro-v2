@@ -7,11 +7,11 @@ export type Project = {
   description: string;
   sections : Section[];
   progress  : number;
-  startOn : Date | string | null;
-  dueOn : Date | string | null;
-  startedAt : Date | string | null;
-  dueAt : Date | string | null;
+  startOn? : Date | string;
+  dueOn? : Date | string;
+  startedAt? : Date | string;
+  dueAt? : Date | string;
   completed : boolean;
-  completedAt : Date | string | null;
-  completedBy : User | null;
+  completedAt? : Date | string;
+  completedBy? : User;
 } & BaseEntity;
