@@ -22,7 +22,7 @@ export const Form = <
   const methods = useForm<TFormValues>({ ...options, resolver: schema && zodResolver(schema) });
   
   React.useEffect(()=>{
-    methods.reset(options!.defaultValues);
+    if(options) methods.reset(options.defaultValues);
   },[ options?.defaultValues])
 
   return (
