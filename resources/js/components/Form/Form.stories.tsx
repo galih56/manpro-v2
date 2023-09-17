@@ -8,6 +8,9 @@ import { TextAreaField } from './TextareaField';
 import { DatePicker, DateRange } from '../Elements/DatePicker/DatePicker';
 import { FieldWrapper } from './FieldWrapper';
 import * as z from 'zod';
+import { DatePicker as AntDatePicker, Space } from 'antd';
+
+const { RangePicker } = AntDatePicker;
 
 
 type FormValues = {
@@ -113,6 +116,14 @@ const MyForm = ({ hideSubmit = false }: { hideSubmit?: boolean }) => {
               }}
               error={formState.errors['start'] || formState.errors['end']}
             />
+            <Space direction="vertical" size={12}>
+              <RangePicker />
+              <RangePicker showTime />
+              <RangePicker picker="week" />
+              <RangePicker picker="month" />
+              <RangePicker picker="quarter" />
+              <RangePicker picker="year" />
+            </Space>
           {!hideSubmit && (
             <div>
               <Button type="submit" className="w-full">
