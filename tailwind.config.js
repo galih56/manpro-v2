@@ -9,7 +9,9 @@ module.exports = {
         './resources/js/**/*.tsx',
         './resources/js/**/*.ts',
     ],
-
+    // corePlugins: {
+    //     preflight: false
+    // },
     theme: {
         extend: {
             fontFamily: {

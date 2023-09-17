@@ -27,6 +27,7 @@ const tasksReducer = (state = initialState, action : any) => {
       ];
     }
     case 'update' : {
+      console.log('update',payload)
       return state.map( item => {
         if(item.id==payload.id) return payload;
         return item;
@@ -67,7 +68,8 @@ const TasksProvider=({ children } : Props )=>{
 function useTasks() {
   const context = useContext(TasksContext)
   if (context === undefined) {
-    throw new Error('useTasks must be used within a TasksProvider')
+    console.warn('useTasks must be used within a TasksProvider')
+    return null;
   }
   return {
     tasks : context.state,

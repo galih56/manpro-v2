@@ -3,8 +3,12 @@ import { CreateTaskDTO, useCreateTask } from '../api/createTask';
 import { useTagOptions } from '@/hooks/useTagOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
-import { DatePicker } from '@/components/Elements/DatePicker/DatePicker';
+
+import { DatePicker, Space } from 'antd';
+
+const { RangePicker } = DatePicker;
 import * as z from 'zod';
+import { Controller } from 'react-hook-form';
 
 const schema = z.object({
     projectId: z.string(),
@@ -43,13 +47,20 @@ export const FormCreateTask = () => {
                     error={formState.errors['title']}
                     registration={register('title')}
                 />
-                <DatePicker 
-                    label='Start On'  mode='single' name="startOn" 
-                    control={control} error={formState.errors['startOn']}
-                />
-                <DatePicker 
-                    label='Due On' mode='single' name="dueOn" 
-                    control={control} error={formState.errors['dueOn']}
+                <Controller
+                    render={(props) => (
+                        <RangePicker
+                            picker="month"
+                            placeholder={["Start On", "Due On"]}
+                            {...props}
+                            onChange={(e) => {
+                                props.field.onChange(e);
+                            }}
+                        />
+                    )}
+                    control={control}
+                    name={["startOn","dueOn"]}
+                    defaultValue=""
                 />
                 <DatePicker 
                     label='Started At'  mode='single' name="startedAt" 
