@@ -1,6 +1,7 @@
-import { Table, Spinner, Badge } from '@/components/Elements';
+import { Table, Spinner } from '@/components/Elements';
 import { formatDate } from '@/utils/datetime';
 
+import { Button, Badge } from "@tremor/react";
 import { useUsers } from '../api/getUsers';
 import { User } from '../types';
 

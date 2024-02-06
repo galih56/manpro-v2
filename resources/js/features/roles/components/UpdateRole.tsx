@@ -1,7 +1,7 @@
 import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -34,7 +34,7 @@ export const UpdateRole = ({ roleId }: UpdateRoleProps) => {
             form="update-role"
             type="submit"
             size="sm"
-            isLoading={updateRoleMutation.isLoading}
+            loading={updateRoleMutation.isLoading}
           >
             Submit
           </Button>

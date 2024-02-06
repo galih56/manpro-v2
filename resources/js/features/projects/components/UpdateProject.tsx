@@ -1,7 +1,7 @@
 import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -28,7 +28,7 @@ export const UpdateProject = ({ projectId }: UpdateProjectProps) => {
       <FormDrawer
         isDone={updateProjectMutation.isSuccess}
         triggerButton={
-          <Button startIcon={<PencilIcon className="h-4 w-4" />} size="sm" />
+          <Button icon={PencilIcon} size="sm" />
         }
         title="Update Project"
         submitButton={
@@ -36,7 +36,7 @@ export const UpdateProject = ({ projectId }: UpdateProjectProps) => {
             form="update-project"
             type="submit"
             size="sm"
-            isLoading={updateProjectMutation.isLoading}
+            loading={updateProjectMutation.isLoading}
           >
             Submit
           </Button>

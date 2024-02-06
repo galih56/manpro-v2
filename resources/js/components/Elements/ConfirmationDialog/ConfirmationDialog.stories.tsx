@@ -1,7 +1,6 @@
 import { Meta, Story } from '@storybook/react';
 
-import { Button } from '../Button';
-
+import { Button } from "@tremor/react";
 import { ConfirmationDialog, ConfirmationDialogProps } from './ConfirmationDialog';
 
 const meta: Meta = {

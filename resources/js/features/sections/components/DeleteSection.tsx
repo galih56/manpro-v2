@@ -1,6 +1,7 @@
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { Button } from "@tremor/react";
 
-import { Button, ConfirmationDialog } from '@/components/Elements';
+import {  ConfirmationDialog } from '@/components/Elements';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { useDeleteSection } from '../api/deleteSection';
@@ -23,7 +24,7 @@ export const DeleteSection = ({ id }: DeleteSectionProps) => {
         }
         confirmButton={
           <Button
-            isLoading={deleteSectionMutation.isLoading}
+            loading={deleteSectionMutation.isLoading}
             type="button"
             className="bg-red-600"
             onClick={async () => await deleteSectionMutation.mutateAsync({ roleId: id })}

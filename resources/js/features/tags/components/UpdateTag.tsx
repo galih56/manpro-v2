@@ -1,7 +1,7 @@
 import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -34,7 +34,7 @@ export const UpdateTag = ({ tagId }: UpdateTagProps) => {
             form="update-tag"
             type="submit"
             size="sm"
-            isLoading={updateTagMutation.isLoading}
+            loading={updateTagMutation.isLoading}
           >
             Submit
           </Button>

@@ -1,15 +1,16 @@
+import * as z from 'zod';
 import { GanttChart } from "@/components/GanttChart"
 import { NoEntriesFound } from "@/components/Layout";
 import { UpdateTask } from "@/features/tasks/components/UpdateTask";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { useTasks, withTasks } from "@/stores/tasks";
+import { Button } from "@tremor/react";
 import { convertDates } from "@/utils/datetime";
 import { isValid, parseISO } from "date-fns";
 import { Task } from "gantt-task-react";
 import { cloneElement, useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Drawer, DrawerProps } from '@/components/Elements/Drawer';
-import { Button } from '@/components/Elements/Button';
 import { FormUpdateTask } from "@/features/tasks/components/FormUpdateTask";
 import { useTask } from "@/features/tasks/api/getTask";
 import { useProjectOptions } from "@/hooks/useProjectOptions";
@@ -17,8 +18,6 @@ import { useTagOptions } from "@/hooks/useTagOptions";
 import { useUserOptions } from "@/hooks/useUserOptions";
 import { UpdateTaskDTO, useUpdateTask } from "@/features/tasks/api/updateTask";
 import { Form, InputField, SelectField, TextAreaField } from "@/components/Form";
-import * as z from 'zod';
-import { DatePicker } from "@/components/Elements/DatePicker";
 import { Spinner } from "@/components/elements";
 
 export const Gantt = withTasks((props) => {
@@ -99,14 +98,14 @@ const UpdateTaskDrawer = ({
           size={size}
           renderFooter={() => (
             <>
-                <Button variant="inverse" size="sm" onClick={onClose}>
+                <Button variant="primary" size="sm" onClick={onClose}>
                     Cancel
                 </Button>
                 <Button
                     form="update-task"
                     type="submit"
                     size="sm"
-                    isLoading={updateTaskMutation.isLoading}
+                    loading={updateTaskMutation.isLoading}
                 >
                     Submit
                 </Button>
@@ -170,34 +169,6 @@ const UpdateTaskDrawer = ({
                                 registration={register('assignees')}
                                 control={control}
                                 multiple={true}
-                            />
-                            <DatePicker 
-                                label='Start On'  
-                                mode='single' 
-                                name="startOn" 
-                                control={control} error={formState.errors['startOn']}
-                                defaultValue={taskQuery.data.startOn}
-                            />
-                            <DatePicker 
-                                label='Due On' 
-                                mode='single' 
-                                name="dueOn" 
-                                control={control} error={formState.errors['dueOn']}
-                                defaultValue={taskQuery.data.dueOn}
-                            />
-                            <DatePicker 
-                                label='Started At'  
-                                mode='single' 
-                                name="startedAt" 
-                                control={control} error={formState.errors['startedAt']}
-                                defaultValue={taskQuery.data.startedAt}
-                            />
-                            <DatePicker 
-                                label='Completed At' 
-                                mode='single' 
-                                name="completedAt" 
-                                control={control} error={formState.errors['completedAt']}
-                                defaultValue={taskQuery.data.completedAt}
                             />
                             </>
                         )}}

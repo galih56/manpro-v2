@@ -1,8 +1,8 @@
 import { Meta, Story } from '@storybook/react';
 
 import { useDisclosure } from '@/hooks/useDisclosure';
+import { Button } from "@tremor/react";
 
-import { Button } from '../Button';
 
 import { Drawer } from './Drawer';
 
@@ -29,7 +29,7 @@ export const Demo: Story = () => {
         size="md"
         renderFooter={() => (
           <>
-            <Button variant="inverse" size="sm" onClick={close}>
+            <Button variant='primary' size="sm" onClick={close}>
               Cancel
             </Button>
           </>

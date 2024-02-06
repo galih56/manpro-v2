@@ -1,6 +1,7 @@
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { Button } from "@tremor/react";
 
-import { Button, ConfirmationDialog } from '@/components/Elements';
+import { ConfirmationDialog } from '@/components/Elements';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { useDeleteTag } from '../api/deleteTag';
@@ -25,7 +26,7 @@ export const DeleteTag = ({ id }: DeleteTagProps) => {
         }
         confirmButton={
           <Button
-            isLoading={deleteTagMutation.isLoading}
+            loading={deleteTagMutation.isLoading}
             type="button"
             className="bg-red-600"
             onClick={async () => await deleteTagMutation.mutateAsync({ tagId: id })}

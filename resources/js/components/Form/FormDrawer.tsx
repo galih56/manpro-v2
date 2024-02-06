@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import { useDisclosure } from '@/hooks/useDisclosure';
+import { Button } from "@tremor/react";
 
-import { Button } from '../Elements/Button';
 import { Drawer, DrawerProps } from '../Elements/Drawer';
 
 type FormDrawerProps = {
@@ -40,7 +40,7 @@ export const FormDrawer = ({
         size={size}
         renderFooter={() => (
           <>
-            <Button variant="inverse" size="sm" onClick={close}>
+            <Button variant="primary" size="sm" onClick={close}>
               Cancel
             </Button>
             {submitButton}

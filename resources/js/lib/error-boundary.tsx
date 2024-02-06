@@ -1,4 +1,5 @@
-import { Button } from "@/components/elements";
+
+import { Button } from "@tremor/react";
 import { Props } from "@/types";
 import { AxiosError } from "axios";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";

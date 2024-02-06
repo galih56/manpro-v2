@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, InputField } from '@/components/Form';
 import { AxiosError } from 'axios';
 import { camelizeKeys } from 'humps';
@@ -98,7 +98,7 @@ export const RegisterForm = ({ onSuccess , onError }: RegisterFormProps) => {
               registration={register('passwordConfirmation')}
             />
             <div>
-              <Button isLoading={signUp.isLoading} type="submit" className="w-full">
+              <Button loading={signUp.isLoading} type="submit" className="w-full">
                 Register
               </Button>
             </div>

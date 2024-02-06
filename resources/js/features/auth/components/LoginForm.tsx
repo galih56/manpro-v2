@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import * as z from 'zod';
-
-import { Button } from '@/components/Elements';
+import { Button } from "@tremor/react";
 import { Form, InputField } from '@/components/Form';
 import { useLogin } from '@/lib/authentication';
 
@@ -48,11 +47,9 @@ export const LoginForm = ({ onSuccess, onError }: LoginFormProps) => {
               error={formState.errors['password']}
               registration={register('password')}
             />
-            <div>
-              <Button isLoading={login.isLoading} type="submit" className="w-full">
-                Sign in
-              </Button>
-            </div>
+            <Button loading={login.isLoading} type="submit" className="w-full">
+              Sign in
+            </Button>
           </>
         )}
       </Form>

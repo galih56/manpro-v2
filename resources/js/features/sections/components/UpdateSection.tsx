@@ -1,7 +1,7 @@
 import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
 
-import { Button } from '@/components/Elements';
+import { Button } from "@tremor/react";
 import { Form, FormDrawer, InputField, Option, SelectField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -12,7 +12,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Tag } from '@/features/tags';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
-import { DatePicker } from '@/components/Elements/DatePicker';
 
 type UpdateSectionProps = {
   sectionId: string;
@@ -43,7 +42,7 @@ export const UpdateSection = ({ sectionId }: UpdateSectionProps) => {
             form="update-section"
             type="submit"
             size="sm"
-            isLoading={updateSectionMutation.isLoading}
+            loading={updateSectionMutation.isLoading}
           >
             Submit
           </Button>

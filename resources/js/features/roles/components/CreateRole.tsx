@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -20,7 +20,7 @@ export const CreateRole = () => {
       <FormDrawer
         isDone={createRoleMutation.isSuccess}
         triggerButton={
-          <Button size="sm" startIcon={<PlusIcon className="h-4 w-4" />}>
+          <Button size="sm" icon={PlusIcon}>
             Create Role
           </Button>
         }
@@ -30,7 +30,7 @@ export const CreateRole = () => {
             form="create-role"
             type="submit"
             size="sm"
-            isLoading={createRoleMutation.isLoading}
+            loading={createRoleMutation.isLoading}
           >
             Submit
           </Button>

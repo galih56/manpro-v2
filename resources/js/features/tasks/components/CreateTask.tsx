@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
 
-import { Button } from '@/components/Elements';
+import { Button } from "@tremor/react";
 import { Form, FormDrawer, InputField, SelectField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -9,7 +9,6 @@ import { CreateTaskDTO, useCreateTask } from '../api/createTask';
 import { useTagOptions } from '@/hooks/useTagOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
-import { DatePicker } from '@/components/Form/DatePicker';
 
 const schema = z.object({
   projectId: z.string(),
@@ -45,7 +44,7 @@ export const CreateTask = () => {
             form="create-task"
             type="submit"
             size="sm"
-            isLoading={createTaskMutation.isLoading}
+            loading={createTaskMutation.isLoading}
           >
             Submit
           </Button>
@@ -69,22 +68,6 @@ export const CreateTask = () => {
                 label="Title"
                 error={formState.errors['title']}
                 registration={register('title')}
-              />
-              <DatePicker 
-                label='Start On'  mode='single' name="startOn" 
-                control={control} error={formState.errors['startOn']}
-              />
-              <DatePicker 
-                label='Due On' mode='single' name="dueOn" 
-                control={control} error={formState.errors['dueOn']}
-              />
-              <DatePicker 
-                label='Started At'  mode='single' name="startedAt" 
-                control={control} error={formState.errors['startedAt']}
-              />
-              <DatePicker 
-                label='Completed At' mode='single' name="completedAt" 
-                control={control} error={formState.errors['completedAt']}
               />
               <TextAreaField
                 label="Description"

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, Option, SelectField } from '@/components/Form';
 import { useAuth } from '@/lib/authentication';
 import { useUser } from '../api/getUser';
@@ -57,7 +57,7 @@ export const UpdateUser = ({ userId } : UpdateUserProps) => {
           form="update-profile"
           type="submit"
           size="sm"
-          isLoading={updateUserMutation.isLoading}
+          loading={updateUserMutation.isLoading}
         >
           Submit
         </Button>

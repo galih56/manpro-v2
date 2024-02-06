@@ -1,5 +1,5 @@
 import { formatDate } from "@/utils/datetime";
-import { Badge } from "../Badge";
+import { Badge } from "@tremor/react";
 import clsx from "clsx";
 import { ReactNode } from "react";
 
@@ -28,7 +28,7 @@ export const DateDisplay = ( { mode, placeholder, data, CustomBadge } : DateDisp
               CustomBadge ? 
                 CustomBadge(date, i)
                 : 
-                <Badge key={`${date.toISOString()}-${i}`} variant='default' className={"inline-flex"}>
+                <Badge key={`${date.toISOString()}-${i}`}  className={"inline-flex"}>
                     {formatDate(date)} 
                 </Badge>
             )

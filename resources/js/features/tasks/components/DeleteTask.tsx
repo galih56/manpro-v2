@@ -1,6 +1,7 @@
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { Button } from "@tremor/react";
 
-import { Button, ConfirmationDialog } from '@/components/Elements';
+import { ConfirmationDialog } from '@/components/Elements';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { useDeleteTask } from '../api/deleteTask';
@@ -23,7 +24,7 @@ export const DeleteTask = ({ id }: DeleteTaskProps) => {
         }
         confirmButton={
           <Button
-            isLoading={deleteTaskMutation.isLoading}
+            loading={deleteTaskMutation.isLoading}
             type="button"
             className="bg-red-600"
             onClick={async () => await deleteTaskMutation.mutateAsync({ taskId: id })}

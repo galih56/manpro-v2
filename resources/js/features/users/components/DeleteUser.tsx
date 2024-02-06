@@ -1,6 +1,7 @@
-import { Button, ConfirmationDialog } from '@/components/Elements';
+import { ConfirmationDialog } from '@/components/Elements';
 import { useDeleteUser } from '../api/deleteUser';
 import { useAuth } from '@/lib/authentication';
+import { Button } from "@tremor/react";
 
 type DeleteUserProps = {
   id: string;
@@ -20,7 +21,7 @@ export const DeleteUser = ({ id }: DeleteUserProps) => {
       triggerButton={<Button variant="danger">Delete</Button>}
       confirmButton={
         <Button
-          isLoading={deleteUserMutation.isLoading}
+          loading={deleteUserMutation.isLoading}
           type="button"
           className="bg-red-600"
           onClick={() => deleteUserMutation.mutate({ userId: id })}

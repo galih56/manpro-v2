@@ -1,7 +1,6 @@
 import { ExclamationCircleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-
-import { Button } from '@/components/Elements/Button';
+import { Button } from "@tremor/react";
 import { Dialog, DialogTitle } from '@/components/Elements/Dialog';
 import { useDisclosure } from '@/hooks/useDisclosure';
 
@@ -69,7 +68,7 @@ export const ConfirmationDialog = ({
           <div className="mt-4 flex space-x-2 justify-end">
             <Button
               type="button"
-              variant="inverse"
+              variant="primary"
               className="w-full inline-flex justify-center rounded-md border focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
               onClick={close}
               ref={cancelButtonRef}

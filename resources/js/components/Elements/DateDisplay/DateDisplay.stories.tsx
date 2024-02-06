@@ -3,8 +3,8 @@ import * as React from 'react';
 import { DateDisplay, DateDisplayProps } from './DateDisplay';
 import { formatDate } from '@/utils/datetime';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Badge } from '../Badge';
-import { Button } from '../Button';
+import { Badge } from "@tremor/react";
+import { Button } from "@tremor/react";
 
 const meta: Meta = {
   title: 'Components/Elements/DateDisplay',

@@ -6,7 +6,6 @@ import { UpdateTaskDTO, useUpdateTask } from '../api/updateTask';
 import { useTagOptions } from '@/hooks/useTagOptions';
 import { useUserOptions } from '@/hooks/useUserOptions';
 import { useProjectOptions } from '@/hooks/useProjectOptions';
-import { DatePicker } from '@/components/Elements/DatePicker';
 
 type UpdateTaskProps = {
   taskId: string;
@@ -89,30 +88,6 @@ export const FormUpdateTask = ({ taskId }: UpdateTaskProps) => {
             registration={register('assignees')}
             control={control}
             multiple={true}
-          />
-          <DatePicker 
-            label='Start On'  
-            mode='single' 
-            name="startOn" 
-            control={control} error={formState.errors['startOn']}
-          />
-          <DatePicker 
-            label='Due On' 
-            mode='single' 
-            name="dueOn" 
-            control={control} error={formState.errors['dueOn']}
-          />
-          <DatePicker 
-            label='Started At'  
-            mode='single' 
-            name="startedAt" 
-            control={control} error={formState.errors['startedAt']}
-          />
-          <DatePicker 
-            label='Completed At' 
-            mode='single' 
-            name="completedAt" 
-            control={control} error={formState.errors['completedAt']}
           />
         </>
       )}

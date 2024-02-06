@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -30,7 +30,7 @@ export const CreateTag = () => {
             form="create-label"
             type="submit"
             size="sm"
-            isLoading={createTagMutation.isLoading}
+            loading={createTagMutation.isLoading}
           >
             Submit
           </Button>

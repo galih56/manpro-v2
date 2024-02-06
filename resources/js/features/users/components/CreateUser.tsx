@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
+import { Button } from "@tremor/react";
 
-import { Button } from '@/components/Elements';
 import { Form, FormDrawer, InputField, SelectField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -33,7 +33,7 @@ export const CreateUser = () => {
       <FormDrawer
         isDone={createUserMutation.isSuccess}
         triggerButton={
-          <Button size="sm" startIcon={<PlusIcon className="h-4 w-4" />}>
+          <Button size="sm" icon={PlusIcon}>
             Create User
           </Button>
         }
@@ -43,7 +43,7 @@ export const CreateUser = () => {
             form="create-user"
             type="submit"
             size="sm"
-            isLoading={createUserMutation.isLoading}
+            loading={createUserMutation.isLoading}
           >
             Submit
           </Button>

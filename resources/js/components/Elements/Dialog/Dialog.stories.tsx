@@ -2,8 +2,7 @@ import { Meta, Story } from '@storybook/react';
 import * as React from 'react';
 
 import { useDisclosure } from '@/hooks/useDisclosure';
-
-import { Button } from '../Button';
+import { Button } from "@tremor/react";
 
 import { Dialog, DialogTitle } from './Dialog';
 

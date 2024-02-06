@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import * as z from 'zod';
 
-import { Button } from '@/components/Elements';
+import { Button } from "@tremor/react";
 import { Form, FormDrawer, InputField, SelectField, TextAreaField } from '@/components/Form';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -33,7 +33,7 @@ export const CreateSection = () => {
             form="create-section"
             type="submit"
             size="sm"
-            isLoading={createSectionMutation.isLoading}
+            loading={createSectionMutation.isLoading}
           >
             Submit
           </Button>
